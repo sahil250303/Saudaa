@@ -1308,8 +1308,15 @@ function renderChatFeed(channelId) {
       `;
     });
 
+    if (liveFreeSignals.length === 0) {
+      feedHtml = `
+        <div class="p-8 text-center bg-surface-container-low border border-outline-variant/30 rounded-2xl mt-4">
+          <span class="material-symbols-outlined text-outline text-3xl animate-pulse">campaign</span>
+          <div class="font-bold text-sm text-on-surface mt-2">No Complimentary Alerts Broadcasted Yet</div>
+          <p class="text-xs text-outline mt-1 max-w-xs mx-auto">Verified traders have not posted any free suggestions today. Check back later or follow their premium feeds.</p>
+        </div>
       `;
-    });
+    }
 
     feedBodyEl.innerHTML = feedHtml;
     feedBodyEl.scrollTop = 0;
