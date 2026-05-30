@@ -1338,9 +1338,58 @@ function renderChatFeed(channelId) {
   feedBodyEl.scrollTop = feedBodyEl.scrollHeight;
 
   // After 600ms load the actual messages for all traders in a unified stream
-  setTimeout(() => {
+  setTimeout(async () => {
     let feedHtml = '';
+    
+    // Fetch live free signals from backend database
+    let liveFreeSignals = [];
+    try {
+      const liveRes = await fetch('/api/free-signals');
+      if (liveRes.ok) {
+        liveFreeSignals = await liveRes.json();
+      }
+    } catch (e) {
+      console.error('Failed to fetch live free signals:', e);
+    }
 
+    // 1. Render dynamic live broadcasted signals
+    liveFreeSignals.forEach(s => {
+      const nameInitials = s.traderName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+      const timeStr = new Date(s.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      
+      feedHtml += `
+        <div class="msg border-b border-outline-variant/10 pb-6 mb-6 bg-primary/5 p-4 rounded-2xl animate-fade">
+          <div class="msg-av shrink-0">${nameInitials}</div>
+          <div class="msg-c flex-1 min-w-0">
+            <div class="msg-meta">
+              <span class="msg-name font-bold text-on-surface">${s.traderName}</span>
+              <span class="msg-badge mb-pro">Trader</span>
+              <span class="msg-badge bg-primary/10 text-primary border border-primary/20 ml-2 text-[9px] uppercase font-bold px-1.5 py-0.5 rounded">Live Broadcast</span>
+              <span class="msg-time text-outline text-[10px] ml-2">${timeStr}</span>
+            </div>
+            <div class="msg-txt mt-2 text-on-surface-variant text-xs leading-relaxed">
+              <div class="p-3 bg-surface-container-lowest border border-outline-variant/20 rounded-xl space-y-1.5 shadow-sm">
+                <div class="text-[9px] font-bold text-primary font-mono uppercase tracking-wider flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[10px] animate-pulse">campaign</span>
+                  Complimentary Alert • Valid: ${s.timing}
+                </div>
+                <p class="text-xs text-on-surface font-semibold leading-normal whitespace-pre-wrap">${s.description}</p>
+              </div>
+              
+              <div onclick="openCheckout('${s.traderId}', 'pro')" class="locked cursor-pointer mt-4 p-4 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high transition-colors flex items-start gap-3">
+                <span class="material-symbols-outlined locked-i text-primary">lock</span>
+                <div>
+                  <div class="locked-title font-bold text-xs text-on-surface">Unlock daily premium signals from ${s.traderName}</div>
+                  <div class="locked-desc text-[10px] text-outline mt-0.5">Join premium subscribers copying these trades in real-time. Click to unlock.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    // 2. Render static seed signals so the page remains populated
     tradersList.forEach((t, idx) => {
       const nameInitials = t.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
       const data = complimentaryCalls[t.id] || complimentaryCalls["alex_pro"];
@@ -1415,7 +1464,7 @@ function renderChatFeed(channelId) {
     });
 
     feedBodyEl.innerHTML = feedHtml;
-    feedBodyEl.scrollTop = 0; // Scroll to top so users read oldest to newest, or we can keep it as is
+    feedBodyEl.scrollTop = 0;
   }, 600);
 }
 

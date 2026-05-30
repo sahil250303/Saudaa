@@ -783,6 +783,64 @@ app.get('/api/plans', async (req, res) => {
   res.json(db.plans || []);
 });
 
+// Daily Free Signals GET Endpoint
+app.get('/api/free-signals', async (req, res) => {
+  const db = await readDB();
+  res.json(db.freeSignals || []);
+});
+
+// Daily Free Signals POST Endpoint
+app.post('/api/free-signals', verifyUserToken, async (req, res) => {
+  if (req.user.role !== 'trader') {
+    return res.status(403).json({ error: 'Only authorized traders can broadcast free signals.' });
+  }
+
+  const { description, timing } = req.body;
+  if (!description || !timing) {
+    return res.status(400).json({ error: 'Description and timing fields are required.' });
+  }
+
+  const db = await readDB();
+  const trader = db.traders.find(t => t.id === req.user.id);
+  if (!trader) {
+    return res.status(404).json({ error: 'Trader profile not found.' });
+  }
+
+  // Calculate signals posted today by this trader (YYYY-MM-DD format in UTC)
+  const todayStr = new Date().toISOString().substring(0, 10);
+  const todaySignalsCount = (db.freeSignals || []).filter(s => 
+    s.traderId === req.user.id && 
+    s.createdAt && s.createdAt.startsWith(todayStr)
+  ).length;
+
+  if (todaySignalsCount >= 3) {
+    return res.status(400).json({ error: 'You have reached your daily limit of 3 free signals.' });
+  }
+
+  const freeSigId = 'free_' + crypto.randomBytes(8).toString('hex');
+  const newFreeSignal = {
+    id: freeSigId,
+    traderId: trader.id,
+    traderName: trader.name,
+    description: description.trim(),
+    timing: timing.trim(),
+    createdAt: new Date().toISOString()
+  };
+
+  if (!db.freeSignals) {
+    db.freeSignals = [];
+  }
+  db.freeSignals.unshift(newFreeSignal);
+
+  await writeDB(db);
+
+  res.json({
+    success: true,
+    signal: newFreeSignal,
+    countToday: todaySignalsCount + 1
+  });
+});
+
 // Admin Token Authentication Middleware
 function verifyAdminToken(req, res, next) {
   const authHeader = req.headers['authorization'];

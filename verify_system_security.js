@@ -86,6 +86,7 @@ const db = require('./db');
     originalDB.clients = [];
     originalDB.payments = [];
     originalDB.messages = [];
+    originalDB.freeSignals = [];
     
     await db.writeDB(originalDB);
     console.log('Seeding complete.');
@@ -224,6 +225,93 @@ const db = require('./db');
       console.log('SUCCESS: Credentials block completely purged from the frontend DOM!');
     } else {
       throw new Error('FAIL: Exposed credentials block still rendered on screen!');
+    }
+
+    // ----------------------------------------------------
+    // Test 7: Free Signals Route Protection (Unauthenticated POST)
+    // ----------------------------------------------------
+    console.log('\n--- Test 7: Free Signals Route Protection ---');
+    console.log('Posting free signal without Authorization header...');
+    const freeSigUnauthRes = await page.request.post('http://localhost:3000/api/free-signals', {
+      data: { description: 'Test signal', timing: 'Immediate' }
+    });
+    console.log('Status Code:', freeSigUnauthRes.status());
+    const freeSigUnauthJson = await freeSigUnauthRes.json();
+    console.log('Response:', freeSigUnauthJson);
+    if (freeSigUnauthRes.status() === 401 && freeSigUnauthJson.error && freeSigUnauthJson.error.includes('Access token required')) {
+      console.log('SUCCESS: Free signals route correctly protected with 401 Unauthorized!');
+    } else {
+      throw new Error('FAIL: Free signals route is not properly protected!');
+    }
+
+    // ----------------------------------------------------
+    // Test 8: Post Free Signal successfully
+    // ----------------------------------------------------
+    console.log('\n--- Test 8: Post Free Signal successfully ---');
+    console.log('Posting first free signal with valid trader token...');
+    const sig1Res = await page.request.post('http://localhost:3000/api/free-signals', {
+      headers: { 'Authorization': `Bearer ${token}` },
+      data: { description: 'Free Signal 1', timing: 'Buy AAPL at 180' }
+    });
+    console.log('Status Code:', sig1Res.status());
+    const sig1Json = await sig1Res.json();
+    console.log('Response:', sig1Json);
+    if (sig1Res.status() === 200 && sig1Json.success && sig1Json.signal.description === 'Free Signal 1') {
+      console.log('SUCCESS: Free signal 1 posted successfully!');
+    } else {
+      throw new Error('FAIL: Failed to post free signal 1!');
+    }
+
+    console.log('Posting second free signal...');
+    const sig2Res = await page.request.post('http://localhost:3000/api/free-signals', {
+      headers: { 'Authorization': `Bearer ${token}` },
+      data: { description: 'Free Signal 2', timing: 'Buy MSFT at 420' }
+    });
+    if (sig2Res.status() !== 200) {
+      throw new Error('FAIL: Failed to post free signal 2!');
+    }
+
+    console.log('Posting third free signal...');
+    const sig3Res = await page.request.post('http://localhost:3000/api/free-signals', {
+      headers: { 'Authorization': `Bearer ${token}` },
+      data: { description: 'Free Signal 3', timing: 'Buy TSLA at 170' }
+    });
+    if (sig3Res.status() !== 200) {
+      throw new Error('FAIL: Failed to post free signal 3!');
+    }
+    console.log('SUCCESS: Three free signals posted successfully!');
+
+    // ----------------------------------------------------
+    // Test 9: Free Signal Daily Limit (4th post fails)
+    // ----------------------------------------------------
+    console.log('\n--- Test 9: Free Signal Daily Limit ---');
+    console.log('Posting fourth free signal (should fail)...');
+    const sig4Res = await page.request.post('http://localhost:3000/api/free-signals', {
+      headers: { 'Authorization': `Bearer ${token}` },
+      data: { description: 'Free Signal 4', timing: 'Buy GOOG at 170' }
+    });
+    console.log('Status Code:', sig4Res.status());
+    const sig4Json = await sig4Res.json();
+    console.log('Response:', sig4Json);
+    if (sig4Res.status() === 400 && sig4Json.error && sig4Json.error.includes('limit of 3 free signals')) {
+      console.log('SUCCESS: Fourth free signal blocked with 400 Bad Request due to daily limit!');
+    } else {
+      throw new Error('FAIL: Fourth free signal was not blocked correctly!');
+    }
+
+    // ----------------------------------------------------
+    // Test 10: GET Free Signals
+    // ----------------------------------------------------
+    console.log('\n--- Test 10: GET Free Signals ---');
+    console.log('Retrieving free signals feed...');
+    const getSigRes = await page.request.get('http://localhost:3000/api/free-signals');
+    console.log('Status Code:', getSigRes.status());
+    const getSigJson = await getSigRes.json();
+    console.log('Active signals count:', getSigJson.length);
+    if (getSigRes.status() === 200 && Array.isArray(getSigJson) && getSigJson.length === 3) {
+      console.log('SUCCESS: GET free-signals returned active signals list of size 3!');
+    } else {
+      throw new Error('FAIL: Failed to retrieve active free signals list correctly!');
     }
 
     console.log('\n========================================');

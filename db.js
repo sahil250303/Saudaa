@@ -23,15 +23,15 @@ if (supabaseUrl && supabaseKey) {
 async function readDB() {
   if (supabase) {
     try {
-      // Fetch all tables in parallel to construct the database object
-      const [traders, suggestions, clients, messages, admin, plans, payments] = await Promise.all([
+      const [traders, suggestions, clients, messages, admin, plans, payments, freeSignals] = await Promise.all([
         supabase.from('traders').select('*'),
         supabase.from('suggestions').select('*').order('created_at', { ascending: false }),
         supabase.from('clients').select('*'),
         supabase.from('messages').select('*'),
         supabase.from('admin').select('*'),
         supabase.from('plans').select('*'),
-        supabase.from('payments').select('*')
+        supabase.from('payments').select('*'),
+        supabase.from('free_signals').select('*').order('created_at', { ascending: false })
       ]);
 
       // Handle query errors
@@ -42,6 +42,7 @@ async function readDB() {
       if (admin.error) console.error('Supabase query error [admin]:', admin.error);
       if (plans.error) console.error('Supabase query error [plans]:', plans.error);
       if (payments.error) console.error('Supabase query error [payments]:', payments.error);
+      if (freeSignals.error) console.error('Supabase query error [freeSignals]:', freeSignals.error);
 
       // Return mapping in correct camelCase properties compatible with existing endpoints
       return {
@@ -113,6 +114,14 @@ async function readDB() {
           amount: parseFloat(p.amount || 0),
           timestamp: p.timestamp,
           status: p.status
+        })),
+        freeSignals: (freeSignals.data || []).map(fs => ({
+          id: fs.id,
+          traderId: fs.trader_id || fs.traderId,
+          traderName: fs.trader_name || fs.traderName,
+          description: fs.description,
+          timing: fs.timing,
+          createdAt: fs.created_at || fs.createdAt
         }))
       };
     } catch (err) {
@@ -124,10 +133,12 @@ async function readDB() {
   // Local JSON File Database Fallback
   try {
     const data = fs.readFileSync(DB_PATH, 'utf-8');
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    if (!parsed.freeSignals) parsed.freeSignals = [];
+    return parsed;
   } catch (error) {
     console.error('[DB] Local database.json read failed:', error);
-    return { traders: [], suggestions: [], clients: [], messages: [], plans: [], payments: [] };
+    return { traders: [], suggestions: [], clients: [], messages: [], plans: [], payments: [], freeSignals: [] };
   }
 }
 
@@ -211,6 +222,15 @@ async function writeDB(data) {
         mfa_secret: data.admin.mfaSecret
       }] : [];
 
+      const freeSignalsData = (data.freeSignals || []).map(fs => ({
+        id: fs.id,
+        trader_id: fs.traderId,
+        trader_name: fs.traderName,
+        description: fs.description,
+        timing: fs.timing,
+        created_at: fs.createdAt
+      }));
+
       // Execute upserts in parallel
       await Promise.all([
         tradersData.length ? supabase.from('traders').upsert(tradersData) : Promise.resolve(),
@@ -219,7 +239,8 @@ async function writeDB(data) {
         messagesData.length ? supabase.from('messages').upsert(messagesData) : Promise.resolve(),
         plansData.length ? supabase.from('plans').upsert(plansData) : Promise.resolve(),
         paymentsData.length ? supabase.from('payments').upsert(paymentsData) : Promise.resolve(),
-        adminData.length ? supabase.from('admin').upsert(adminData) : Promise.resolve()
+        adminData.length ? supabase.from('admin').upsert(adminData) : Promise.resolve(),
+        freeSignalsData.length ? supabase.from('free_signals').upsert(freeSignalsData) : Promise.resolve()
       ]);
 
       return;

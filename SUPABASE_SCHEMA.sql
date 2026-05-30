@@ -95,7 +95,20 @@ ALTER TABLE admin DISABLE ROW LEVEL SECURITY;
 ALTER TABLE plans DISABLE ROW LEVEL SECURITY;
 ALTER TABLE payments DISABLE ROW LEVEL SECURITY;
 
+-- 8. Create Free Signals Table
+CREATE TABLE IF NOT EXISTS free_signals (
+  id TEXT PRIMARY KEY,
+  trader_id TEXT REFERENCES traders(id) ON DELETE CASCADE,
+  trader_name TEXT,
+  description TEXT NOT NULL,
+  timing TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE free_signals DISABLE ROW LEVEL SECURITY;
+
 -- Indexes for performance queries
 CREATE INDEX IF NOT EXISTS idx_suggestions_trader_id ON suggestions(trader_id);
 CREATE INDEX IF NOT EXISTS idx_messages_chat_flow ON messages(trader_id, sender_id, receiver_id);
 CREATE INDEX IF NOT EXISTS idx_payments_email ON payments(email);
+CREATE INDEX IF NOT EXISTS idx_free_signals_trader_id ON free_signals(trader_id);

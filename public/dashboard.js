@@ -142,6 +142,9 @@ async function initTraderDashboard() {
   // Fetch subscribed clients list
   fetchTraderClients();
 
+  // Load free signals configuration
+  loadFreeSignals();
+
   // Start countdown timer updates
   if (countdownInterval) clearInterval(countdownInterval);
   updateCountdownTimers();
@@ -722,3 +725,127 @@ function stopPolling() {
   signalsPollInterval = null;
   countdownInterval = null;
 }
+
+// Trader Dashboard: Client Communications Tab and Signal posting logic
+window.switchCommTab = function(tabName) {
+  const chatTab = document.getElementById('comm-tab-chat');
+  const signalTab = document.getElementById('comm-tab-signal');
+  const chatPanel = document.getElementById('comm-panel-chat');
+  const signalPanel = document.getElementById('comm-panel-signal');
+  const subHeader = document.getElementById('comm-sub-header');
+  
+  if (!chatTab || !signalTab || !chatPanel || !signalPanel || !subHeader) return;
+  
+  if (tabName === 'chat') {
+    chatPanel.classList.remove('hidden');
+    signalPanel.classList.add('hidden');
+    
+    chatTab.classList.add('bg-primary', 'text-on-primary');
+    chatTab.classList.remove('text-outline', 'hover:text-on-surface');
+    
+    signalTab.classList.remove('bg-primary', 'text-on-primary');
+    signalTab.classList.add('text-outline', 'hover:text-on-surface');
+    
+    subHeader.textContent = 'Select subscriber to answer chats';
+  } else if (tabName === 'signal') {
+    chatPanel.classList.add('hidden');
+    signalPanel.classList.remove('hidden');
+    
+    signalTab.classList.add('bg-primary', 'text-on-primary');
+    signalTab.classList.remove('text-outline', 'hover:text-on-surface');
+    
+    chatTab.classList.remove('bg-primary', 'text-on-primary');
+    chatTab.classList.add('text-outline', 'hover:text-on-surface');
+    
+    subHeader.textContent = 'Broadcast daily complimentary signals';
+    loadFreeSignals();
+  }
+};
+
+window.loadFreeSignals = async function() {
+  const counterEl = document.getElementById('free-signal-daily-counter');
+  const historyEl = document.getElementById('free-signals-history');
+  
+  if (!counterEl || !historyEl) return;
+  
+  try {
+    const res = await fetch('/api/free-signals');
+    if (!res.ok) throw new Error('Failed to fetch free signals feed.');
+    const signals = await res.json();
+    
+    // Filter for current trader
+    const mySignals = signals.filter(s => s.traderId === currentUser.id);
+    
+    // Calculate how many signals posted today (YYYY-MM-DD in UTC)
+    const todayStr = new Date().toISOString().substring(0, 10);
+    const todaySignals = mySignals.filter(s => s.createdAt && s.createdAt.startsWith(todayStr));
+    const countToday = todaySignals.length;
+    
+    counterEl.textContent = `Daily Limit: ${countToday} / 3 posted today`;
+    
+    // Render list
+    if (mySignals.length === 0) {
+      historyEl.innerHTML = `<p class="text-[10px] text-outline italic py-3 text-center bg-surface-container-low rounded-lg">No signals broadcasted yet.</p>`;
+      return;
+    }
+    
+    historyEl.innerHTML = mySignals.map(s => {
+      const time = new Date(s.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const date = new Date(s.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' });
+      return `
+        <div class="p-3 bg-surface-container-low border border-outline-variant/20 rounded-xl space-y-1.5 animate-fade">
+          <div class="flex items-center justify-between text-[9px] text-outline font-mono">
+            <span>Posted on ${date} at ${time}</span>
+            <span class="font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20">Active: ${s.timing}</span>
+          </div>
+          <p class="text-xs text-on-surface leading-normal font-medium whitespace-pre-wrap">${s.description}</p>
+        </div>
+      `;
+    }).join('');
+    
+  } catch (error) {
+    console.error('Error loading free signals history:', error);
+  }
+};
+
+window.handlePostFreeSignal = async function(event) {
+  event.preventDefault();
+  
+  const descEl = document.getElementById('free-signal-description');
+  const timingEl = document.getElementById('free-signal-timing');
+  const formEl = document.getElementById('free-signal-form');
+  
+  if (!descEl || !timingEl) return;
+  
+  const description = descEl.value.trim();
+  const timing = timingEl.value.trim();
+  
+  if (!description || !timing) {
+    alert('Please fill out both the description and timing fields.');
+    return;
+  }
+  
+  try {
+    const res = await fetch('/api/free-signals', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ description, timing })
+    });
+    
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to post free signal.');
+    }
+    
+    // Clear form inputs
+    formEl.reset();
+    
+    // Refresh history
+    await loadFreeSignals();
+    
+  } catch (error) {
+    alert(error.message);
+  }
+};

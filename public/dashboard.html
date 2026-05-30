@@ -268,16 +268,30 @@
 
             <!-- Trader Active Chat box (Subscribers tabs) -->
             <div class="lg:col-span-5 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-0 shadow-sm flex flex-col h-[520px] overflow-hidden">
-              <div class="bg-surface-container-low border-b border-outline-variant/30 p-4 shrink-0">
-                <h4 class="font-bold text-sm text-on-surface flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-[18px]">chat</span>
-                  Client Communications
-                </h4>
-                <p class="text-[10px] text-outline">Select subscriber to answer chats</p>
+              <div class="bg-surface-container-low border-b border-outline-variant/30 px-4 py-3 shrink-0 flex items-center justify-between">
+                <div>
+                  <h4 class="font-bold text-xs text-on-surface flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">chat</span>
+                    Client Communications
+                  </h4>
+                  <p class="text-[9px] text-outline animate-fade" id="comm-sub-header">Select subscriber to answer chats</p>
+                </div>
+                
+                <!-- Tab Toggle Buttons -->
+                <div class="flex bg-surface-container-lowest rounded-lg p-0.5 border border-outline-variant/20 select-none">
+                  <button type="button" onclick="switchCommTab('chat')" id="comm-tab-chat"
+                    class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-primary text-on-primary transition-all">
+                    Chats
+                  </button>
+                  <button type="button" onclick="switchCommTab('signal')" id="comm-tab-signal"
+                    class="px-2.5 py-1 rounded-md text-[10px] font-bold text-outline hover:text-on-surface transition-all">
+                    Free Signal
+                  </button>
+                </div>
               </div>
 
-              <!-- Chat Inner Split -->
-              <div class="flex flex-1 overflow-hidden">
+              <!-- Chats Panel -->
+              <div class="flex flex-1 overflow-hidden" id="comm-panel-chat">
                 <!-- Client tabs -->
                 <div class="w-[120px] bg-surface-container-low border-r border-outline-variant/30 overflow-y-auto custom-scrollbar p-2 space-y-1 select-none shrink-0" id="trader-clients-list">
                   <!-- Rendered dynamically -->
@@ -295,6 +309,53 @@
                         <span class="material-symbols-outlined text-[18px]">send</span>
                       </button>
                     </form>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Post Free Signal Panel -->
+              <div class="hidden flex-1 flex flex-col p-4 bg-surface-container-lowest overflow-y-auto custom-scrollbar space-y-4" id="comm-panel-signal">
+                <div class="space-y-1">
+                  <h5 class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm text-primary">campaign</span>
+                    Broadcast Complimentary Signal
+                  </h5>
+                  <p class="text-[9px] text-outline leading-relaxed">Share up to 3 free setups daily with the Lounge. Broadcasted signals appear in the public feed.</p>
+                </div>
+
+                <form id="free-signal-form" onsubmit="handlePostFreeSignal(event)" class="space-y-3.5">
+                  <div class="space-y-1">
+                    <label class="block text-[9px] font-bold uppercase text-on-surface-variant">Signal Description</label>
+                    <textarea id="free-signal-description" required rows="3" 
+                      placeholder="e.g. BTC Long Setup. Entry: 67,500. Target: 70,000. Stop Loss: 66,200. Solid 4H chart support bounce."
+                      class="w-full bg-surface-container border border-outline-variant/40 rounded-xl p-3 text-xs text-on-surface focus:outline-none focus:border-primary custom-scrollbar"></textarea>
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="block text-[9px] font-bold uppercase text-on-surface-variant">Timing / Validity</label>
+                    <input type="text" id="free-signal-timing" required 
+                      placeholder="e.g. Today at 2:30 PM, or Immediate execution"
+                      class="w-full bg-surface-container border border-outline-variant/40 rounded-xl px-3 py-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+                  </div>
+
+                  <div class="flex items-center justify-between pt-1">
+                    <!-- Daily Post Counter Status -->
+                    <span class="text-[9px] font-bold text-outline-variant" id="free-signal-daily-counter">
+                      Daily Limit: 0 / 3 posted today
+                    </span>
+                    <button type="submit" 
+                      class="bg-primary hover:opacity-95 text-on-primary font-bold text-[10px] px-3.5 py-2 rounded-lg transition-all shadow-[0_2px_10px_0_rgba(156,175,145,0.15)] flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-sm">send</span>
+                      <span>Broadcast Signal</span>
+                    </button>
+                  </div>
+                </form>
+
+                <!-- List of recently posted free signals -->
+                <div class="border-t border-outline-variant/20 pt-3 space-y-2">
+                  <div class="text-[9px] font-bold text-on-surface-variant uppercase tracking-wider">Recently Broadcasted</div>
+                  <div id="free-signals-history" class="space-y-2 max-h-[140px] overflow-y-auto custom-scrollbar">
+                    <!-- Loaded dynamically -->
                   </div>
                 </div>
               </div>
