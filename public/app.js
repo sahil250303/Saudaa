@@ -329,37 +329,121 @@ window.handleCheckout = async function(event) {
   const plan = document.getElementById('checkout-plan-select').value;
   const email = document.getElementById('checkout-email').value;
   const password = document.getElementById('checkout-password').value;
-  
-  const cardNumber = document.getElementById('checkout-card').value;
-  const expiry = document.getElementById('checkout-expiry').value;
-  const cvc = document.getElementById('checkout-cvc').value;
 
   errorEl.classList.add('hidden');
   submitBtn.disabled = true;
-  submitBtn.textContent = 'Processing Transaction...';
+  submitBtn.textContent = 'Contacting Payment Gateway...';
 
   try {
-    const res = await fetch('/api/subscribe', {
+    // 1. Create payment order in backend
+    const orderRes = await fetch('/api/payment/order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, traderId, plan, cardNumber, expiry, cvc })
+      body: JSON.stringify({ plan, traderId })
     });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Checkout process failed.');
-
-    // Show Success screen
-    document.getElementById('checkout-form').classList.add('hidden');
-    document.getElementById('checkout-success').classList.remove('hidden');
     
-    document.getElementById('success-subid').textContent = data.subId;
-    document.getElementById('success-email').textContent = data.email;
-    document.getElementById('success-password').textContent = data.password;
+    const orderData = await orderRes.json();
+    if (!orderRes.ok) throw new Error(orderData.error || 'Gateway order creation failed.');
 
+    if (orderData.source === 'razorpay') {
+      // 2. Open Real Razorpay Checkout modal
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: 'INR',
+        name: 'Saudaa Platform',
+        description: `Subscription: ${plan.toUpperCase()} Plan`,
+        order_id: orderData.orderId,
+        handler: async function (response) {
+          try {
+            submitBtn.textContent = 'Verifying Transaction...';
+            submitBtn.disabled = true;
+            const subRes = await fetch('/api/subscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email,
+                password,
+                traderId,
+                plan,
+                paymentId: response.razorpay_payment_id,
+                orderId: response.razorpay_order_id,
+                signature: response.razorpay_signature
+              })
+            });
+            const subData = await subRes.json();
+            if (!subRes.ok) throw new Error(subData.error || 'Subscription verification failed.');
+
+            // Show Success screen
+            document.getElementById('checkout-form').classList.add('hidden');
+            document.getElementById('checkout-success').classList.remove('hidden');
+            
+            document.getElementById('success-subid').textContent = subData.subId;
+            document.getElementById('success-email').textContent = subData.email;
+            document.getElementById('success-password').textContent = subData.password;
+          } catch (err) {
+            errorEl.textContent = err.message;
+            errorEl.classList.remove('hidden');
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span class="material-symbols-outlined text-[16px]">lock</span> Process Payment & Subscribe`;
+          }
+        },
+        prefill: {
+          email: email
+        },
+        theme: {
+          color: '#4B6F44' // Sage green theme color matching GSD aesthetics
+        },
+        modal: {
+          ondismiss: function () {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span class="material-symbols-outlined text-[16px]">lock</span> Process Payment & Subscribe`;
+          }
+        }
+      };
+      const rzp = new Razorpay(options);
+      rzp.open();
+    } else {
+      // Sandbox Simulator Fallback
+      submitBtn.textContent = 'Processing Sandbox Payment...';
+      setTimeout(async () => {
+        try {
+          const subRes = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email,
+              password,
+              traderId,
+              plan,
+              paymentId: 'pay_mock_' + Math.random().toString(36).substr(2, 9),
+              orderId: orderData.orderId,
+              signature: 'sig_mock_' + Math.random().toString(36).substr(2, 9)
+            })
+          });
+          const subData = await subRes.json();
+          if (!subRes.ok) throw new Error(subData.error || 'Mock checkout failed.');
+
+          // Show Success screen
+          document.getElementById('checkout-form').classList.add('hidden');
+          document.getElementById('checkout-success').classList.remove('hidden');
+          
+          document.getElementById('success-subid').textContent = subData.subId;
+          document.getElementById('success-email').textContent = subData.email;
+          document.getElementById('success-password').textContent = subData.password;
+        } catch (err) {
+          errorEl.textContent = err.message;
+          errorEl.classList.remove('hidden');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span class="material-symbols-outlined text-[16px]">lock</span> Process Payment & Subscribe`;
+        }
+      }, 1500);
+    }
   } catch (error) {
     errorEl.textContent = error.message;
     errorEl.classList.remove('hidden');
-  } finally {
     submitBtn.disabled = false;
     submitBtn.innerHTML = `<span class="material-symbols-outlined text-[16px]">lock</span> Process Payment & Subscribe`;
   }

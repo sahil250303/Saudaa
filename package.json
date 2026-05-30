@@ -13,6 +13,9 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "express": "^5.2.1"
+    "@supabase/supabase-js": "^2.43.4",
+    "express": "^5.2.1",
+    "playwright": "^1.60.0",
+    "razorpay": "^2.9.2"
   }
 }

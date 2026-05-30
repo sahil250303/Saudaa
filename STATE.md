@@ -87,7 +87,7 @@
 
 ## Final Notes
 - The application is running at `http://localhost:3000`.
-- Admin credentials seeded: `admin` / `adminPassword123`
+- Admin credentials seeded: `admin` username. The password is set via `ADMIN_PASSWORD` in `.env` (or a random secure password is generated and logged to console on startup).
 - Default plans structure (standard, pro, vip) maintained with updated standard price ($59).
 - Clean database holds 11 traders (retained for marketplace UI) with 0 subscribers each.
 - Home page includes an interactive, theme-compliant Chatbox section demonstrating three free trading signals for novice users.

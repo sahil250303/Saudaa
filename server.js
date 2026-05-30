@@ -17,34 +17,121 @@ const activeAdminTokens = new Set();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Database Helpers
-function readDB() {
+const { readDB, writeDB } = require('./db.js');
+
+// Native JWT implementation using HMAC-SHA256
+const JWT_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
+if (!process.env.SESSION_SECRET) {
+  console.warn('[SECURITY WARNING] SESSION_SECRET environment variable is missing. Generated a random session secret.');
+}
+
+function generateSessionToken(user, role) {
+  const header = { alg: 'HS256', typ: 'JWT' };
+  const payload = {
+    id: user.id,
+    email: user.email || user.id,
+    role: role,
+    exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours expiration
+  };
+  const base64Header = Buffer.from(JSON.stringify(header)).toString('base64url');
+  const base64Payload = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const signature = crypto.createHmac('sha256', JWT_SECRET)
+                          .update(`${base64Header}.${base64Payload}`)
+                          .digest('base64url');
+  return `${base64Header}.${base64Payload}.${signature}`;
+}
+
+function verifySessionToken(token) {
+  if (!token) return null;
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+  const [header, payload, signature] = parts;
+  const expectedSignature = crypto.createHmac('sha256', JWT_SECRET)
+                                .update(`${header}.${payload}`)
+                                .digest('base64url');
+  if (signature !== expectedSignature) return null;
   try {
-    const data = fs.readFileSync(DB_PATH, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error reading database file:', error);
-    return { traders: [], suggestions: [], clients: [], messages: [] };
+    const decodedPayload = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    if (decodedPayload.exp < Date.now()) return null;
+    return decodedPayload;
+  } catch (e) {
+    return null;
   }
 }
 
-function writeDB(data) {
-  try {
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (error) {
-    console.error('Error writing to database file:', error);
+// User Authentication Middleware
+async function verifyUserToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Access token required. Please log in.' });
+  }
+  const token = authHeader.substring(7);
+  const decoded = verifySessionToken(token);
+  if (!decoded) {
+    return res.status(403).json({ error: 'Session expired or invalid. Please log in again.' });
+  }
+  req.user = decoded; // Contains id, email, role
+  next();
+}
+
+// Password Scrypt Hashing Helpers
+function hashPassword(password, salt) {
+  return crypto.scryptSync(password, salt, 64).toString('hex');
+}
+
+function verifyPassword(password, salt, hash) {
+  const inputHash = crypto.scryptSync(password, salt, 64).toString('hex');
+  return inputHash === hash;
+}
+
+// Password migration on startup
+async function migrateDatabasePasswords() {
+  const db = await readDB();
+  let updated = false;
+
+  if (db.traders) {
+    db.traders.forEach(t => {
+      if (t.password && !t.passwordHash) {
+        const salt = crypto.randomBytes(16).toString('hex');
+        t.passwordHash = hashPassword(t.password, salt);
+        t.salt = salt;
+        delete t.password;
+        updated = true;
+      }
+    });
+  }
+
+  if (db.clients) {
+    db.clients.forEach(c => {
+      if (c.password && !c.passwordHash) {
+        const salt = crypto.randomBytes(16).toString('hex');
+        c.passwordHash = hashPassword(c.password, salt);
+        c.salt = salt;
+        delete c.password;
+        updated = true;
+      }
+    });
+  }
+
+  if (updated) {
+    await writeDB(db);
+    console.log('[SECURITY] Completed startup database password scrypt hashing migration.');
   }
 }
 
 // Admin & MFA Security Helpers
-function initAdminDB() {
-  const db = readDB();
+async function initAdminDB() {
+  const db = await readDB();
   let updated = false;
 
   if (!db.admin) {
     const salt = crypto.randomBytes(16).toString('hex');
     const adminUser = process.env.ADMIN_USERNAME || 'admin';
-    const adminPass = process.env.ADMIN_PASSWORD || 'adminPassword123';
+    let adminPass = process.env.ADMIN_PASSWORD;
+    if (!adminPass) {
+      adminPass = crypto.randomBytes(12).toString('hex');
+      console.warn(`[SECURITY WARNING] ADMIN_PASSWORD environment variable is not set. Generated dynamic admin password for startup seeding: ${adminPass}`);
+    }
     const hash = crypto.scryptSync(adminPass, salt, 64).toString('hex');
     db.admin = {
       username: adminUser,
@@ -53,27 +140,27 @@ function initAdminDB() {
       mfaSecret: crypto.randomBytes(20).toString('hex')
     };
     updated = true;
-    console.log('[INIT] Default admin account seeded in database.json');
+    console.log('[INIT] Default admin account seeded.');
   }
 
   if (!db.plans) {
     db.plans = [
-      { id: "standard", name: "Standard Plan", price: 49, features: ["General Community Access", "Standard Signals List"] },
+      { id: "standard", name: "Standard Plan", price: 59, features: ["General Community Access", "Standard Signals List"] },
       { id: "pro", name: "Pro Elite Plan", price: 99, features: ["1-on-1 Private Trader Chat", "Advanced Signals Feed"] },
       { id: "vip", name: "VIP Plan", price: 249, features: ["Access to 10 Trader Dashboards", "Option Hedging Insights"] }
     ];
     updated = true;
-    console.log('[INIT] Default plans seeded in database.json');
+    console.log('[INIT] Default plans seeded.');
   }
 
   if (!db.payments) {
     db.payments = [];
     updated = true;
-    console.log('[INIT] Default payments list seeded in database.json');
+    console.log('[INIT] Default payments list seeded.');
   }
 
   if (updated) {
-    writeDB(db);
+    await writeDB(db);
   }
 }
 
@@ -101,8 +188,8 @@ function generateTOTP(secret) {
   return generateTOTPWithCounter(secret, counter);
 }
 
-// Call database initialization
-initAdminDB();
+// Database will be initialized asynchronously in the startServer wrapper at startup
+
 
 // Helper to generate a subscription premium ID
 function generatePremiumID() {
@@ -214,78 +301,99 @@ app.get('/api/market-strip', (req, res) => {
   res.json(stockCache);
 });
 
-// 1. Get all traders (sans passwords)
-app.get('/api/traders', (req, res) => {
-  const db = readDB();
-  const safeTraders = db.traders.map(({ password, ...rest }) => rest);
+// 1. Get all traders (sans sensitive data)
+app.get('/api/traders', async (req, res) => {
+  const db = await readDB();
+  const safeTraders = db.traders.map(({ password, passwordHash, salt, ...rest }) => rest);
   res.json(safeTraders);
 });
 
 // 2. Authentication Login (Trader or Client)
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   const { usernameOrEmail, password } = req.body;
   if (!usernameOrEmail || !password) {
     return res.status(400).json({ error: 'Username/Email and password are required.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
 
   // Check if trader
-  const trader = db.traders.find(t => t.id === usernameOrEmail && t.password === password);
+  const trader = db.traders.find(t => t.id === usernameOrEmail);
   if (trader) {
-    const { password: _, ...traderProfile } = trader;
-    return res.json({
-      role: 'trader',
-      user: traderProfile
-    });
+    const isPasswordValid = trader.passwordHash
+      ? verifyPassword(password, trader.salt, trader.passwordHash)
+      : (trader.password === password); // Startup fallback
+
+    if (isPasswordValid) {
+      const { password: _, passwordHash: __, salt: ___, ...traderProfile } = trader;
+      const token = generateSessionToken(trader, 'trader');
+      return res.json({
+        role: 'trader',
+        token: token,
+        user: traderProfile
+      });
+    }
   }
 
   // Check if client (either by email or subId)
   const client = db.clients.find(c => 
-    (c.email.toLowerCase() === usernameOrEmail.toLowerCase() || c.subId === usernameOrEmail) && 
-    c.password === password
+    c.email.toLowerCase() === usernameOrEmail.toLowerCase() || c.subId === usernameOrEmail
   );
   if (client) {
     if (client.status === 'suspended') {
       return res.status(403).json({ error: 'Your account has been suspended. Please contact support.' });
     }
-    return res.json({
-      role: 'client',
-      user: {
-        id: client.id,
-        email: client.email,
-        subId: client.subId,
-        subscription: client.subscription
-      }
-    });
+
+    const isPasswordValid = client.passwordHash
+      ? verifyPassword(password, client.salt, client.passwordHash)
+      : (client.password === password); // Startup fallback
+
+    if (isPasswordValid) {
+      const token = generateSessionToken(client, 'client');
+      return res.json({
+        role: 'client',
+        token: token,
+        user: {
+          id: client.id,
+          email: client.email,
+          subId: client.subId,
+          subscription: client.subscription
+        }
+      });
+    }
   }
 
   return res.status(401).json({ error: 'Invalid credentials. Please verify your ID/email and password.' });
 });
 
 // 3. Register Client (Static profile setup)
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ error: 'Email and password are required.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
   const exists = db.clients.find(c => c.email.toLowerCase() === email.toLowerCase());
   if (exists) {
     return res.status(400).json({ error: 'A user with this email already exists.' });
   }
 
+  const salt = crypto.randomBytes(16).toString('hex');
+  const passwordHash = hashPassword(password, salt);
+
   const newClient = {
     id: 'client_' + Math.random().toString(36).substr(2, 9),
     email: email.toLowerCase(),
-    password: password,
+    passwordHash: passwordHash,
+    salt: salt,
     subId: generatePremiumID(),
-    subscription: null
+    subscription: null,
+    status: 'active'
   };
 
   db.clients.push(newClient);
-  writeDB(db);
+  await writeDB(db);
 
   res.json({
     success: true,
@@ -299,19 +407,84 @@ app.post('/api/auth/register', (req, res) => {
 });
 
 // 4. Payment Gateway Mock & Subscription Creation
-app.post('/api/subscribe', (req, res) => {
-  const { email, password, traderId, plan, cardNumber, expiry, cvc } = req.body;
+const Razorpay = require('razorpay');
+
+let razorpay = null;
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+  });
+  console.log('[PAYMENT] Razorpay Gateway initialized.');
+} else {
+  console.warn('[PAYMENT] Razorpay credentials missing. Running in Sandbox Payment mode.');
+}
+
+// 4. Payment Gateway Order Creation
+app.post('/api/payment/order', async (req, res) => {
+  const { plan, traderId } = req.body;
+  if (!plan || !traderId) {
+    return res.status(400).json({ error: 'Missing plan or traderId details.' });
+  }
+
+  const db = await readDB();
+  const planDetails = db.plans ? db.plans.find(p => p.id === plan) : null;
+  const price = planDetails ? planDetails.price : (plan === 'standard' ? 59 : plan === 'pro' ? 99 : plan === 'vip' ? 249 : 99);
+
+  if (razorpay) {
+    try {
+      const options = {
+        amount: price * 100, // amount in paisa
+        currency: 'INR',
+        receipt: 'rcpt_' + Math.random().toString(36).substr(2, 9),
+        notes: { plan, traderId }
+      };
+      const order = await razorpay.orders.create(options);
+      return res.json({
+        source: 'razorpay',
+        orderId: order.id,
+        amount: options.amount,
+        keyId: process.env.RAZORPAY_KEY_ID
+      });
+    } catch (err) {
+      console.error('Error creating Razorpay Order:', err);
+      return res.status(500).json({ error: 'Failed to create payment order via Razorpay.' });
+    }
+  } else {
+    // Sandbox mode
+    return res.json({
+      source: 'sandbox',
+      orderId: 'order_mock_' + Math.random().toString(36).substr(2, 9),
+      amount: price * 100,
+      keyId: 'mock_key_id'
+    });
+  }
+});
+
+// 4b. Subscription Creation (Verifying signature and generating client login)
+app.post('/api/subscribe', async (req, res) => {
+  const { email, password, traderId, plan, paymentId, orderId, signature } = req.body;
 
   if (!email || !password || !traderId || !plan) {
     return res.status(400).json({ error: 'Required fields missing: email, password, traderId, plan.' });
   }
 
-  // Simple card check simulation
-  if (!cardNumber || cardNumber.replace(/\s/g, '').length < 16) {
-    return res.status(400).json({ error: 'Invalid card number details.' });
+  // Payment verification
+  if (razorpay && (!paymentId || !orderId || !signature)) {
+    return res.status(400).json({ error: 'Payment details (paymentId, orderId, signature) are required.' });
   }
 
-  const db = readDB();
+  if (razorpay) {
+    // Verify Razorpay signature
+    const generatedSignature = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+                                      .update(orderId + "|" + paymentId)
+                                      .digest('hex');
+    if (generatedSignature !== signature) {
+      return res.status(400).json({ error: 'Payment signature verification failed. Untrusted source.' });
+    }
+  }
+
+  const db = await readDB();
   
   // Verify trader exists
   const trader = db.traders.find(t => t.id === traderId);
@@ -322,6 +495,15 @@ app.post('/api/subscribe', (req, res) => {
   let client = db.clients.find(c => c.email.toLowerCase() === email.toLowerCase());
 
   if (client) {
+    // Verify client password before updating subscription
+    const isPasswordValid = client.passwordHash
+      ? verifyPassword(password, client.salt, client.passwordHash)
+      : (client.password === password); // legacy fallback
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Incorrect password for this existing client account.' });
+    }
+
     // Update existing client subscription
     client.subscription = {
       traderId: traderId,
@@ -329,17 +511,22 @@ app.post('/api/subscribe', (req, res) => {
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days
     };
   } else {
-    // Create new client
+    // Create new client with secure scrypt password hash
+    const salt = crypto.randomBytes(16).toString('hex');
+    const passwordHash = hashPassword(password, salt);
+
     client = {
       id: 'client_' + Math.random().toString(36).substr(2, 9),
       email: email.toLowerCase(),
-      password: password,
+      passwordHash: passwordHash,
+      salt: salt,
       subId: generatePremiumID(),
       subscription: {
         traderId: traderId,
         plan: plan,
         expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-      }
+      },
+      status: 'active'
     };
     db.clients.push(client);
   }
@@ -349,10 +536,10 @@ app.post('/api/subscribe', (req, res) => {
 
   // Log payment details
   const planDetails = db.plans ? db.plans.find(p => p.id === plan) : null;
-  const price = planDetails ? planDetails.price : (plan === 'pro' ? 99 : plan === 'vip' ? 249 : 49);
+  const price = planDetails ? planDetails.price : (plan === 'pro' ? 99 : plan === 'vip' ? 249 : 59);
 
   const newPayment = {
-    id: 'pay_' + Math.random().toString(36).substr(2, 9),
+    id: 'pay_' + (paymentId || 'mock_' + Math.random().toString(36).substr(2, 9)),
     email: email.toLowerCase(),
     subId: client.subId,
     traderId: traderId,
@@ -368,32 +555,37 @@ app.post('/api/subscribe', (req, res) => {
   }
   db.payments.unshift(newPayment);
 
-  writeDB(db);
+  await writeDB(db);
 
   res.json({
     success: true,
     subId: client.subId,
     email: client.email,
-    password: client.password,
+    password: password, // Reflect back selected password for client success UI display
     traderName: trader.name,
     plan: plan
   });
 });
 
 // 5. Get Trading Suggestions
-app.get('/api/suggestions', (req, res) => {
-  const { role, userId, traderId } = req.query;
-  const db = readDB();
+app.get('/api/suggestions', verifyUserToken, async (req, res) => {
+  const { role, userId } = req.query;
+  const db = await readDB();
 
-  if (role === 'trader' && userId) {
+  // Cross check credentials
+  if (req.user.id !== userId) {
+    return res.status(403).json({ error: 'Access denied. Token credential mismatch.' });
+  }
+
+  if (req.user.role === 'trader') {
     // Trader fetching their own signals
-    const signals = db.suggestions.filter(s => s.traderId === userId);
+    const signals = db.suggestions.filter(s => s.traderId === req.user.id);
     return res.json(signals);
   }
 
-  if (role === 'client' && userId) {
+  if (req.user.role === 'client') {
     // Client fetching signals. Must check client subscription
-    const client = db.clients.find(c => c.id === userId);
+    const client = db.clients.find(c => c.id === req.user.id);
     if (!client || !client.subscription) {
       return res.status(403).json({ error: 'No active subscription found. Subscribe to a trader to view signals.' });
     }
@@ -401,27 +593,25 @@ app.get('/api/suggestions', (req, res) => {
     return res.json(signals);
   }
 
-  // Fallback: anonymous list or filtered by trader
-  if (traderId) {
-    const signals = db.suggestions.filter(s => s.traderId === traderId);
-    return res.json(signals);
-  }
-
-  res.json(db.suggestions);
+  return res.status(400).json({ error: 'Invalid suggestions request query.' });
 });
 
 // 6. Post suggestion (Trader only)
-app.post('/api/suggestions', (req, res) => {
+app.post('/api/suggestions', verifyUserToken, async (req, res) => {
   const { traderId, asset, type, entry, target, stopLoss, risk, notes, assetType, strategy } = req.body;
+
+  if (req.user.role !== 'trader' || req.user.id !== traderId) {
+    return res.status(403).json({ error: 'Unauthorized user credentials to broadcast signals.' });
+  }
 
   if (!traderId || !asset || !type || !entry || !target || !stopLoss || !risk) {
     return res.status(400).json({ error: 'All signal details are required.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
   const trader = db.traders.find(t => t.id === traderId);
   if (!trader) {
-    return res.status(403).json({ error: 'Only authorized traders can post signals.' });
+    return res.status(404).json({ error: 'Only authorized active traders can post signals.' });
   }
 
   const newSignal = {
@@ -440,21 +630,25 @@ app.post('/api/suggestions', (req, res) => {
   };
 
   db.suggestions.unshift(newSignal);
-  writeDB(db);
+  await writeDB(db);
 
   res.json({ success: true, signal: newSignal });
 });
 
 // 7. Edit suggestion (Trader only)
-app.put('/api/suggestions/:id', (req, res) => {
+app.put('/api/suggestions/:id', verifyUserToken, async (req, res) => {
   const { id } = req.params;
   const { traderId, asset, type, entry, target, stopLoss, risk, notes, assetType, strategy } = req.body;
+
+  if (req.user.role !== 'trader' || req.user.id !== traderId) {
+    return res.status(403).json({ error: 'Unauthorized credentials to modify signals.' });
+  }
 
   if (!traderId || !asset || !type || !entry || !target || !stopLoss || !risk) {
     return res.status(400).json({ error: 'All signal details are required.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
   const suggestion = db.suggestions.find(s => s.id === id && s.traderId === traderId);
   
   if (!suggestion) {
@@ -477,20 +671,20 @@ app.put('/api/suggestions/:id', (req, res) => {
   suggestion.notes = notes || '';
   suggestion.edited = true;
 
-  writeDB(db);
+  await writeDB(db);
   res.json({ success: true, signal: suggestion });
 });
 
 // 8. Delete/Archive suggestion (Trader only)
-app.delete('/api/suggestions/:id', (req, res) => {
+app.delete('/api/suggestions/:id', verifyUserToken, async (req, res) => {
   const { id } = req.params;
   const { traderId } = req.query;
 
-  if (!traderId) {
-    return res.status(400).json({ error: 'Trader Authorization required.' });
+  if (req.user.role !== 'trader' || req.user.id !== traderId) {
+    return res.status(403).json({ error: 'Unauthorized credentials to remove signals.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
   const index = db.suggestions.findIndex(s => s.id === id && s.traderId === traderId);
   
   if (index === -1) {
@@ -503,20 +697,25 @@ app.delete('/api/suggestions/:id', (req, res) => {
   }
 
   db.suggestions.splice(index, 1);
-  writeDB(db);
+  await writeDB(db);
 
   res.json({ success: true });
 });
 
 // 8. Fetch Chat Messages (1-on-1 between Client and Trader)
-app.get('/api/chat/messages', (req, res) => {
+app.get('/api/chat/messages', verifyUserToken, async (req, res) => {
   const { clientId, traderId } = req.query;
 
   if (!clientId || !traderId) {
     return res.status(400).json({ error: 'clientId and traderId parameters are required.' });
   }
 
-  const db = readDB();
+  // Verify request is authorized for these participants
+  if (req.user.id !== clientId && req.user.id !== traderId) {
+    return res.status(403).json({ error: 'Access denied. You cannot view chat history of other participants.' });
+  }
+
+  const db = await readDB();
   const chatLogs = db.messages.filter(m => 
     m.traderId === traderId && 
     ((m.senderId === clientId && m.receiverId === traderId) || 
@@ -527,14 +726,18 @@ app.get('/api/chat/messages', (req, res) => {
 });
 
 // 9. Send Chat Message
-app.post('/api/chat/send', (req, res) => {
+app.post('/api/chat/send', verifyUserToken, async (req, res) => {
   const { senderId, receiverId, traderId, content } = req.body;
+
+  if (req.user.id !== senderId) {
+    return res.status(403).json({ error: 'Access denied. Sender identity mismatch.' });
+  }
 
   if (!senderId || !receiverId || !traderId || !content) {
     return res.status(400).json({ error: 'Missing chat fields: senderId, receiverId, traderId, content.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
   const newMsg = {
     id: 'msg_' + Math.random().toString(36).substr(2, 9),
     senderId,
@@ -545,15 +748,20 @@ app.post('/api/chat/send', (req, res) => {
   };
 
   db.messages.push(newMsg);
-  writeDB(db);
+  await writeDB(db);
 
   res.json(newMsg);
 });
 
 // 10. Trader clients endpoint: List all clients subscribed to a specific trader
-app.get('/api/traders/:id/clients', (req, res) => {
+app.get('/api/traders/:id/clients', verifyUserToken, async (req, res) => {
   const traderId = req.params.id;
-  const db = readDB();
+
+  if (req.user.role !== 'trader' || req.user.id !== traderId) {
+    return res.status(403).json({ error: 'Access denied. Only the trader can inspect their subscribers.' });
+  }
+
+  const db = await readDB();
 
   const subscribedClients = db.clients
     .filter(c => c.subscription && c.subscription.traderId === traderId)
@@ -569,8 +777,8 @@ app.get('/api/traders/:id/clients', (req, res) => {
 });
 
 // Public Endpoint for Subscription Plans
-app.get('/api/plans', (req, res) => {
-  const db = readDB();
+app.get('/api/plans', async (req, res) => {
+  const db = await readDB();
   res.json(db.plans || []);
 });
 
@@ -588,13 +796,13 @@ function verifyAdminToken(req, res, next) {
 }
 
 // 11. Admin Login Step 1: Credentials verification
-app.post('/api/admin/login', (req, res) => {
+app.post('/api/admin/login', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
   if (!db.admin) {
     return res.status(500).json({ error: 'Admin database not initialized.' });
   }
@@ -624,7 +832,7 @@ app.post('/api/admin/login', (req, res) => {
 });
 
 // 12. Admin Login Step 2: MFA Verification
-app.post('/api/admin/mfa-verify', (req, res) => {
+app.post('/api/admin/mfa-verify', async (req, res) => {
   const { tempToken, code } = req.body;
   if (!tempToken || !code) {
     return res.status(400).json({ error: 'tempToken and MFA code are required.' });
@@ -635,7 +843,7 @@ app.post('/api/admin/mfa-verify', (req, res) => {
     return res.status(401).json({ error: 'MFA verification session expired or invalid.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
   const currentCode = generateTOTP(db.admin.mfaSecret);
   const lastCounter = Math.floor(Date.now() / 30000) - 1;
   const lastCode = generateTOTPWithCounter(db.admin.mfaSecret, lastCounter);
@@ -655,8 +863,8 @@ app.post('/api/admin/mfa-verify', (req, res) => {
 });
 
 // Developer convenience endpoint to retrieve MFA code (enabled for testing in our dev environment)
-app.get('/api/admin/dev-mfa', (req, res) => {
-  const db = readDB();
+app.get('/api/admin/dev-mfa', async (req, res) => {
+  const db = await readDB();
   if (!db.admin) {
     return res.status(500).json({ error: 'Admin database not initialized.' });
   }
@@ -665,52 +873,52 @@ app.get('/api/admin/dev-mfa', (req, res) => {
 });
 
 // 13. Admin Endpoint: List all clients (omitting password hash)
-app.get('/api/admin/users', verifyAdminToken, (req, res) => {
-  const db = readDB();
-  const safeClients = db.clients.map(({ password, ...rest }) => rest);
+app.get('/api/admin/users', verifyAdminToken, async (req, res) => {
+  const db = await readDB();
+  const safeClients = db.clients.map(({ password, passwordHash, salt, ...rest }) => rest);
   res.json(safeClients);
 });
 
 // 14. Admin Endpoint: Toggle client suspension status
-app.post('/api/admin/users/toggle-status', verifyAdminToken, (req, res) => {
+app.post('/api/admin/users/toggle-status', verifyAdminToken, async (req, res) => {
   const { clientId } = req.body;
   if (!clientId) {
     return res.status(400).json({ error: 'clientId is required.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
   const client = db.clients.find(c => c.id === clientId);
   if (!client) {
     return res.status(404).json({ error: 'Client account not found.' });
   }
 
   client.status = (client.status === 'suspended') ? 'active' : 'suspended';
-  writeDB(db);
+  await writeDB(db);
 
   res.json({ success: true, status: client.status });
 });
 
 // 15. Admin Endpoint: Get payment history list
-app.get('/api/admin/payments', verifyAdminToken, (req, res) => {
-  const db = readDB();
+app.get('/api/admin/payments', verifyAdminToken, async (req, res) => {
+  const db = await readDB();
   res.json(db.payments || []);
 });
 
 // 16. Admin Endpoint: List all traders (omitting passwords)
-app.get('/api/admin/traders', verifyAdminToken, (req, res) => {
-  const db = readDB();
-  const safeTraders = db.traders.map(({ password, ...rest }) => rest);
+app.get('/api/admin/traders', verifyAdminToken, async (req, res) => {
+  const db = await readDB();
+  const safeTraders = db.traders.map(({ password, passwordHash, salt, ...rest }) => rest);
   res.json(safeTraders);
 });
 
 // 17. Admin Endpoint: Create or edit trader account details
-app.post('/api/admin/traders/save', verifyAdminToken, (req, res) => {
+app.post('/api/admin/traders/save', verifyAdminToken, async (req, res) => {
   const { id, name, strategy, roi, winRate, description, avatar, password } = req.body;
   if (!id || !name || !strategy || roi === undefined || winRate === undefined) {
     return res.status(400).json({ error: 'Required fields missing: id, name, strategy, roi, winRate.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
   let trader = db.traders.find(t => t.id === id);
 
   if (trader) {
@@ -721,9 +929,16 @@ app.post('/api/admin/traders/save', verifyAdminToken, (req, res) => {
     trader.winRate = parseFloat(winRate);
     trader.description = description || '';
     if (avatar) trader.avatar = avatar;
-    if (password) trader.password = password;
+    if (password) {
+      const salt = crypto.randomBytes(16).toString('hex');
+      trader.passwordHash = hashPassword(password, salt);
+      trader.salt = salt;
+      delete trader.password;
+    }
   } else {
-    // Create new trader
+    // Create new trader with secure scrypt password hash
+    const salt = crypto.randomBytes(16).toString('hex');
+    const passwordHash = hashPassword(password || 'password123', salt);
     trader = {
       id,
       name,
@@ -732,9 +947,11 @@ app.post('/api/admin/traders/save', verifyAdminToken, (req, res) => {
       winRate: parseFloat(winRate),
       subscribers: 0,
       rank: db.traders.length + 1,
-      password: password || 'password123',
-      avatar: avatar || 'https://lh3.googleusercontent.com/aida-public/AB6AXuA5eU9Y4jFzvTSMF0XOKV2Sa1gIbmi6EPjwiiKlBm68b5MOXG9uQAGhY35yzrTSQYERVpT6fm0Lfe1Jcmli5pIUcVn10kppVXPnOgH3N17fWPVElt_mSRdFetzhOdNb51XWFuAl8LfFzNe75_BrEB0N7vIBapvpvE_-SHt4kePGIpbnVxOBV2QE4C57rD7j4JMCKemBqq7XggVmtMJQsptK_25o3WCkJ_Jw51Il68DuCG47PKkOOUktcaUfDZDpNqfhokVVCURoWv8',
-      description: description || ''
+      passwordHash,
+      salt,
+      avatar: avatar || 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4ldlC0l7f1tSED1_SV3GL0xoo88STemly3M1OWj7KXnBSGx3FOy1ibN3I8CAdbvXcMr0EhcaC30eQD1c8cszwgm5jOfDYFqjyQKdcNYboXZIVx3qHAdskzLrWDKLGrJA1IFL0TBlWZesDmebt2VBE2RP3Nbx6OpXX8LS5KhzLbYrnOzl32yFmpH62dyctK8cduk9P6mecSjqgi3IhboN6Io2SIBa4CQzaPPFR6QL_NHZYyhXKY0fp53-OBgznwXPD-cnk9NqC3sw',
+      description: description || '',
+      status: 'active'
     };
     db.traders.push(trader);
   }
@@ -743,18 +960,18 @@ app.post('/api/admin/traders/save', verifyAdminToken, (req, res) => {
   db.traders.sort((a, b) => b.roi - a.roi);
   db.traders.forEach((t, i) => t.rank = i + 1);
 
-  writeDB(db);
+  await writeDB(db);
   res.json({ success: true, trader: { id: trader.id, name: trader.name } });
 });
 
 // 18. Admin Endpoint: Delete or toggle active status of a trader
-app.post('/api/admin/traders/toggle-status', verifyAdminToken, (req, res) => {
+app.post('/api/admin/traders/toggle-status', verifyAdminToken, async (req, res) => {
   const { traderId, action } = req.body;
   if (!traderId) {
     return res.status(400).json({ error: 'traderId is required.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
   const index = db.traders.findIndex(t => t.id === traderId);
   if (index === -1) {
     return res.status(404).json({ error: 'Trader account not found.' });
@@ -765,26 +982,26 @@ app.post('/api/admin/traders/toggle-status', verifyAdminToken, (req, res) => {
     // Sort and re-rank
     db.traders.sort((a, b) => b.roi - a.roi);
     db.traders.forEach((t, i) => t.rank = i + 1);
-    writeDB(db);
+    await writeDB(db);
     return res.json({ success: true, deleted: true });
   } else {
     const trader = db.traders[index];
     trader.status = (trader.status === 'suspended') ? 'active' : 'suspended';
-    writeDB(db);
+    await writeDB(db);
     return res.json({ success: true, status: trader.status });
   }
 });
 
 // 19. Admin Endpoint: Update subscription plans pricing and features list
-app.post('/api/admin/plans/update', verifyAdminToken, (req, res) => {
+app.post('/api/admin/plans/update', verifyAdminToken, async (req, res) => {
   const { plans } = req.body;
   if (!plans || !Array.isArray(plans)) {
     return res.status(400).json({ error: 'Plans array is required.' });
   }
 
-  const db = readDB();
+  const db = await readDB();
   db.plans = plans;
-  writeDB(db);
+  await writeDB(db);
 
   res.json({ success: true, plans: db.plans });
 });
@@ -794,7 +1011,18 @@ app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Saudaa Server is running on http://localhost:${PORT}`);
-});
+// Start Server with async Database initialization
+async function startServer() {
+  try {
+    await initAdminDB();
+    await migrateDatabasePasswords();
+    app.listen(PORT, () => {
+      console.log(`Saudaa Server is running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to initialize database and start server:', error);
+    process.exit(1);
+  }
+}
+startServer();
+

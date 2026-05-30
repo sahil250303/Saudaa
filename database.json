@@ -6,12 +6,13 @@
       "strategy": "Algorithmic & Swing",
       "winRate": 82.9,
       "roi": 68.5,
-      "subscribers": 2,
+      "subscribers": 3,
       "rank": 1,
-      "password": "password123",
       "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuA5eU9Y4jFzvTSMF0XOKV2Sa1gIbmi6EPjwiiKlBm68b5MOXG9uQAGhY35yzrTSQYERVpT6fm0Lfe1Jcmli5pIUcVn10kppVXPnOgH3N17fWPVElt_mSRdFetzhOdNb51XWFuAl8LfFzNe75_BrEB0N7vIBapvpvE_-SHt4kePGIpbnVxOBV2QE4C57rD7j4JMCKemBqq7XggVmtMJQsptK_25o3WCkJ_Jw51Il68DuCG47PKkOOUktcaUfDZDpNqfhokVVCURoWv8",
       "description": "Systematic developer specialized in automated trend-following models and mid-term swing signals on high liquidity indices.",
-      "status": "active"
+      "status": "active",
+      "passwordHash": "70b320ca891d9d150f82c8d1903c7b668172449a14ffad98b528ef25efeb87540d20797dee16684baafed471f93d9ef11058c0416239ad14740235d8696ccf57",
+      "salt": "df98ab0ea9cd211933c9f2ca21578944"
     },
     {
       "id": "Rushi Bhosale",
@@ -21,10 +22,11 @@
       "winRate": 74,
       "subscribers": 1,
       "rank": 2,
-      "password": "Rushi@123",
       "avatar": "https://www.vecteezy.com/free-photos/man",
       "description": "Best",
-      "status": "active"
+      "status": "active",
+      "passwordHash": "317e8d0b205ed8377f141f7b03b009194d6ce9fab551c7fc0e8bf41000cc41a75f14547a035c916fe5bbe6b080308cd4aba8dc94f5cf13664c713d13c78358bc",
+      "salt": "5c7dad0ae02bde92f6d4927bac8043b8"
     },
     {
       "id": "echo_zulu",
@@ -34,9 +36,10 @@
       "roi": 42.1,
       "subscribers": 0,
       "rank": 3,
-      "password": "password123",
       "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuB_mNw7LeqbrFZVqy-Mw3gcywLNynCD4feJl1zX_zmKtQ-Xfc6dDRH3oXpt2lH50BpxmARiqF6kq5ytDQxAMAjFNGe130WxQFGsTXMAtMMnEmxupZt-vyadmtJuWBBQUOhQFk71Jnk_Ts_arnf1-KXJYerU1RnN9WyP7CJUE3Ohca-Lxw8iZFdOlL4pH_g02rieMWZZj3kH5DfKqiu_Cxhk-JNoBxhbOdd_pRP65lyZHEZkx5jU1Tuqc5L4l02xbSAilwf_p-bMJYE",
-      "description": "Quantitative analyst with a focus on mathematical arbitrage and statistical cointegration in forex and major cryptocurrencies."
+      "description": "Quantitative analyst with a focus on mathematical arbitrage and statistical cointegration in forex and major cryptocurrencies.",
+      "passwordHash": "493655a8b628ec51628a4fe6eb20011cc4d98a0f22039f3c12751e826f4881799e66b491da8c3a3fa08c88189abe3ea4a51063b94c965cef1fbbd7f170bd7c62",
+      "salt": "764e7214b845bd1820bdbfa31b7cc146"
     },
     {
       "id": "neon_ghost",
@@ -46,9 +49,10 @@
       "roi": 38.9,
       "subscribers": 0,
       "rank": 4,
-      "password": "password123",
       "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuCzU1RExMPa-2uPZkp35KKf_WZpw-DV9baBDhQaVNUobLbhbIcb0ksLOhu321KfgPAy81uaqWrZ3aPEVDgl3gjweHDrUtfIzG2dt7bGv3m0vWisgUj4L5-yxkSlCLQ936IEf19Rjvd6Gu0jHSIkcZScWgv8g_PvfK1DfMWccdOggiYDhvUG1Yudf0xIO6MXczsG5AjOhUDOPvKDX8EB7yCPiJNtQvUMsGYxljSStBERNDeEZgXzL22ELZNJEByncgASJ254gOfPnz8",
-      "description": "Chart pattern perfectionist specializing in high-momentum swing positions, identifying clean support/resistance zones."
+      "description": "Chart pattern perfectionist specializing in high-momentum swing positions, identifying clean support/resistance zones.",
+      "passwordHash": "da045dd961db4ea17dc58b554c0eaa2c5572341a85747ee53cf5e7e47ce109c7cf4e00a416cab289a1d2345f96c74f1fc9635f8277fe34cf401b6c6357668520",
+      "salt": "33096311db85690ab069ae8a552c8e08"
     },
     {
       "id": "apex_predator",
@@ -58,9 +62,10 @@
       "roi": 34.2,
       "subscribers": 0,
       "rank": 5,
-      "password": "password123",
       "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuCnS0sxmrJRxMU6x9PGml7yfa_P6IIw_1bWld_8rlthSPKRETFGaW6ZCFPQjJDTD1RAyu1o2gXFIv2tVmKu9hXZgpZumIXLQTemBhs8cbYz6g1C-pEcsV-KgJepyiS1MLcOCY1JgWqYoyL-0siw5yJq8fNpnx9ej9pFQmurhgG6qFYi9EvsF46YnnJr0lACFNHaO7vaZVhq0xJvOeidaDm2KW90VFeeGGjIgA_KqEexuAZtwmPQJgpitxLY4eSOWgufAH1yAHDeJpY",
-      "description": "Short-term momentum scalper. Leverages order-flow imbalances and deep option liquidity analysis for quick, decisive intraday signals."
+      "description": "Short-term momentum scalper. Leverages order-flow imbalances and deep option liquidity analysis for quick, decisive intraday signals.",
+      "passwordHash": "c594e94b45ef3af530c76c83359b2d76ae2fa56b20e45e4f42dd9ceb550d50c251356739134177b39059d011e98c3fa47f298199b0e09954451d524fa1d8dd02",
+      "salt": "226c305d6ffd18fa6bf81fc380f1eebd"
     },
     {
       "id": "luna_tick",
@@ -70,9 +75,10 @@
       "roi": 31.5,
       "subscribers": 0,
       "rank": 6,
-      "password": "password123",
       "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuA3ZTMLK745sJYQTEgMRlZ9DGVOh8RopnWuZPWKNBTNCB0Y1fn5AoSlfaa6GsyKGgSWDE9wHpgjAluXC3oNN0OfdzbzNx7e36bExHdv5axhJdYxn6LzeXagSejvqkXXBen9G8GK2fpC_7zspsI_X5Txo4oMQxOCeyKuU2i67imhfvOU9f_v2fK3khXgSxKK_yL_flYHVV_Z_6FBAH2wfL1DRDu4YlmUWx8Ed-epIaFr42_AYeonSVdj8CVIWjpq_AlJ5QzeSVQX2H4",
-      "description": "Dedicated cryptocurrency researcher locating market inefficiencies and funding-rate arbitrage signals across top-tier DEXs and CEXs."
+      "description": "Dedicated cryptocurrency researcher locating market inefficiencies and funding-rate arbitrage signals across top-tier DEXs and CEXs.",
+      "passwordHash": "fa7b64fbbca8a0d50682113ebc20a0abe09b7d6db45d1399b2002d079f272ea9ce773b44dbe9b2492a0d6e2b7c8bfe8a2078163580669c5271310b70cbaa3ede",
+      "salt": "6e45aafed158f1d12189ef8461945c5e"
     },
     {
       "id": "macro_bull",
@@ -82,9 +88,10 @@
       "roi": 28.9,
       "subscribers": 0,
       "rank": 7,
-      "password": "password123",
       "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuCObfA2HNvxcI4s12Jvz9Ni7hXBHSQv_3-qq016-pzt5a-7mkKQhYcpe89PqZITZNp5iir3AfMt-gdepv-1WByBr2N9qFzPAI1Gfh5mJiGLFgPtg4Y1fbqRnAIYFq_3lgy3_JsYoVCQ9bTjnpkqHvSbfplX7EZdz3Xrycc2gPQtzt2syxCZkxRfa2WieYsB52TnrPPvC0SYbEO661jTLrR1uYsIlkAJ0OE5sHBLlWciDQ_XJ85rcpsd2bc83WnJOgghIQQ5ebuit-Y",
-      "description": "Macroeconomic-driven trading strategies on equity index futures, utilizing interest rate models, CPI breakouts, and policy decisions."
+      "description": "Macroeconomic-driven trading strategies on equity index futures, utilizing interest rate models, CPI breakouts, and policy decisions.",
+      "passwordHash": "c8b4739c4915f36835f6222cf41e108ad9be634e6e11cc03b2fc00193dfbb5e6934a8ca84222b89b578c978eac5b2301e4a4cf364569c211bd5188e7d2cc379a",
+      "salt": "b501257dad5499c38de5cc4bd9b5c24b"
     },
     {
       "id": "alpha_wave",
@@ -94,9 +101,10 @@
       "roi": 26.4,
       "subscribers": 0,
       "rank": 8,
-      "password": "password123",
       "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuCXoHNJVkwXSK6I_XaW9hwLhbhiPcRFfohqupaJG3DCwJ6aVFkERzlbXW9jwSIjHU-pSDNVV2ptvfa7fQiO0UOk3N7-uKsdmQOISVth4jV0VTeHLc5qix0XRQTZ3ZDTrUeeYI_Fe3gDJPUW-dKhjqqRaYc5XJmXntlHzzO06MDyWDGIWc2rX4KDAF8l10to2Be9cI4yPReyGfiolyONbyxvacdpHUnBfXBOOb2KG_AOyNh9201_DAcOqLO6-raEhmUFCEymIuvaOyY",
-      "description": "Captures high velocity trends in mid-cap and mega-cap tech stocks, managing positions using advanced exponential moving averages."
+      "description": "Captures high velocity trends in mid-cap and mega-cap tech stocks, managing positions using advanced exponential moving averages.",
+      "passwordHash": "5865d4055aee41968e6c7d00879188e1a68662b23aaa09a19a070fda7711f2c6c2cd972be169a03771838b13f888992fe804705fe111180d569cfc71c2362134",
+      "salt": "951e9ffbe1f232dc07c913ed0262dc16"
     },
     {
       "id": "adii",
@@ -106,9 +114,10 @@
       "winRate": 74.2,
       "subscribers": 0,
       "rank": 9,
-      "password": "Adii@123",
       "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuA5eU9Y4jFzvTSMF0XOKV2Sa1gIbmi6EPjwiiKlBm68b5MOXG9uQAGhY35yzrTSQYERVpT6fm0Lfe1Jcmli5pIUcVn10kppVXPnOgH3N17fWPVElt_mSRdFetzhOdNb51XWFuAl8LfFzNe75_BrEB0N7vIBapvpvE_-SHt4kePGIpbnVxOBV2QE4C57rD7j4JMCKemBqq7XggVmtMJQsptK_25o3WCkJ_Jw51Il68DuCG47PKkOOUktcaUfDZDpNqfhokVVCURoWv8",
-      "description": "best trader"
+      "description": "best trader",
+      "passwordHash": "88976dc97e5d8eb274567ee74bbcdcad46308aa566da6433a4b7def58ba3703ae42e054f968f8b40a695c86c347cb51c1a69db908734f294c2b3509d318b4743",
+      "salt": "de8594ecf5d187d31699842ee1eaf086"
     },
     {
       "id": "delta_hedge",
@@ -118,9 +127,10 @@
       "roi": 24.3,
       "subscribers": 0,
       "rank": 10,
-      "password": "password123",
       "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuD4ldlC0l7f1tSED1_SV3GL0xoo88STemly3M1OWj7KXnBSGx3FOy1ibN3I8CAdbvXcMr0EhcaC30eQD1c8cszwgm5jOfDYFqjyQKdcNYboXZIVx3qHAdskzLrWDKLGrJA1IFL0TBlWZesDmebt2VBE2RP3Nbx6OpXX8LS5KhzLbYrnOzl32yFmpH62dyctK8cduk9P6mecSjqgi3IhboN6Io2SIBa4CQzaPPFR6QL_NHZYyhXKY0fp53-OBgznwXPD-cnk9NqC3sw",
-      "description": "Structured option strategies focusing on neutral premium collection: Iron Condors, Calendar Spreads, and Delta-Neutral adjustments."
+      "description": "Structured option strategies focusing on neutral premium collection: Iron Condors, Calendar Spreads, and Delta-Neutral adjustments.",
+      "passwordHash": "826678a89e792825af910eb30c3793a08a43249e17a9e90e8e97a9ca3f8cba6158503a3d981edf4accc7fd03e93c9261376909bc1bc6d47d04ab30231b6b584b",
+      "salt": "a9bc4427b9b119b40d8167abfdd32a2d"
     },
     {
       "id": "zen_trader",
@@ -130,9 +140,10 @@
       "roi": 21.8,
       "subscribers": 0,
       "rank": 11,
-      "password": "password123",
       "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuD4ldlC0l7f1tSED1_SV3GL0xoo88STemly3M1OWj7KXnBSGx3FOy1ibN3I8CAdbvXcMr0EhcaC30eQD1c8cszwgm5jOfDYFqjyQKdcNYboXZIVx3qHAdskzLrWDKLGrJA1IFL0TBlWZesDmebt2VBE2RP3Nbx6OpXX8LS5KhzLbYrnOzl32yFmpH62dyctK8cduk9P6mecSjqgi3IhboN6Io2SIBa4CQzaPPFR6QL_NHZYyhXKY0fp53-OBgznwXPD-cnk9NqC3sw",
-      "description": "Patient commodity swing trader specializing in Gold, Crude Oil, and agricultural markets, prioritizing risk-to-reward ratios of 1:3+."
+      "description": "Patient commodity swing trader specializing in Gold, Crude Oil, and agricultural markets, prioritizing risk-to-reward ratios of 1:3+.",
+      "passwordHash": "1e88068736852c1c75a8b8101469843a7d6472657c67791cd0d342b97c3dd1d76940403e56b51b49427ae655dccce9df0a70a7b6518dd4a31054a280ff3fb7f2",
+      "salt": "1e50742473105cd45626528184e4df56"
     },
     {
       "id": "quantum_scalp",
@@ -142,9 +153,10 @@
       "roi": 19.5,
       "subscribers": 0,
       "rank": 12,
-      "password": "password123",
       "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuD4ldlC0l7f1tSED1_SV3GL0xoo88STemly3M1OWj7KXnBSGx3FOy1ibN3I8CAdbvXcMr0EhcaC30eQD1c8cszwgm5jOfDYFqjyQKdcNYboXZIVx3qHAdskzLrWDKLGrJA1IFL0TBlWZesDmebt2VBE2RP3Nbx6OpXX8LS5KhzLbYrnOzl32yFmpH62dyctK8cduk9P6mecSjqgi3IhboN6Io2SIBa4CQzaPPFR6QL_NHZYyhXKY0fp53-OBgznwXPD-cnk9NqC3sw",
-      "description": "High-frequency futures trading simulator, utilizing volume delta profile breakout cues and order book cluster analysis."
+      "description": "High-frequency futures trading simulator, utilizing volume delta profile breakout cues and order book cluster analysis.",
+      "passwordHash": "dfc5369467258df4dd0a6aaea9978a23ff1bd89314fc3bfe0a736cb0ac61e23eee41f6a8d38d6c3560d42b16673b9ea0ba2f8eb09fb369dc19939f03571f81cf",
+      "salt": "f0745549b2bc856a5586d719e8c5f9d6"
     }
   ],
   "suggestions": [
@@ -192,36 +204,52 @@
     {
       "id": "client_e4517xp5a",
       "email": "test@gmail.com",
-      "password": "Test@123",
       "subId": "SA-1742-ELITE",
       "subscription": {
         "traderId": "Rushi Bhosale",
         "plan": "pro",
         "expiresAt": "2026-06-22T08:34:26.965Z"
       },
-      "status": "active"
+      "status": "active",
+      "passwordHash": "9228ce92eaec23299dfc59b2bf166b95a0de7640bfc7bb90eb8b8e04ce2a68d2776672f571f9527b2c110c21d138ee9b7ad969edd2459739ba495b61671740a3",
+      "salt": "8a06eade91b9d6ae21bfbb3dd306b6a0"
     },
     {
       "id": "client_b9nt8f0l2",
       "email": "test1@gmail.com",
-      "password": "Test@1234",
       "subId": "SA-1965-ELITE",
       "subscription": {
         "traderId": "alex_pro",
         "plan": "pro",
         "expiresAt": "2026-06-23T14:32:06.700Z"
-      }
+      },
+      "passwordHash": "bdbfbb4a4eccdb0842c60d4a99eb2165792875d781e2cffb7dae859beacf8e5d23e0d10ca6c980e0fc0db588cf87f281667cc7f38604c687af79d25348784cb6",
+      "salt": "221bb21c262eb81c0cf2978134ea2f19"
     },
     {
       "id": "client_qdpjfgfrr",
       "email": "sahilreghate@gmail.com",
-      "password": "1234567",
       "subId": "SA-2915-ELITE",
       "subscription": {
         "traderId": "alex_pro",
         "plan": "pro",
         "expiresAt": "2026-06-26T14:09:24.098Z"
-      }
+      },
+      "passwordHash": "3491e44db2f8413037a3db7079c578042dc3e7c41d93536b8e17ac89b58ca19d49cff34f53d7622e97a120a271fc79232a832ba552289d224c289c84e8a38fa6",
+      "salt": "5bc2981088d3998d7a6c89c5ec4a9208"
+    },
+    {
+      "id": "client_1cqn1jpit",
+      "email": "newtestuser@saudaa.com",
+      "passwordHash": "1cb1cd606978c9f0882359148ed1fde24ac312beb9c2dc0a7cb5d5ee82e8664c458d2d6ea29b4ca3bd2b6fada1409f7c1c3a9a3dd875d6593cd215378b48fce8",
+      "salt": "c4c227a7633f1a8e4d43d1e2740ded72",
+      "subId": "SA-8318-ELITE",
+      "subscription": {
+        "traderId": "alex_pro",
+        "plan": "standard",
+        "expiresAt": "2026-06-29T17:19:32.253Z"
+      },
+      "status": "active"
     }
   ],
   "messages": [
@@ -286,6 +314,17 @@
     }
   ],
   "payments": [
+    {
+      "id": "pay_pay_verify_mock_123",
+      "email": "newtestuser@saudaa.com",
+      "subId": "SA-8318-ELITE",
+      "traderId": "alex_pro",
+      "traderName": "Alex Pro",
+      "plan": "standard",
+      "amount": 59,
+      "timestamp": "2026-05-30T17:19:32.253Z",
+      "status": "success"
+    },
     {
       "id": "pay_lwpx40tf9",
       "email": "sahilreghate@gmail.com",

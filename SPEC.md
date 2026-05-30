@@ -65,7 +65,7 @@ The backend endpoint `/api/market-strip` will return a timestamped JSON object w
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
   ```
-- Store the Alpha Vantage API key in `server.js` or `.env`. A valid key `VX8H607E3Y6T4M2B` will be preloaded.
+- Store the Alpha Vantage API key in `.env` as `ALPHA_VANTAGE_API_KEY`. No default key is committed to source control for security.
 - Implement a sequential query or a cache-bypass system to fetch stock data (symbols: `AAPL`, `MSFT`, `TSLA`, `NVDA`, `AMZN`).
 - To handle the Alpha Vantage 5 requests/minute and 25 requests/day free tier limitations:
   - Implement a backend-side cache with a short TTL (e.g. 15 seconds) so that frequent client requests don't hit the API rate limit immediately.

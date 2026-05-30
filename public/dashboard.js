@@ -1,5 +1,25 @@
 // Saudaa Dashboard Controller
 
+// Global fetch interceptor to automatically attach JWT token from session
+const originalFetch = window.fetch;
+window.fetch = async function(url, options = {}) {
+  const sessionData = localStorage.getItem('saudaa_session');
+  if (sessionData) {
+    try {
+      const session = JSON.parse(sessionData);
+      if (session.token) {
+        options.headers = options.headers || {};
+        if (!options.headers['Authorization']) {
+          options.headers['Authorization'] = `Bearer ${session.token}`;
+        }
+      }
+    } catch (e) {
+      // Ignore parsing errors
+    }
+  }
+  return originalFetch(url, options);
+};
+
 let currentUser = null;
 let currentRole = null;
 let activeChatClientId = null;

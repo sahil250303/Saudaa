@@ -1183,23 +1183,12 @@
 
         <!-- Step 2: Payment Gateway Details -->
         <div class="space-y-3">
-          <h4 class="text-xs font-bold text-primary tracking-wider uppercase">2. Card Billing Details</h4>
-          <div>
-            <label class="block text-xs font-semibold text-on-surface-variant mb-1">Card Number</label>
-            <div class="relative">
-              <input type="text" id="checkout-card" required placeholder="4111 2222 3333 4444" pattern="[0-9\s]{16,22}" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg pl-10 pr-4 p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary font-mono"/>
-              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">credit_card</span>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-on-surface-variant mb-1">Expiration (MM/YY)</label>
-              <input type="text" id="checkout-expiry" required placeholder="12/28" pattern="(0[1-9]|1[0-2])\/[0-9]{2}" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary font-mono text-center"/>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-on-surface-variant mb-1">Security CVC</label>
-              <input type="text" id="checkout-cvc" required placeholder="123" pattern="[0-9]{3,4}" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary font-mono text-center"/>
-            </div>
+          <h4 class="text-xs font-bold text-primary tracking-wider uppercase">2. Secure Gateway Payment</h4>
+          <p class="text-[10px] text-on-surface-variant -mt-1">Payments are processed securely via Razorpay (UPI, Cards, Netbanking).</p>
+          <div class="hidden">
+            <input type="text" id="checkout-card" placeholder="4111 2222 3333 4444" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg pl-10 pr-4 p-2.5 text-xs text-on-surface font-mono"/>
+            <input type="text" id="checkout-expiry" placeholder="12/28" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface font-mono text-center"/>
+            <input type="text" id="checkout-cvc" placeholder="123" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface font-mono text-center"/>
           </div>
         </div>
 
@@ -1646,6 +1635,8 @@
     </a>
   </div>
 
+  <!-- Razorpay Payment Gateway SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <!-- Site JS Controller -->
   <script src="/app.js"></script>
 </body>
