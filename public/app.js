@@ -146,6 +146,16 @@ async function fetchTraders() {
     if (!res.ok) throw new Error('Failed to fetch traders profile list.');
     tradersList = await res.json();
     
+    // Update active streams/experts counts dynamically
+    const heroCountEl = document.getElementById('hero-active-experts-count');
+    if (heroCountEl) {
+      heroCountEl.textContent = `${tradersList.length} Expert${tradersList.length === 1 ? '' : 's'} Active`;
+    }
+    const streamsCountEl = document.getElementById('active-streams-count');
+    if (streamsCountEl) {
+      streamsCountEl.textContent = `${tradersList.length} Active Trader Stream${tradersList.length === 1 ? '' : 's'}`;
+    }
+
     renderLeaderboard();
     populateTraderSelect();
     initChatBox(); // Load the interactive complimentary chat box
@@ -1107,97 +1117,6 @@ function renderComparisonTable(metrics) {
 // 8. Complimentary Trading Channels Controller
 let activeTraderChannelId = '';
 
-const complimentaryCalls = {
-  "alex_pro": {
-    intro: "Welcome to my channel! I'm Alex. I specialize in finding medium-term trends in major markets like the S&P 500. Here are my three free trade ideas to show you my strategy in action.",
-    calls: [
-      { sym: "Apple Inc. (AAPL)", type: "Buy", entry: "₹188.00 - ₹190.00", target: "₹205.00", safety: "₹184.00", why: "Apple shares are stabilizing at key support with steady consumer demand." },
-      { sym: "Microsoft Corp. (MSFT)", type: "Buy", entry: "₹418.00 - ₹421.00", target: "₹438.00", safety: "₹412.00", why: "Microsoft shows strong artificial intelligence product pipeline growth." },
-      { sym: "Amazon.com Inc. (AMZN)", type: "Buy", entry: "₹179.00 - ₹181.00", target: "₹195.00", safety: "₹175.00", why: "Amazon cloud computing segment revenues are accelerating." }
-    ]
-  },
-  "Rushi Bhosale": {
-    intro: "Namaste! I'm Rushi. I analyze options and liquid stocks for stable returns. Review these three free setups designed specifically for retail investors.",
-    calls: [
-      { sym: "Reliance Industries", type: "Buy", entry: "₹2,820 - ₹2,840", target: "₹3,020", safety: "₹2,750", why: "Reliance is breaking out of a 5-day consolidation range." },
-      { sym: "Tata Consultancy Services (TCS)", type: "Buy", entry: "₹3,900 - ₹3,930", target: "₹4,150", safety: "₹3,820", why: "TCS indicates solid institutional accumulation patterns." },
-      { sym: "Infosys Ltd. (INFY)", type: "Sell", entry: "₹1,440 - ₹1,450", target: "₹1,370", safety: "₹1,480", why: "Infosys exhibits weak short-term momentum and index resistance." }
-    ]
-  },
-  "echo_zulu": {
-    intro: "Welcome. EchoZulu here. I run quantitative models to locate pricing arbitrage and currency trends. Review these three algorithmic test signals.",
-    calls: [
-      { sym: "Euro / US Dollar (EUR/USD)", type: "Buy", entry: "1.0820 - 1.0835", target: "1.0950", safety: "1.0780", why: "Central bank interest rate decisions support euro currency strength." },
-      { sym: "British Pound / US Dollar (GBP/USD)", type: "Buy", entry: "1.2680 - 1.2700", target: "1.2850", safety: "1.2610", why: "UK inflation data trends stronger than economist forecasts." },
-      { sym: "US Dollar / Japanese Yen (USD/JPY)", type: "Sell", entry: "155.80 - 156.20", target: "153.50", safety: "157.10", why: "Technical overbought conditions align with potential government intervention." }
-    ]
-  },
-  "neon_ghost": {
-    intro: "Hey! I'm NeonGhost. I scan the markets for clean chart pattern breakouts and pullbacks. Here are my three free trade ideas based on strong support zones.",
-    calls: [
-      { sym: "Tesla Inc. (TSLA)", type: "Buy", entry: "₹171.00 - ₹174.00", target: "₹192.00", safety: "₹165.00", why: "Tesla shows a double-bottom pattern forming near historical support." },
-      { sym: "NVIDIA Corp. (NVDA)", type: "Buy", entry: "₹935.00 - ₹945.00", target: "₹1,010.00", safety: "₹915.00", why: "Nvidia shows high buying volume after recent updates." },
-      { sym: "Meta Platforms (META)", type: "Buy", entry: "₹470.00 - ₹475.00", target: "₹510.00", safety: "₹458.00", why: "Meta advertising revenue forecasts support positive stock price momentum." }
-    ]
-  },
-  "apex_predator": {
-    intro: "Let's capture some quick profits! I'm ApexPredator, a momentum scalper looking for high volume breakouts. Here are three quick-moving setups.",
-    calls: [
-      { sym: "Netflix Inc. (NFLX)", type: "Buy", entry: "₹610.00 - ₹615.00", target: "₹645.00", safety: "₹598.00", why: "Netflix subscription numbers are climbing ahead of seasonal shows." },
-      { sym: "Google Alphabet (GOOGL)", type: "Buy", entry: "₹172.00 - ₹174.00", target: "₹188.00", safety: "₹168.00", why: "Google cloud software integrations are seeing widespread adoption." },
-      { sym: "Advanced Micro Devices (AMD)", type: "Buy", entry: "₹160.00 - ₹163.00", target: "₹180.00", safety: "₹154.00", why: "AMD market share expansion in server chips remains robust." }
-    ]
-  },
-  "luna_tick": {
-    intro: "Hi, LunaTick here! I monitor decentralized markets for inefficiencies and price differences. Check out these three complimentary crypto setups.",
-    calls: [
-      { sym: "Bitcoin (BTC/USD)", type: "Buy", entry: "₹63,800 - ₹64,300", target: "₹67,500", safety: "₹62,500", why: "Bitcoin institutional inflows via ETFs show persistent daily growth." },
-      { sym: "Ethereum (ETH/USD)", type: "Buy", entry: "₹3,050 - ₹3,100", target: "₹3,400", safety: "₹2,950", why: "Ethereum network activity and gas burn rates are rising steadily." },
-      { sym: "Solana (SOL/USD)", type: "Buy", entry: "₹165.00 - ₹168.00", target: "₹188.00", safety: "₹156.00", why: "Solana daily active transaction volumes exceed key competitor benchmarks." }
-    ]
-  },
-  "macro_bull": {
-    intro: "Hello. MacroBull here. I analyze high-level economic indicators to trade major index futures. Here are my three free trade suggestions based on macro trends.",
-    calls: [
-      { sym: "S&P 500 ETF (SPY)", type: "Buy", entry: "₹524.00 - ₹526.00", target: "₹545.00", safety: "₹517.00", why: "Strong economic data indicates the corporate profit cycle is expanding." },
-      { sym: "Nasdaq 100 ETF (QQQ)", type: "Buy", entry: "₹440.00 - ₹443.00", target: "₹465.00", safety: "₹432.00", why: "Large technology company cash balances cushion index valuations." },
-      { sym: "Russell 2000 ETF (IWM)", type: "Buy", entry: "₹202.00 - ₹204.00", target: "₹216.00", safety: "₹197.00", why: "Small-cap indices are beginning to catch up to large-cap valuations." }
-    ]
-  },
-  "alpha_wave": {
-    intro: "Hey! AlphaWave here. I ride the biggest waves in tech growth. Here are three growth stock ideas that fit my trend-following system.",
-    calls: [
-      { sym: "Coinbase Global (COIN)", type: "Buy", entry: "₹215.00 - ₹220.00", target: "₹250.00", safety: "₹202.00", why: "Coinbase transaction revenues rise with digital asset volatility." },
-      { sym: "Robinhood Markets (HOOD)", type: "Buy", entry: "₹19.00 - ₹19.50", target: "₹24.00", safety: "₹17.80", why: "Robinhood user account registrations reach high active milestones." },
-      { sym: "Palantir Tech (PLTR)", type: "Buy", entry: "₹21.00 - ₹21.50", target: "₹25.00", safety: "₹19.80", why: "Palantir enterprise government software contracts are renewing." }
-    ]
-  },
-  "delta_hedge": {
-    intro: "Welcome. DeltaHedge here. I look for options premiums that are overvalued and trade delta-neutral. Here are three conservative setups.",
-    calls: [
-      { sym: "JPMorgan Chase (JPM)", type: "Buy", entry: "₹194.00 - ₹196.00", target: "₹210.00", safety: "₹189.00", why: "JPMorgan net interest income remains high despite changing rates." },
-      { sym: "Walt Disney (DIS)", type: "Buy", entry: "₹101.00 - ₹103.00", target: "₹115.00", safety: "₹97.00", why: "Disney streaming sector profitability goals are within reach this year." },
-      { sym: "Nike Inc. (NKE)", type: "Buy", entry: "₹91.00 - ₹93.00", target: "₹104.00", safety: "₹87.00", why: "Nike brand strength and distributor inventories are returning to balance." }
-    ]
-  },
-  "zen_trader": {
-    intro: "Be patient, wait for your pitch. I'm ZenTrader, analyzing commodity charts with wide margins of safety. Here are three complimentary commodity setups.",
-    calls: [
-      { sym: "Gold Trust (GLD)", type: "Buy", entry: "₹222.00 - ₹224.00", target: "₹242.00", safety: "₹216.00", why: "Global demand and inflation concerns make gold a strong store of value." },
-      { sym: "Crude Oil Trust (USO)", type: "Buy", entry: "₹76.00 - ₹78.00", target: "₹86.00", safety: "₹73.00", why: "Oil supply controls and travel demands support short-term prices." },
-      { sym: "Silver Trust (SLV)", type: "Buy", entry: "₹28.00 - ₹28.50", target: "₹32.50", safety: "₹26.80", why: "Industrial uses and solar panel manufacturing drive silver demand." }
-    ]
-  },
-  "quantum_scalp": {
-    intro: "QuantumScalp here. I capture short-term price adjustments in high-frequency trading models. Here are three rapid futures signals.",
-    calls: [
-      { sym: "Alibaba Group (BABA)", type: "Buy", entry: "₹81.00 - ₹82.50", target: "₹92.00", safety: "₹77.50", why: "Alibaba valuation is low compared to long-term digital retail gains." },
-      { sym: "ExxonMobil (XOM)", type: "Buy", entry: "₹114.00 - ₹116.00", target: "₹126.00", safety: "₹110.00", why: "ExxonMobil production expansion drives strong operating cash flows." },
-      { sym: "Walmart Inc. (WMT)", type: "Buy", entry: "₹63.50 - ₹64.50", target: "₹70.00", safety: "₹61.00", why: "Walmart digital store growth continues to offset inflation pressures." }
-    ]
-  }
-};
-
 function initChatBox() {
   const channelListEl = document.getElementById('trader-channels-list');
   const mobileSelectEl = document.getElementById('mobile-trader-channel-select');
@@ -1272,7 +1191,7 @@ function switchTraderChannel(channelId) {
     if (mockInputEl) mockInputEl.placeholder = 'Welcome to Saudaa Lounge!';
   } else if (channelId === 'free-signals') {
     if (titleEl) titleEl.textContent = 'Complimentary Signals Feed';
-    if (roiEl) roiEl.textContent = '11 Traders posting';
+    if (roiEl) roiEl.textContent = `${tradersList.length} Trader${tradersList.length === 1 ? '' : 's'} posting`;
     if (mockInputEl) mockInputEl.placeholder = 'Unlock premium for direct trader messaging...';
   }
 
@@ -1301,7 +1220,7 @@ function renderChatFeed(channelId) {
             </p>
             <ul class="list-disc pl-5 mt-2 space-y-1.5 text-xs text-on-surface-variant">
               <li><strong>#welcome-lounge:</strong> Platform rules and group overview.</li>
-              <li><strong>#free-signals:</strong> A unified group chat where all 11 elite traders post their complimentary setups in real-time.</li>
+              <li><strong>#free-signals:</strong> A unified group chat where all verified elite traders post their complimentary setups in real-time.</li>
             </ul>
             <div class="mt-4 p-4 rounded-xl border border-outline-variant/30 bg-surface-container-low flex items-start gap-3">
               <span class="material-symbols-outlined text-primary text-[20px]">info</span>
@@ -1352,7 +1271,7 @@ function renderChatFeed(channelId) {
       console.error('Failed to fetch live free signals:', e);
     }
 
-    // 1. Render dynamic live broadcasted signals
+    // Render dynamic live broadcasted signals
     liveFreeSignals.forEach(s => {
       const nameInitials = s.traderName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
       const timeStr = new Date(s.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -1389,77 +1308,6 @@ function renderChatFeed(channelId) {
       `;
     });
 
-    // 2. Render static seed signals so the page remains populated
-    tradersList.forEach((t, idx) => {
-      const nameInitials = t.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-      const data = complimentaryCalls[t.id] || complimentaryCalls["alex_pro"];
-
-      // Generate staggered time
-      const hour = 9 + Math.floor(idx / 2);
-      const minute = (idx % 2 === 0) ? '00' : '30';
-      const timeStr = `Today at ${hour}:${minute} AM`;
-
-      // Generate complimentary calls cards markup
-      let callsHtml = '';
-      data.calls.forEach((c, callIdx) => {
-        const isBuy = c.type.toLowerCase() === 'buy';
-        const typeClass = isBuy ? 'buy' : 'sell';
-        const colorClass = isBuy ? 'g' : 'r';
-        const boxClass = isBuy ? 'call-box gb' : 'call-box';
-        
-        callsHtml += `
-          <div class="${boxClass}">
-            <div class="cb-top">
-              <span class="cb-sym ${colorClass}">#${callIdx + 1} - ${c.sym}</span>
-              <span class="cb-type ${typeClass}">${c.type}</span>
-            </div>
-            <div class="cb-grid font-sans">
-              <div>
-                <div class="cb-item-l">Buy Price</div>
-                <div class="cb-item-v">${c.entry}</div>
-              </div>
-              <div class="border-l border-outline-variant/30 pl-3">
-                <div class="cb-item-l">Profit Target</div>
-                <div class="cb-item-v g">${c.target}</div>
-              </div>
-              <div class="border-l border-outline-variant/30 pl-3">
-                <div class="cb-item-l">Safety Exit</div>
-                <div class="cb-item-v r">${c.safety}</div>
-              </div>
-            </div>
-            <div class="text-[10px] text-outline-variant/60 font-mono mt-3 leading-normal">
-              <span class="font-bold text-outline-variant">Why this trade:</span> ${c.why}
-            </div>
-          </div>
-        `;
-      });
-
-      feedHtml += `
-        <div class="msg border-b border-outline-variant/10 pb-6 mb-6">
-          <div class="msg-av shrink-0">${nameInitials}</div>
-          <div class="msg-c flex-1 min-w-0">
-            <div class="msg-meta">
-              <span class="msg-name font-bold text-on-surface">${t.name}</span>
-              <span class="msg-badge mb-pro">Trader</span>
-              <span class="msg-time text-outline text-[10px] ml-2">${timeStr}</span>
-            </div>
-            <div class="msg-txt mt-2 text-on-surface-variant text-xs leading-relaxed">
-              <p class="font-semibold text-on-surface">${data.intro}</p>
-              
-              <div class="space-y-3.5 mt-3">
-                ${callsHtml}
-              </div>
-              
-              <div onclick="openCheckout('${t.id}', 'pro')" class="locked cursor-pointer mt-4 p-4 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high transition-colors flex items-start gap-3">
-                <span class="material-symbols-outlined locked-i text-primary">lock</span>
-                <div>
-                  <div class="locked-title font-bold text-xs text-on-surface">Unlock daily premium signals from ${t.name}</div>
-                  <div class="locked-desc text-[10px] text-outline mt-0.5">Join premium subscribers copying these trades in real-time. Click to unlock.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       `;
     });
 
