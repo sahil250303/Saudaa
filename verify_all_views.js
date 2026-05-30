@@ -1,7 +1,62 @@
 const { chromium } = require('playwright');
 const path = require('path');
+const db = require('./db');
 
 (async () => {
+  let backup = null;
+  
+  console.log('Seeding temporary test database state...');
+  try {
+    const originalDB = await db.readDB();
+    backup = JSON.parse(JSON.stringify(originalDB));
+    
+    // Seed test trader 'alex_pro' and client 'test1@gmail.com'
+    const testTraders = [
+      {
+        id: "alex_pro",
+        name: "Alex Pro",
+        strategy: "Algorithmic & Swing",
+        winRate: 82.9,
+        roi: 68.5,
+        subscribers: 1, // To reflect subscription
+        rank: 1,
+        avatar: "",
+        description: "Test Trader",
+        status: "active",
+        passwordHash: "70b320ca891d9d150f82c8d1903c7b668172449a14ffad98b528ef25efeb87540d20797dee16684baafed471f93d9ef11058c0416239ad14740235d8696ccf57",
+        salt: "df98ab0ea9cd211933c9f2ca21578944"
+      }
+    ];
+
+    const testClients = [
+      {
+        id: "client_b9nt8f0l2",
+        email: "test1@gmail.com",
+        subId: "SA-1965-ELITE",
+        subscription: {
+          traderId: "alex_pro",
+          plan: "pro",
+          expiresAt: "2026-06-23T14:32:06.700Z"
+        },
+        passwordHash: "bdbfbb4a4eccdb0842c60d4a99eb2165792875d781e2cffb7dae859beacf8e5d23e0d10ca6c980e0fc0db588cf87f281667cc7f38604c687af79d25348784cb6",
+        salt: "221bb21c262eb81c0cf2978134ea2f19",
+        status: "active"
+      }
+    ];
+
+    originalDB.traders = testTraders;
+    originalDB.clients = testClients;
+    originalDB.suggestions = [];
+    originalDB.payments = [];
+    originalDB.messages = [];
+    
+    await db.writeDB(originalDB);
+    console.log('Seeding complete.');
+  } catch (seedErr) {
+    console.error('Failed to seed temporary database state:', seedErr);
+    process.exit(1);
+  }
+
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   
@@ -144,5 +199,10 @@ const path = require('path');
     console.error(`\n[ERROR] Verification script failed: ${err.message}`);
   } finally {
     await browser.close();
+    if (backup) {
+      console.log('\nRestoring original database state...');
+      await db.writeDB(backup);
+      console.log('Database restored.');
+    }
   }
 })();

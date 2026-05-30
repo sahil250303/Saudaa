@@ -1,7 +1,99 @@
 const { chromium } = require('playwright');
 const path = require('path');
+const db = require('./db');
 
 (async () => {
+  let backup = null;
+  
+  console.log('Seeding temporary test database state...');
+  try {
+    const originalDB = await db.readDB();
+    backup = JSON.parse(JSON.stringify(originalDB));
+    
+    // Seed test traders 'alex_pro' and 'echo_zulu'
+    const testTraders = [
+      {
+        id: "alex_pro",
+        name: "Alex Pro",
+        strategy: "Algorithmic & Swing",
+        winRate: 82.9,
+        roi: 68.5,
+        subscribers: 0,
+        rank: 1,
+        avatar: "",
+        description: "Test Trader",
+        status: "active",
+        passwordHash: "70b320ca891d9d150f82c8d1903c7b668172449a14ffad98b528ef25efeb87540d20797dee16684baafed471f93d9ef11058c0416239ad14740235d8696ccf57",
+        salt: "df98ab0ea9cd211933c9f2ca21578944"
+      },
+      {
+        id: "echo_zulu",
+        name: "EchoZulu",
+        strategy: "Quant Strategy",
+        winRate: 76.4,
+        roi: 42.1,
+        subscribers: 0,
+        rank: 3,
+        avatar: "",
+        description: "Quant",
+        status: "active",
+        passwordHash: "493655a8b628ec51628a4fe6eb20011cc4d98a0f22039f3c12751e826f4881799e66b491da8c3a3fa08c88189abe3ea4a51063b94c965cef1fbbd7f170bd7c62",
+        salt: "764e7214b845bd1820bdbfa31b7cc146"
+      }
+    ];
+
+    const testSuggestions = [
+      {
+        id: "sig_1",
+        traderId: "alex_pro",
+        asset: "AAPL",
+        type: "Buy",
+        entry: "180.00",
+        target: "190.00",
+        stopLoss: "175.00",
+        risk: "Medium",
+        notes: "Test signal 1",
+        createdAt: "2026-05-30T12:00:00.000Z"
+      },
+      {
+        id: "sig_2",
+        traderId: "alex_pro",
+        asset: "MSFT",
+        type: "Sell",
+        entry: "420.00",
+        target: "400.00",
+        stopLoss: "430.00",
+        risk: "High",
+        notes: "Test signal 2",
+        createdAt: "2026-05-30T12:05:00.000Z"
+      },
+      {
+        id: "sig_3",
+        traderId: "alex_pro",
+        asset: "TSLA",
+        type: "Buy",
+        entry: "170.00",
+        target: "185.00",
+        stopLoss: "165.00",
+        risk: "Low",
+        notes: "Test signal 3",
+        createdAt: "2026-05-30T12:10:00.000Z"
+      }
+    ];
+
+    originalDB.traders = testTraders;
+    originalDB.suggestions = testSuggestions;
+    originalDB.clients = [];
+    originalDB.payments = [];
+    originalDB.messages = [];
+    
+    await db.writeDB(originalDB);
+    console.log('Seeding complete.');
+  } catch (seedErr) {
+    console.error('Failed to seed temporary database state:', seedErr);
+    process.exit(1);
+  }
+
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   
@@ -142,5 +234,10 @@ const path = require('path');
     console.error('\n[FATAL ERROR] Verification run failed:', err.message);
   } finally {
     await browser.close();
+    if (backup) {
+      console.log('\nRestoring original database state...');
+      await db.writeDB(backup);
+      console.log('Database restored.');
+    }
   }
 })();
