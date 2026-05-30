@@ -1,9 +1,10 @@
 # GSD State Persistence - Saudaa
 
 ## Current Status
-- Project fully completed, tested, and verified.
-- Created and exported a self-contained static HTML frontend file for the Saudaa homepage at `D:\pratik\index.html`.
-- Node.js server running in the background at `http://localhost:3000`.
+- Project fully completed, tested, verified, and deployed to Vercel.
+- Live Vercel URL: https://saudaa.vercel.app
+- GitHub Repository: https://github.com/sahil250303/Saudaa (with custom documentation README.md uploaded)
+- Node.js server configured for serverless Vercel function using @vercel/node builder.
 - **Integrated comprehensive mobile responsive layout optimizations across the homepage and user/trader dashboards, featuring collapsible navbar drawer, mobile exclusive cards leaderboard, aspect-square stock heatmap, mobile dashboard header status bar, and horizontal subscriber chat list carousels.**
 - **Updated the homepage's navbar to display only the logo graphic, removing the "Saudaa" brand name text and scaling the logo's size by 20% to 54px while retaining proportional constraints and overall navbar alignments.**
 - **Added a dynamic background animation to the hero section mimicking a share market chart with falling red and green stock candlesticks (implemented via HTML5 canvas and canvas rendering loop, with adjusted opacity and wick boldness for optimal contrast).**

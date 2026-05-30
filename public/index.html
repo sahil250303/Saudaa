@@ -118,8 +118,7 @@
       </div>
       <!-- Animated text below Logo -->
       <div class="text-4xl md:text-5xl font-extrabold tracking-tight text-primary flex items-center font-mono mb-6 justify-center">
-        <span id="preloader-sa" class="inline-block min-w-[2ch] text-right pr-1 transition-all duration-75">Sa</span>
-        <span id="preloader-auda" class="text-secondary font-sans font-bold">udaa</span>
+        <span id="preloader-sa" class="inline-block min-w-[2ch] text-right pr-1 transition-all duration-75">Sa</span><span id="preloader-auda" class="text-secondary font-sans font-bold">udaa</span>
       </div>
       <!-- Progress Bar -->
       <div class="h-1 w-36 bg-surface-container-high rounded-full overflow-hidden">
@@ -209,39 +208,32 @@
           Discover proven traders, live market insights, and real-time discussions from experienced professionals.
         </p>
         <div class="flex flex-col gap-6 w-full max-w-md">
-          <a href="#leaderboard" class="w-full bg-primary text-on-primary font-bold py-4 rounded-xl hover:opacity-95 text-center transition-all shadow-[0_4px_20px_0_rgba(66,104,43,0.15)] flex items-center justify-center gap-2">
-            View Live Leaderboard
+        <div class="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+          <a href="#leaderboard" class="flex-1 bg-primary text-on-primary font-bold py-4 rounded-xl hover:opacity-95 text-center transition-all shadow-[0_4px_20px_0_rgba(66,104,43,0.15)] flex items-center justify-center gap-2">
+            View Leaderboard
             <span class="material-symbols-outlined text-[18px]">arrow_downward</span>
           </a>
+          <button onclick="openCompareModal()" class="flex-1 bg-surface-container-lowest text-primary font-bold py-4 rounded-xl border border-outline-variant/60 hover:bg-surface-container-low transition-colors shadow-sm text-center flex items-center justify-center gap-2">
+            Compare Traders
+            <span class="material-symbols-outlined text-[18px]">compare_arrows</span>
+          </button>
+        </div>
 
-          <!-- Hero Chat box CTA -->
-          <div class="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-4 shadow-md flex flex-col gap-3">
-            <div class="flex items-center justify-between border-b border-outline-variant/20 pb-2">
-              <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
-                <span class="text-xs font-bold text-on-surface">Community Lounge Feed</span>
-              </div>
-              <span class="text-[9px] font-mono text-primary font-bold">11 Experts Active</span>
-            </div>
-            
-            <div class="flex gap-3 items-start">
-              <div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-xs shrink-0">SL</div>
-              <div class="flex-1">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-bold text-xs text-on-surface">Lounge Host</span>
-                  <span class="text-[9px] text-outline">Just now</span>
-                </div>
-                <p class="text-xs text-on-surface-variant leading-relaxed mt-0.5">
-                  Welcome to Saudaa! We share free daily trade suggestions from top-rated market experts. Open the chat below to view live setups.
-                </p>
-              </div>
-            </div>
-
-            <a href="#calls" class="w-full bg-primary hover:opacity-95 text-on-primary font-bold text-xs py-3 rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-[0_4px_15px_rgba(66,104,43,0.15)]">
-              <span class="material-symbols-outlined text-[16px]">chat</span>
-              <span>Free Insights Chats</span>
-            </a>
+        <!-- Hero Trust Badges -->
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-3 mt-6 text-outline select-none">
+          <div class="flex items-center gap-1.5 text-xs font-semibold">
+            <span class="material-symbols-outlined text-primary text-[16px]">verified</span>
+            <span>100% Verified ROI</span>
           </div>
+          <div class="flex items-center gap-1.5 text-xs font-semibold">
+            <span class="material-symbols-outlined text-primary text-[16px]">lock</span>
+            <span>Secure Checkout</span>
+          </div>
+          <div class="flex items-center gap-1.5 text-xs font-semibold">
+            <span class="material-symbols-outlined text-primary text-[16px]">autorenew</span>
+            <span>No Lock-ins</span>
+          </div>
+        </div>
         </div>
       </div>
 
@@ -386,6 +378,53 @@
     </div>
   </section>
 
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="w-full py-20 bg-surface border-b border-outline-variant/30">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary uppercase tracking-wider mb-4">
+          Simple Process
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-4">How Saudaa Works</h2>
+        <p class="text-on-surface-variant text-sm">
+          Get verified, professional trading suggestions in 3 simple steps. No complex setup, no anonymous channels.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+        <!-- Connecting Line for Desktop -->
+        <div class="hidden md:block absolute top-1/2 left-[15%] right-[15%] h-[1px] bg-outline-variant/30 z-0 -translate-y-12"></div>
+        
+        <!-- Step 1 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all text-center space-y-4 z-10 relative">
+          <div class="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-lg font-mono mx-auto shadow-sm">1</div>
+          <h3 class="font-bold text-on-surface text-base">Select an Expert</h3>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Browse our transparent, verified leaderboard. Filter by strategy, ROI, win rate, and choose the expert that matches your risk appetite.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all text-center space-y-4 z-10 relative">
+          <div class="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-lg font-mono mx-auto shadow-sm">2</div>
+          <h3 class="font-bold text-on-surface text-base">Subscribe & Link</h3>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Choose a plan that fits your style (Standard, Pro, or VIP). Complete the secure transaction to receive your unique terminal credentials.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all text-center space-y-4 z-10 relative">
+          <div class="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-lg font-mono mx-auto shadow-sm">3</div>
+          <h3 class="font-bold text-on-surface text-base">Copy Suggestions</h3>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Log in to your personalized terminal to view entry ranges, stop-losses, and profit targets. Chat 1-on-1 with your expert in real-time.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Leaderboard Section -->
   <section id="leaderboard" class="w-full py-16 md:py-24 bg-surface-container-lowest border-y border-outline-variant/30 relative">
     <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
@@ -489,6 +528,187 @@
           <button onclick="openCompareModal()" class="w-full sm:w-auto bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold px-8 py-3.5 rounded-xl hover:opacity-95 text-center transition-all shadow-[0_4px_15px_rgba(82,99,74,0.15)] flex items-center justify-center gap-2">
             Compare Traders
             <span class="material-symbols-outlined text-[18px]">compare_arrows</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Community Lounge Section -->
+  <section id="community-lounge" class="w-full py-12 bg-surface border-b border-outline-variant/30">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 md:p-8 shadow-[0_8px_35px_rgba(53,61,50,0.04)] grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Text details -->
+        <div class="lg:col-span-7 space-y-4 text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+            <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            <span class="text-xs font-bold text-primary uppercase tracking-wider">Live Lounge Feed</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-on-surface">Join the Saudaa Lounge Discussion</h2>
+          <p class="text-on-surface-variant text-sm leading-relaxed max-w-xl">
+            Interact with our automated assistance bot and get real-time community chatter. Explore subscription details, general updates, and live discussion streams.
+          </p>
+          <div class="flex flex-wrap gap-4 pt-2">
+            <button onclick="toggleDiscordBot()" class="bg-primary hover:opacity-95 text-on-primary font-bold text-xs px-6 py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-[16px]">forum</span>
+              <span>Open Community Lounge</span>
+            </button>
+            <a href="#leaderboard" class="bg-surface-container-lowest text-primary font-bold text-xs py-3 px-6 rounded-xl border border-outline-variant/60 hover:bg-surface-container-low transition-colors shadow-sm text-center flex items-center justify-center gap-2">
+              <span>View Leaderboard</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Live Preview Box -->
+        <div class="lg:col-span-5 bg-surface-container-low border border-outline-variant/30 rounded-2xl p-5 shadow-sm space-y-4 text-left">
+          <div class="flex items-center justify-between border-b border-outline-variant/20 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+              <span class="text-xs font-bold text-on-surface">Community Lounge Preview</span>
+            </div>
+            <span class="text-[9px] font-mono text-primary font-bold">11 Experts Active</span>
+          </div>
+          
+          <div class="flex gap-3 items-start">
+            <div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-xs shrink-0">SL</div>
+            <div class="flex-1">
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-xs text-on-surface">Lounge Host</span>
+                <span class="text-[9px] text-outline">Just now</span>
+              </div>
+              <p class="text-xs text-on-surface-variant leading-relaxed mt-0.5">
+                Welcome to Saudaa! We share free daily trade suggestions from top-rated market experts. Open the chat below to view live setups.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="w-full py-20 bg-surface border-b border-outline-variant/30">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary uppercase tracking-wider mb-4">
+          Transparent Pricing
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-4">Choose Your Terminal Plan</h2>
+        <p class="text-on-surface-variant text-sm">
+          No hidden fees. Upgrade or cancel your subscription at any time directly from your user portal.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <!-- Standard Plan -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-8 flex flex-col justify-between shadow-sm hover:border-primary-container transition-all relative text-left">
+          <div class="space-y-6">
+            <div>
+              <h3 class="font-bold text-lg text-on-surface">Standard Plan</h3>
+              <p class="text-xs text-on-surface-variant mt-1.5">For beginners starting their market journey.</p>
+            </div>
+            <div class="flex items-baseline gap-1">
+              <span id="price-standard" class="text-4xl font-serif font-light text-on-surface">₹59</span>
+              <span class="text-xs font-medium text-outline">/mo</span>
+            </div>
+            <hr class="border-outline-variant/20"/>
+            <ul class="space-y-3.5 text-xs text-on-surface-variant font-medium">
+              <li class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-primary text-[16px]">done</span>
+                <span>General Community Access</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-primary text-[16px]">done</span>
+                <span>Standard Signals List</span>
+              </li>
+              <li class="flex items-center gap-2.5 text-outline-variant/80 line-through">
+                <span class="material-symbols-outlined text-[16px]">close</span>
+                <span>1-on-1 Private Trader Chat</span>
+              </li>
+              <li class="flex items-center gap-2.5 text-outline-variant/80 line-through">
+                <span class="material-symbols-outlined text-[16px]">close</span>
+                <span>Access to 10 Trader Terminals</span>
+              </li>
+            </ul>
+          </div>
+          <button onclick="openCheckout('', 'standard')" class="w-full bg-surface-container-low hover:bg-surface-container-high text-primary border border-outline-variant/50 font-bold py-3.5 rounded-xl transition-all text-center text-xs mt-8 shadow-sm">
+            Select Standard Plan
+          </button>
+        </div>
+
+        <!-- Pro Plan (Popular) -->
+        <div class="bg-surface-container-lowest border-2 border-primary rounded-2xl p-8 flex flex-col justify-between shadow-md hover:shadow-lg transition-all relative text-left">
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-[9px] font-mono tracking-widest uppercase font-bold px-3 py-1 rounded-full shadow-sm">
+            Most Popular
+          </div>
+          <div class="space-y-6">
+            <div>
+              <h3 class="font-bold text-lg text-on-surface">Pro Elite Plan</h3>
+              <p class="text-xs text-on-surface-variant mt-1.5">Direct chat and advanced signal updates.</p>
+            </div>
+            <div class="flex items-baseline gap-1">
+              <span id="price-pro" class="text-4xl font-serif font-light text-on-surface">₹99</span>
+              <span class="text-xs font-medium text-outline">/mo</span>
+            </div>
+            <hr class="border-outline-variant/20"/>
+            <ul class="space-y-3.5 text-xs text-on-surface-variant font-medium">
+              <li class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-primary text-[16px]">done</span>
+                <span>General Community Access</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-primary text-[16px]">done</span>
+                <span>Advanced Signals Feed</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-primary text-[16px]">done</span>
+                <span>1-on-1 Private Trader Chat</span>
+              </li>
+              <li class="flex items-center gap-2.5 text-outline-variant/80 line-through">
+                <span class="material-symbols-outlined text-[16px]">close</span>
+                <span>Access to 10 Trader Terminals</span>
+              </li>
+            </ul>
+          </div>
+          <button onclick="openCheckout('', 'pro')" class="w-full bg-primary hover:opacity-95 text-on-primary font-bold py-3.5 rounded-xl transition-all text-center text-xs mt-8 shadow-[0_4px_15px_rgba(66,104,43,0.15)]">
+            Select Pro Elite Plan
+          </button>
+        </div>
+
+        <!-- VIP Plan -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-8 flex flex-col justify-between shadow-sm hover:border-primary-container transition-all relative text-left">
+          <div class="space-y-6">
+            <div>
+              <h3 class="font-bold text-lg text-on-surface">VIP Plan</h3>
+              <p class="text-xs text-on-surface-variant mt-1.5">For institutional and options traders.</p>
+            </div>
+            <div class="flex items-baseline gap-1">
+              <span id="price-vip" class="text-4xl font-serif font-light text-on-surface">₹249</span>
+              <span class="text-xs font-medium text-outline">/mo</span>
+            </div>
+            <hr class="border-outline-variant/20"/>
+            <ul class="space-y-3.5 text-xs text-on-surface-variant font-medium">
+              <li class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-primary text-[16px]">done</span>
+                <span>Access to 10 Trader Dashboards</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-primary text-[16px]">done</span>
+                <span>Advanced Option Hedging Insides</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-primary text-[16px]">done</span>
+                <span>1-on-1 Private Trader Chat</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-primary text-[16px]">done</span>
+                <span>Priority Lounge & Support</span>
+              </li>
+            </ul>
+          </div>
+          <button onclick="openCheckout('', 'vip')" class="w-full bg-surface-container-low hover:bg-surface-container-high text-primary border border-outline-variant/50 font-bold py-3.5 rounded-xl transition-all text-center text-xs mt-8 shadow-sm">
+            Select VIP Plan
           </button>
         </div>
       </div>
@@ -767,6 +987,153 @@
     </div>
   </section>
 
+  <!-- FAQ Section -->
+  <section id="faq" class="w-full py-20 bg-surface border-b border-outline-variant/30">
+    <div class="max-w-[800px] mx-auto px-margin-mobile md:px-margin-desktop text-left">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary uppercase tracking-wider mb-4">
+          Common Questions
+        </span>
+        <h2 class="text-3xl font-bold tracking-tight text-on-surface mb-4">Frequently Asked Questions</h2>
+        <p class="text-on-surface-variant text-sm">
+          Everything you need to know about the Saudaa suggestions terminal.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <!-- FAQ 1 -->
+        <div class="border border-outline-variant/40 rounded-xl bg-surface-container-lowest overflow-hidden transition-all duration-200">
+          <button onclick="toggleFaq(1)" class="w-full p-5 flex items-center justify-between text-left focus:outline-none">
+            <span class="font-bold text-sm text-on-surface">How is trader performance verified?</span>
+            <span id="faq-icon-1" class="material-symbols-outlined text-[20px] transition-transform text-primary font-bold">expand_more</span>
+          </button>
+          <div id="faq-ans-1" class="px-5 pb-5 text-xs text-on-surface-variant leading-relaxed hidden">
+            All suggestions posted by our platform traders are logged directly into our system database. The ROI, win rates, and ranking calculations are computed programmatically based on the entry, stop-loss, and target bounds. Traders cannot edit historical signals after 2 minutes or delete losing setups, eliminating "fake stats" or delete calls common in chat channels.
+          </div>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div class="border border-outline-variant/40 rounded-xl bg-surface-container-lowest overflow-hidden transition-all duration-200">
+          <button onclick="toggleFaq(2)" class="w-full p-5 flex items-center justify-between text-left focus:outline-none">
+            <span class="font-bold text-sm text-on-surface">What happens after I subscribe to a trader?</span>
+            <span id="faq-icon-2" class="material-symbols-outlined text-[20px] transition-transform text-primary font-bold">expand_more</span>
+          </button>
+          <div id="faq-ans-2" class="px-5 pb-5 text-xs text-on-surface-variant leading-relaxed hidden">
+            Upon successful payment, our billing gateway generates a unique generated Subscriber Premium ID (e.g. SA-XXXX-ELITE) and password. Write them down! You can then immediately click "Portal Login" in the navbar, enter these credentials, and access your interactive trader dashboard containing active suggestions and 1-on-1 private chat.
+          </div>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div class="border border-outline-variant/40 rounded-xl bg-surface-container-lowest overflow-hidden transition-all duration-200">
+          <button onclick="toggleFaq(3)" class="w-full p-5 flex items-center justify-between text-left focus:outline-none">
+            <span class="font-bold text-sm text-on-surface">Can I change my subscription plan or cancel?</span>
+            <span id="faq-icon-3" class="material-symbols-outlined text-[20px] transition-transform text-primary font-bold">expand_more</span>
+          </button>
+          <div id="faq-ans-3" class="px-5 pb-5 text-xs text-on-surface-variant leading-relaxed hidden">
+            Yes! All subscriptions are on a monthly rolling basis with absolutely no lock-in periods. You can easily upgrade to Pro/VIP configurations or cancel your automatic billing directly from your Dashboard settings or by contacting our 24/7 client support channels.
+          </div>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div class="border border-outline-variant/40 rounded-xl bg-surface-container-lowest overflow-hidden transition-all duration-200">
+          <button onclick="toggleFaq(4)" class="w-full p-5 flex items-center justify-between text-left focus:outline-none">
+            <span class="font-bold text-sm text-on-surface">Is this automated copy-trading or financial advice?</span>
+            <span id="faq-icon-4" class="material-symbols-outlined text-[20px] transition-transform text-primary font-bold">expand_more</span>
+          </button>
+          <div id="faq-ans-4" class="px-5 pb-5 text-xs text-on-surface-variant leading-relaxed hidden">
+            Saudaa is a verified research and market intelligence platform. We do not automatically execute trades on your broker account or manage client capital. We display professional analysts' entry ranges, targets, and stops, allowing you to review their trade setups and make your own trading decisions safely.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="w-full py-20 bg-surface-container border-b border-outline-variant/30">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary uppercase tracking-wider mb-4">
+          Social Proof
+        </span>
+        <h2 class="text-3xl font-bold tracking-tight text-on-surface mb-4">What Our Subscribers Say</h2>
+        <p class="text-on-surface-variant text-sm">
+          Hear from our active terminal users who copy verified expert suggestions daily.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Review 1 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm flex flex-col justify-between text-left">
+          <div class="space-y-4">
+            <div class="flex text-amber-500 gap-0.5">
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              "Saudaa is a game-changer. I used to be in five different Telegram call groups where admins deleted losing trades. On Saudaa, I can see Alex Pro's actual verified history, and my terminal dashboard is clean with zero clutter."
+            </p>
+          </div>
+          <div class="flex items-center gap-3 pt-6 border-t border-outline-variant/20 mt-6 font-sans">
+            <div class="w-9 h-9 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs shrink-0">RS</div>
+            <div>
+              <span class="block font-bold text-xs text-on-surface leading-tight">Rohan Sharma</span>
+              <span class="block text-[10px] text-outline mt-0.5">Pro Elite Subscriber</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 2 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm flex flex-col justify-between text-left">
+          <div class="space-y-4">
+            <div class="flex text-amber-500 gap-0.5">
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              "The 1-on-1 private trader chat in the Pro plan is worth every rupee. I can ask NeonGhost about the reasoning behind their commodities swing setups, and the response is always quick and professional."
+            </p>
+          </div>
+          <div class="flex items-center gap-3 pt-6 border-t border-outline-variant/20 mt-6 font-sans">
+            <div class="w-9 h-9 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs shrink-0">AP</div>
+            <div>
+              <span class="block font-bold text-xs text-on-surface leading-tight">Ananya Patel</span>
+              <span class="block text-[10px] text-outline mt-0.5">Pro Elite Subscriber</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 3 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm flex flex-col justify-between text-left">
+          <div class="space-y-4">
+            <div class="flex text-amber-500 gap-0.5">
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+              <span class="material-symbols-outlined fill-1 text-[18px]">star</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              "Being on the VIP plan lets me follow 10 different traders simultaneously. I get option hedging inputs, swing indices, and crypto arbitrage setups in one clean feed. Absolutely phenomenal platform!"
+            </p>
+          </div>
+          <div class="flex items-center gap-3 pt-6 border-t border-outline-variant/20 mt-6 font-sans">
+            <div class="w-9 h-9 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs shrink-0">VM</div>
+            <div>
+              <span class="block font-bold text-xs text-on-surface leading-tight">Vikram Mehta</span>
+              <span class="block text-[10px] text-outline mt-0.5">VIP Subscriber</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Checkout / Subscription Modal -->
   <div id="checkout-modal" class="fixed inset-0 bg-on-background/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
     <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar p-6 shadow-2xl transition-transform duration-300 scale-95">
@@ -844,6 +1211,13 @@
           <span class="material-symbols-outlined text-[16px]">lock</span>
           Process Payment & Subscribe
         </button>
+
+        <!-- Checkout Trust Badges -->
+        <div class="flex items-center justify-center gap-4 text-[10px] text-outline select-none mt-3">
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-primary">verified_user</span>SSL Encrypted</span>
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-primary">security</span>PCI Compliant</span>
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-primary">verified</span>Verified ROI</span>
+        </div>
       </form>
 
       <!-- Checkout Success Screen (Hidden by default) -->
@@ -1259,6 +1633,18 @@
       </div>
     </div>
   </footer>
+
+  <!-- Sticky Bottom Mobile CTA Bar -->
+  <div id="mobile-sticky-cta" class="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md border-t border-outline-variant/30 px-margin-mobile py-3.5 flex items-center justify-between shadow-[0_-8px_30px_rgba(53,61,50,0.1)] transition-transform duration-300 translate-y-full">
+    <div class="flex flex-col text-left">
+      <span class="text-[10px] font-bold tracking-wider text-primary uppercase">Saudaa Terminal</span>
+      <span class="text-xs font-bold text-on-surface">Verified Insights from ₹59/mo</span>
+    </div>
+    <a href="#leaderboard" class="bg-primary hover:opacity-95 text-on-primary font-bold text-xs px-5 py-2.5 rounded-lg shadow-md transition-all flex items-center gap-1">
+      <span>Get Started</span>
+      <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+    </a>
+  </div>
 
   <!-- Site JS Controller -->
   <script src="/app.js"></script>

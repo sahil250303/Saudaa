@@ -118,7 +118,7 @@ let apiRateLimited = false;
 
 let stockCache = {
   timestamp: new Date().toISOString(),
-  source: 'api',
+  source: 'simulated',
   data: {
     AAPL: { price: 189.84, change: 1.24, changePercent: 0.66 },
     MSFT: { price: 421.90, change: -0.85, changePercent: -0.20 },
@@ -170,6 +170,8 @@ async function updateNextStock() {
     }
   } catch (error) {
     console.error(`Error fetching stock quote for ${symbol}:`, error);
+    apiRateLimited = true;
+    stockCache.source = 'simulated';
   }
 }
 

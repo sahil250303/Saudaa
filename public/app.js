@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initStatsAnimation();
   initHeroCandlesAnimation();
   setupMobileMenu();
+  initStickyMobileCta();
 });
 
 // 1. Multilingual Preloader Animation
@@ -1374,6 +1375,8 @@ function initStatsAnimation() {
   const statsContainer = document.getElementById('hero-stats-strip');
   if (!statsContainer) return;
 
+  let animated = false;
+
   const animateValue = (id, start, end, duration, suffix = '', formatComma = false) => {
     const obj = document.getElementById(id);
     if (!obj) return;
@@ -1390,19 +1393,28 @@ function initStatsAnimation() {
     window.requestAnimationFrame(step);
   };
 
+  const runAllAnimations = () => {
+    if (animated) return;
+    animated = true;
+    animateValue('stat-val-traders', 0, 12840, 1500, '', true);
+    animateValue('stat-val-leaders', 0, 214, 1500, '');
+    animateValue('stat-val-winrate', 0, 72, 1500, '%');
+    animateValue('stat-val-calls', 0, 4280, 1500, '', true);
+  };
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        animateValue('stat-val-traders', 0, 12840, 1500, '', true);
-        animateValue('stat-val-leaders', 0, 214, 1500, '');
-        animateValue('stat-val-winrate', 0, 72, 1500, '%');
-        animateValue('stat-val-calls', 0, 4280, 1500, '', true);
+        runAllAnimations();
         observer.unobserve(entry.target);
       }
     });
   }, { threshold: 0.15 });
 
   observer.observe(statsContainer);
+
+  // Fallback trigger after 2500ms to ensure stats animate even if DOM loaded under preloader overlap
+  setTimeout(runAllAnimations, 2500);
 }
 
 // 8. Smooth scroll helper to navigate to bottom of heatmap
@@ -1588,6 +1600,48 @@ window.closeMobileMenu = function() {
       panel.classList.add('hidden');
     }
   }, 300);
+};
+
+// Sticky Mobile CTA Scroll Listener
+function initStickyMobileCta() {
+  const cta = document.getElementById('mobile-sticky-cta');
+  if (!cta) return;
+
+  window.addEventListener('scroll', () => {
+    // Show after scrolling down 300px
+    if (window.scrollY > 300) {
+      cta.classList.remove('translate-y-full');
+    } else {
+      cta.classList.add('translate-y-full');
+    }
+  });
+}
+
+// FAQ Toggle Handler
+window.toggleFaq = function(index) {
+  const ans = document.getElementById(`faq-ans-${index}`);
+  const icon = document.getElementById(`faq-icon-${index}`);
+  if (!ans || !icon) return;
+
+  const isHidden = ans.classList.contains('hidden');
+
+  // Close all other FAQs first for a clean accordion effect
+  for (let i = 1; i <= 4; i++) {
+    const otherAns = document.getElementById(`faq-ans-${i}`);
+    const otherIcon = document.getElementById(`faq-icon-${i}`);
+    if (otherAns && otherIcon && i !== index) {
+      otherAns.classList.add('hidden');
+      otherIcon.classList.remove('rotate-180');
+    }
+  }
+
+  if (isHidden) {
+    ans.classList.remove('hidden');
+    icon.classList.add('rotate-180');
+  } else {
+    ans.classList.add('hidden');
+    icon.classList.remove('rotate-180');
+  }
 };
 
 

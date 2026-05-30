@@ -11,3 +11,10 @@ yarn-error.log*
 .DS_Store
 dist/
 build/
+
+.vercel
+
+# Verification screenshots
+verify_*.png
+preloader_screenshot.png
+
