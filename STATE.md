@@ -2,6 +2,7 @@
 
 ## Current Status
 - Project fully completed, tested, verified, and deployed to Vercel.
+- **Fixed landing page preloader getting stuck. Diagnosed a JavaScript syntax compiler error in `public/app.js` (stray closing brackets left behind during dynamic list cleanup) which prevented script load and execution. Corrected and verified successfully via console/preloader test runners.**
 - **Removed all hardcoded static dummy free signals and 11-trader references from the homepage, making the active streams count, expert status badges, and channel description header dynamically match the database's live active traders count.**
 - **Redesigned the "Client Communications" section in the trader's dashboard to include a toggleable "Free Signal" broadcasting tab allowing traders to post up to 3 free signals per calendar day, strictly enforced server-side, and dynamically populated in the public `#free-signals` lounge feed on the homepage.**
 - **Purged all dummy user accounts, traders, signals, chat logs, and payments from the primary database, and refactored automated Playwright verification scripts to dynamically seed and restore test credentials at runtime so they execute successfully without leaving residual data.**
