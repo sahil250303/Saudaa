@@ -2,6 +2,7 @@
 
 ## Current Status
 - Project fully completed, tested, verified, and deployed to Vercel.
+- **Removed all hardcoded static dummy free signals and 11-trader references from the homepage, making the active streams count, expert status badges, and channel description header dynamically match the database's live active traders count.**
 - **Redesigned the "Client Communications" section in the trader's dashboard to include a toggleable "Free Signal" broadcasting tab allowing traders to post up to 3 free signals per calendar day, strictly enforced server-side, and dynamically populated in the public `#free-signals` lounge feed on the homepage.**
 - **Purged all dummy user accounts, traders, signals, chat logs, and payments from the primary database, and refactored automated Playwright verification scripts to dynamically seed and restore test credentials at runtime so they execute successfully without leaving residual data.**
 - **Redesigned the avatar profile photo upload interface in the admin panel to support drag-and-drop or local file selection, encoding uploads into Base64 format for secure database storage and serverless platform persistence.**
@@ -33,6 +34,7 @@
 - **Verified complete system cleanup through automated verification tests.**
 
 ## Completed Tasks
+- [x] Remove all hardcoded static dummy free signals and 11-trader references from the homepage, replacing with dynamic counters
 - [x] Redesign "Client Communications" dashboard widget to support free signals broadcaster and enforce 3-signal daily limit
 - [x] Integrate live homepage lounge `#free-signals` chat feed to fetch and render broadcaster signals
 - [x] Integrate SEO metadata descriptions to dashboard and admin layout structures
