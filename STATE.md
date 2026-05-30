@@ -1,0 +1,96 @@
+# GSD State Persistence - Saudaa
+
+## Current Status
+- Project fully completed, tested, and verified.
+- Created and exported a self-contained static HTML frontend file for the Saudaa homepage at `D:\pratik\index.html`.
+- Node.js server running in the background at `http://localhost:3000`.
+- **Integrated comprehensive mobile responsive layout optimizations across the homepage and user/trader dashboards, featuring collapsible navbar drawer, mobile exclusive cards leaderboard, aspect-square stock heatmap, mobile dashboard header status bar, and horizontal subscriber chat list carousels.**
+- **Updated the homepage's navbar to display only the logo graphic, removing the "Saudaa" brand name text and scaling the logo's size by 20% to 54px while retaining proportional constraints and overall navbar alignments.**
+- **Added a dynamic background animation to the hero section mimicking a share market chart with falling red and green stock candlesticks (implemented via HTML5 canvas and canvas rendering loop, with adjusted opacity and wick boldness for optimal contrast).**
+- **Updated all currency representations across the platform to Indian Rupees (₹), formatting stock ticker pricing, mock signals, subscription plan checkout selections, chatbot logs, and administrative ledger tables.**
+- **Removed all references to "Elite Trading" from the application branding (title, navigation header sub-label, comparison wizard description, and footer brand name).**
+- **Fixed landing page preloader getting stuck. Diagnosed an unclosed script tag on the TradingView Heatmap widget inside index.html which prevented app.js from loading. Resolved by adding the missing closing script tag, restoring preloader fade-out animation and main page visibility.**
+- **Integrated custom logo (/Assets/logo/logo.png) into navbar, footer, login screens, dashboard sidebar, and preloader animation. Placed the logo centered directly on top of the text preloader and progress bar, and scaled it dynamically via CSS to maximize artwork visibility.**
+- **Enhanced traders' dashboard suggestions form with Trade Category and Trading Strategy dropdown options. Formatted options with parenthetical explanations to assist novice users, and configured cards to render these properties as styling badges.**
+- **Optimized the Market Heatmap size to fit within the viewport on desktop screens (reduced height from 950px to 700px) and designed a floating "Scroll to Bottom" downward arrow button inside the widget card to smoothly scroll users to the base of the heatmap.**
+- Frontend interfaces, CSS styling, dynamic stock strips, interactive dashboards, chatbots, and databases are operational.
+- **Relocated the "Live Market" ticker strip below the homepage hero section, configuring it to stick at top-[80px] (directly below the sticky navbar) when scrolled.**
+- **Mapped the navbar "Market Edge" option to link directly to the Live Market Heatmap section (#heatmap).**
+- **Redesigned the homepage hero section, replacing the "Trader Portal Login" CTA with an inviting, professional chat box widget promoting "Free Insights Chats".**
+- **Redesigned the navbar to include an always-visible, prominent Home option and optimized the layout to limit to 5 primary links.**
+- **Integrated Organic Minimalist Light design system, updating color palettes, typography tokens, and border radii across files.**
+- **Group-unified all free trading channel signals into a single continuous Discord-style feed (#free-signals) with a secondary #welcome-lounge info channel.**
+- **Removed the landing page "Subscription Tiers" pricing section, pointing all entry points to the leaderboard instead.**
+- **Updated Lounge bot chat responses and dashboard fallback links to route users to the leaderboard for subscriptions.**
+- **Added Secure Admin Dashboard for User Overview, Payments, Trader Accounts, and Plan Modifier.**
+- **Completed Standard Plan pricing update to $59 (updated landing page dynamically).**
+- **Purged all mock user accounts, payment history, messages, and signals from the database.**
+- **Reset all trader subscriber counts to 0 to clear out simulated metrics.**
+- **Verified complete system cleanup through automated verification tests.**
+
+## Completed Tasks
+- [x] Integrate SEO metadata descriptions to dashboard and admin layout structures
+- [x] Integrate comprehensive mobile responsive layout optimizations across the homepage and user/trader dashboards
+- [x] Update index.html navbar to remove "Saudaa" brand text and scale logo size by 20%
+- [x] Add dynamic background candle animation to the homepage hero section
+- [x] Identify and debug the issue causing the website to get stuck on the preload page (unclosed TradingView script tag).
+- [x] Optimize Market Heatmap sizing to fit the viewport (reduced from 950px to 700px height) and add floating "Scroll to Bottom" downward arrow button.
+- [x] Enhance traders' dashboard suggestion creator modal with trade category & trading strategy dropdown options (under 5 choices each, jargon-free explanations).
+- [x] Integrate custom logo (/Assets/logo/logo.png) into navbars, footers, dashboard sidebar, and prepended preload animation sequence.
+- [x] Relocate "live market" strip below hero section and adjust scroll sticky offsets
+- [x] Map navbar "Market Edge" CTA to scroll directly to the market heatmap (#heatmap)
+- [x] Redesign hero section to replace Login button with a "Free Insights Chats" box widget
+- [x] Redesign navigation bar to include prominent, always-visible Home link
+- [x] Integrate Organic Minimalist Light design system (colors, typography, border-radii)
+- [x] Group-unify all free trading channels into a single Discord-style group chat (#free-signals)
+- [x] Remove "Subscription Tiers" homepage section and update navigation/bot/login reference links
+- [x] Design and Populate JSON Database Structure
+- [x] Write backend router (`server.js`) and API integration
+- [x] Build public landing page (`public/index.html`)
+- [x] Build unified dashboard (`public/dashboard.html`)
+- [x] Code custom styles & script controllers (`public/app.css`, `public/app.js`, `public/dashboard.js`)
+- [x] Run application locally
+- [x] Verify preload animation cycles
+- [x] Verify leaderboard ranking functionality
+- [x] Test the checkout, registration, and subscription generation
+- [x] Verify 10 separate trader dashboards and signal management
+- [x] Test the client-trader chat in both dashboard views
+- [x] Verify chatbot auto-responses and mobile responsiveness
+- [x] Design and implement 3-Step Trader Comparison Wizard Modal and homepage CTA banner
+- [x] Fix scale-95 modal selection/transition TypeError bug
+- [x] Integrate live TradingView Stock Heatmap on index.html landing page and scale dimensions uniformly
+- [x] Fixed heatmap height collapsing bug using !important overrides in CSS
+- [x] Implement Database Schema Updates & Admin Startup Initialization (scrypt hashing and seeds)
+- [x] Implement HMAC-SHA256 based Multi-Factor Authentication (MFA)
+- [x] Implement secure `/api/admin/login` and `/api/admin/mfa-verify` endpoints
+- [x] Update `/api/subscribe` checkout process to record payment ledger transactions
+- [x] Implement token verification middleware (`verifyAdminToken`) and protected endpoints
+- [x] Create Admin Dashboard UI (`public/admin.html`) with glassmorphism tabs
+- [x] Create Admin controller JS (`public/admin.js`) for modal editors and network actions
+- [x] Dynamic Landing Page Pricing cards integration
+- [x] Verified full auth, MFA code generation, payment ledger logs, and updated standard plan pricing to $59
+- [x] Purge all fake data (users, payments, messages, suggestions) from database
+- [x] Reset trader subscriber counts to 0 and verify clean system state
+- [x] Design and implement complimentary trading calls chat box below Compare Trader section utilizing custom war room layout and typing simulator
+- [x] Design, integrate, and verify animated stats strip and scroll indicator at the bottom of the hero section
+- [x] Match Complimentary Trading Channels styling, variables, input, and colors with light cream and sage green theme
+- [x] Remove "Elite Trading" references from application branding and index.html
+- [x] Convert all platform currency symbols to Indian Rupees (₹)
+- [x] Programmatically trim transparent padding from the logo image (from 1024x1024 to 394x336 pixels)
+- [x] Adjust logo layout across preloader, navigation header, and dashboard sidebar/login pages to utilize the cropped logo (removing scale-[2.5] and overflow cropping hacks)
+- [x] Redesign footer with a responsive, 4-column structured grid (Company Profile with social SVGs, Navigation, Contact Details with Nariman Point office, Legal & Policies) matching the Organic Minimalist Light design theme
+- [x] Add elegant link underline hovers and social icon micro-animations to CSS
+- [x] Optimize logo presentation by increasing the logo size by exactly 25% across all website views (Preloader, Header Nav, Footer, Dashboard Login, and Sidebar) while maintaining aspect ratio and visual crispness
+- [x] Create a new informative "Why Choose Saudaa" section after the complimentary signals chat section containing three key numbered items: Trade with Verified Traders, Multiple Experts, One Platform, and Save Time & Make Smarter Decisions
+- [x] Verify layout responsiveness and visual correctness using visual test run screenshots
+
+## Final Notes
+- The application is running at `http://localhost:3000`.
+- Admin credentials seeded: `admin` / `adminPassword123`
+- Default plans structure (standard, pro, vip) maintained with updated standard price ($59).
+- Clean database holds 11 traders (retained for marketplace UI) with 0 subscribers each.
+- Home page includes an interactive, theme-compliant Chatbox section demonstrating three free trading signals for novice users.
+- Home page features an animated statistics strip and micro-animated scroll indicator at the bottom of the hero section.
+- Complimentary Intelligence Channels chat widget matches the light cream background, sage green accents, and theme-compliant inputs.
+- Branding logo was optimized, resized, and integrated consistently across preloader, header navigation, footer, dashboard login, and sidebar views.
+- Minimalistic responsive footer was fully integrated and styled.

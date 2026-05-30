@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Saudaa - Trading Suggestions Marketplace</title>
+  <meta name="description" content="Access institutional-grade trading inside suggestions from top ranked traders. Secure checkout, real-time-like client-trader chat, and live market pricing."/>
+  
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/app.css"/>
+  
+  <!-- Tailwind Configuration matching Stitch -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#42682b",
+            "primary-container": "#8bb56f",
+            "primary-fixed": "#c2f0a3",
+            "primary-fixed-dim": "#a7d38a",
+            "on-primary-container": "#22460d",
+            "on-primary-fixed": "#092100",
+            "on-primary-fixed-variant": "#2b5015",
+            "inverse-primary": "#a7d38a",
+            "inverse-surface": "#30312e",
+            "inverse-on-surface": "#f2f1ec",
+            "surface-tint": "#42682b",
+            secondary: "#635f4b",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#e7e0c7",
+            "on-secondary-container": "#67634f",
+            "secondary-fixed": "#eae2c9",
+            "secondary-fixed-dim": "#cdc7ae",
+            "on-secondary-fixed": "#1e1c0c",
+            "on-secondary-fixed-variant": "#4b4734",
+            tertiary: "#57615c",
+            "on-tertiary": "#ffffff",
+            "tertiary-container": "#a2aca6",
+            "on-tertiary-container": "#37403c",
+            "tertiary-fixed": "#dbe5df",
+            "tertiary-fixed-dim": "#bfc9c3",
+            "on-tertiary-fixed": "#151d1a",
+            "on-tertiary-fixed-variant": "#3f4945",
+            background: "#faf9f4",
+            surface: "#faf9f4",
+            "surface-dim": "#dbdad5",
+            "surface-bright": "#faf9f4",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f4ef",
+            "surface-container": "#efeee9",
+            "surface-container-high": "#e9e8e3",
+            "surface-container-highest": "#e3e3de",
+            "surface-variant": "#e3e3de",
+            "on-primary": "#ffffff",
+            "on-background": "#1b1c19",
+            "on-surface": "#1b1c19",
+            "on-surface-variant": "#444840",
+            outline: "#747870",
+            "outline-variant": "#c4c8be",
+            error: "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error": "#ffffff",
+            "on-error-container": "#93000a"
+          },
+          fontFamily: {
+            sans: ['Manrope', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          fontSize: {
+            'display-lg': ['48px', { lineHeight: '56px', letterSpacing: '-0.02em', fontWeight: '700' }],
+            'display-lg-mobile': ['36px', { lineHeight: '44px', letterSpacing: '-0.02em', fontWeight: '700' }],
+            'headline-md': ['32px', { lineHeight: '40px', letterSpacing: '-0.01em', fontWeight: '600' }],
+            'headline-sm': ['24px', { lineHeight: '32px', letterSpacing: '0em', fontWeight: '600' }],
+            'body-lg': ['18px', { lineHeight: '28px', letterSpacing: '0.01em', fontWeight: '400' }],
+            'body-md': ['16px', { lineHeight: '24px', letterSpacing: '0.01em', fontWeight: '400' }],
+            'label-md': ['14px', { lineHeight: '20px', letterSpacing: '0.05em', fontWeight: '500' }],
+            'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0.05em', fontWeight: '600' }],
+          },
+          spacing: {
+            gutter: "24px",
+            xs: "4px",
+            sm: "12px",
+            md: "24px",
+            lg: "48px",
+            xl: "80px",
+            base: "8px",
+            "margin-desktop": "40px",
+            "margin-mobile": "16px"
+          },
+          borderRadius: {
+            sm: "0.25rem",
+            DEFAULT: "0.5rem",
+            md: "0.75rem",
+            lg: "1rem",
+            xl: "1.5rem",
+            full: "9999px"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body id="homepage-root" class="bg-background text-on-background min-h-screen flex flex-col antialiased">
+
+  <!-- Preloader Screen -->
+  <div id="preloader" class="fixed inset-0 bg-background z-[9999] flex flex-col items-center justify-center transition-opacity duration-500 ease-out">
+    <div class="flex flex-col items-center select-none text-center">
+      <!-- Logo on Top -->
+      <div class="w-[70px] h-[70px] flex items-center justify-center bg-transparent shrink-0 mb-4">
+        <img src="/Assets/logo/logo.png" alt="Saudaa Logo" class="w-full h-full object-contain animate-pulse"/>
+      </div>
+      <!-- Animated text below Logo -->
+      <div class="text-4xl md:text-5xl font-extrabold tracking-tight text-primary flex items-center font-mono mb-6 justify-center">
+        <span id="preloader-sa" class="inline-block min-w-[2ch] text-right pr-1 transition-all duration-75">Sa</span>
+        <span id="preloader-auda" class="text-secondary font-sans font-bold">udaa</span>
+      </div>
+      <!-- Progress Bar -->
+      <div class="h-1 w-36 bg-surface-container-high rounded-full overflow-hidden">
+        <div id="preloader-bar" class="h-full bg-primary w-0 rounded-full transition-all duration-300"></div>
+      </div>
+      <p class="text-xs text-outline mt-3 tracking-widest uppercase font-semibold">Configuring Workspace</p>
+    </div>
+  </div>
+
+  <!-- Header Nav -->
+  <header class="w-full bg-surface/80 backdrop-blur-md sticky top-0 z-50 border-b border-outline-variant/30 transition-all duration-200">
+    <div class="max-w-[1280px] mx-auto h-20 px-margin-mobile md:px-margin-desktop flex justify-between items-center">
+      <!-- Logo -->
+      <a href="/" class="flex items-center group">
+        <div class="w-[54px] h-[54px] flex items-center justify-center bg-transparent shrink-0">
+          <img src="/Assets/logo/logo.png" alt="Saudaa Logo" class="w-full h-full object-contain transition-transform group-hover:scale-105"/>
+        </div>
+      </a>
+
+      <!-- Navigation Menu (Desktop Only) -->
+      <nav class="hidden sm:flex items-center gap-4 md:gap-8">
+        <a href="/" class="text-label-md font-extrabold text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+          <span class="material-symbols-outlined text-[16px] font-bold">home</span>
+          <span>Home</span>
+        </a>
+        <a href="#leaderboard" class="text-label-md font-medium text-on-surface-variant hover:text-primary transition-colors">Leaderboard</a>
+        <a href="#heatmap" class="text-label-md font-medium text-on-surface-variant hover:text-primary transition-colors">Market Edge</a>
+      </nav>
+
+      <!-- Action Buttons (Desktop Only) -->
+      <div class="hidden sm:flex items-center gap-4">
+        <a href="/dashboard.html" class="bg-surface-container-lowest text-primary font-bold font-label-md border border-outline-variant/60 hover:bg-surface-container-low px-5 py-2.5 rounded-lg transition-colors shadow-sm">
+          Portal Login
+        </a>
+        <a href="#leaderboard" class="bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold font-label-md hover:opacity-90 px-6 py-2.5 rounded-lg transition-opacity shadow-sm">
+          Get Started
+        </a>
+      </div>
+
+      <!-- Hamburger Menu Button (Mobile Only) -->
+      <button id="mobile-menu-btn" class="sm:hidden text-on-surface hover:bg-surface-container-low p-2.5 rounded-lg transition-colors focus:outline-none flex items-center justify-center">
+        <span class="material-symbols-outlined text-[24px]">menu</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Dropdown Panel -->
+  <div id="mobile-menu-panel" class="sm:hidden fixed top-20 left-0 w-full bg-surface/95 backdrop-blur-md border-b border-outline-variant/30 shadow-lg z-40 hidden opacity-0 -translate-y-2.5 transition-all duration-300">
+    <nav class="flex flex-col p-6 gap-4">
+      <a href="/" onclick="closeMobileMenu()" class="text-label-md font-extrabold text-primary bg-primary/10 border border-primary/20 px-4 py-3 rounded-xl flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px]">home</span>
+        <span>Home</span>
+      </a>
+      <a href="#leaderboard" onclick="closeMobileMenu()" class="text-label-md font-bold text-on-surface-variant hover:text-primary hover:bg-surface-container-low px-4 py-3 rounded-xl transition-all">Leaderboard</a>
+      <a href="#heatmap" onclick="closeMobileMenu()" class="text-label-md font-bold text-on-surface-variant hover:text-primary hover:bg-surface-container-low px-4 py-3 rounded-xl transition-all">Market Edge</a>
+      <hr class="border-outline-variant/30 my-1"/>
+      <a href="/dashboard.html" class="w-full text-center bg-surface-container-lowest text-primary font-bold py-3.5 rounded-xl border border-outline-variant/60 hover:bg-surface-container-low transition-colors shadow-sm text-sm">
+        Portal Login
+      </a>
+      <a href="#leaderboard" onclick="closeMobileMenu()" class="w-full text-center bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold py-3.5 rounded-xl hover:opacity-90 transition-opacity shadow-sm text-sm">
+        Get Started
+      </a>
+    </nav>
+  </div>
+
+  <!-- Hero Section -->
+  <section id="features" class="relative w-full overflow-hidden py-16 md:py-24 bg-gradient-to-b from-surface to-background">
+    <!-- Accent Blur Backgrounds -->
+    <div class="absolute -left-20 top-20 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -right-20 bottom-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- Dynamic Market Candles Background Canvas -->
+    <canvas id="hero-candles-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-[0.35]"></canvas>
+
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+      <!-- Text Area -->
+      <div class="lg:col-span-7 flex flex-col items-start text-left z-10">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6">
+          <span class="material-symbols-outlined text-primary text-[16px] font-bold">verified</span>
+          <span class="text-xs font-bold text-primary tracking-wider uppercase">Verified Institutional Insides</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-on-surface leading-[1.1] mb-6">
+          The Market Has a New Standard. <br/>
+          <span class="text-primary bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">Verified Traders.</span>
+        </h1>
+        <p class="text-lg text-on-surface-variant max-w-xl mb-8 leading-relaxed">
+          Discover proven traders, live market insights, and real-time discussions from experienced professionals.
+        </p>
+        <div class="flex flex-col gap-6 w-full max-w-md">
+          <a href="#leaderboard" class="w-full bg-primary text-on-primary font-bold py-4 rounded-xl hover:opacity-95 text-center transition-all shadow-[0_4px_20px_0_rgba(66,104,43,0.15)] flex items-center justify-center gap-2">
+            View Live Leaderboard
+            <span class="material-symbols-outlined text-[18px]">arrow_downward</span>
+          </a>
+
+          <!-- Hero Chat box CTA -->
+          <div class="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-4 shadow-md flex flex-col gap-3">
+            <div class="flex items-center justify-between border-b border-outline-variant/20 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                <span class="text-xs font-bold text-on-surface">Community Lounge Feed</span>
+              </div>
+              <span class="text-[9px] font-mono text-primary font-bold">11 Experts Active</span>
+            </div>
+            
+            <div class="flex gap-3 items-start">
+              <div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-xs shrink-0">SL</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-bold text-xs text-on-surface">Lounge Host</span>
+                  <span class="text-[9px] text-outline">Just now</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed mt-0.5">
+                  Welcome to Saudaa! We share free daily trade suggestions from top-rated market experts. Open the chat below to view live setups.
+                </p>
+              </div>
+            </div>
+
+            <a href="#calls" class="w-full bg-primary hover:opacity-95 text-on-primary font-bold text-xs py-3 rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-[0_4px_15px_rgba(66,104,43,0.15)]">
+              <span class="material-symbols-outlined text-[16px]">chat</span>
+              <span>Free Insights Chats</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual (Interactive Bento Card Panel) -->
+      <div class="lg:col-span-5 relative z-10 mt-12 lg:mt-0">
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-[0_12px_40px_rgba(53,61,50,0.08)] relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-tr from-surface-container-low/50 to-transparent pointer-events-none"></div>
+          
+          <!-- Bento Header -->
+          <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center gap-2">
+              <span class="h-3 w-3 rounded-full bg-red-400"></span>
+              <span class="h-3 w-3 rounded-full bg-yellow-400"></span>
+              <span class="h-3 w-3 rounded-full bg-green-400"></span>
+            </div>
+            <span class="font-mono text-[10px] text-outline tracking-wider uppercase font-bold bg-surface-container px-2 py-0.5 rounded">Saudaa terminal v1.4</span>
+          </div>
+
+          <!-- Feature Item -->
+          <div class="space-y-4">
+            <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/20 flex justify-between items-center">
+              <div>
+                <span class="text-xs text-outline block">SUBSCRIBED TRADER</span>
+                <span class="font-bold text-on-surface block mt-0.5">Alex Pro</span>
+              </div>
+              <span class="bg-primary-container/20 text-primary px-2.5 py-1 rounded-md text-xs font-extrabold">Active</span>
+            </div>
+
+            <!-- Signal Preview -->
+            <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/20">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-mono font-bold text-primary">BTC/USD Buy Alert</span>
+                <span class="text-[10px] text-outline">Active</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center mt-2">
+                <div class="bg-surface-container-lowest p-2 rounded-lg border border-outline-variant/10">
+                  <span class="text-[9px] text-outline block">ENTRY</span>
+                  <span class="font-mono text-xs font-bold text-on-surface">₹64,150</span>
+                </div>
+                <div class="bg-surface-container-lowest p-2 rounded-lg border border-outline-variant/10">
+                  <span class="text-[9px] text-outline block">TARGET</span>
+                  <span class="font-mono text-xs font-bold text-primary">₹66,500</span>
+                </div>
+                <div class="bg-surface-container-lowest p-2 rounded-lg border border-outline-variant/10">
+                  <span class="text-[9px] text-outline block">STOP LOSS</span>
+                  <span class="font-mono text-xs font-bold text-error">₹63,200</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Preview -->
+            <div class="p-4 rounded-xl bg-surface-container border border-outline-variant/20 flex gap-3 items-start">
+              <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold text-xs shrink-0">AP</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-center">
+                  <span class="font-bold text-xs text-on-surface">Alex Pro</span>
+                  <span class="text-[9px] text-outline">Just now</span>
+                </div>
+                <p class="text-xs text-on-surface-variant truncate mt-0.5">Let's lock in 50% profits at target 1...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Strip & Scroll Indicator -->
+    <div id="hero-stats-strip" class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop mt-16 md:mt-24 pt-12 border-t border-outline-variant/30 relative">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-y-8 lg:gap-y-0">
+        <!-- Stat 1 -->
+        <div class="border-l border-outline-variant/40 pl-6 md:pl-8">
+          <div id="stat-val-traders" class="text-4xl md:text-5xl font-serif font-light text-on-surface tracking-tight leading-none">0</div>
+          <div class="text-[10px] font-mono tracking-[0.15em] text-outline uppercase mt-3">Active Traders</div>
+        </div>
+        <!-- Stat 2 -->
+        <div class="border-l border-outline-variant/40 pl-6 md:pl-8">
+          <div id="stat-val-leaders" class="text-4xl md:text-5xl font-serif font-light text-on-surface tracking-tight leading-none">0</div>
+          <div class="text-[10px] font-mono tracking-[0.15em] text-outline uppercase mt-3">Verified Leaders</div>
+        </div>
+        <!-- Stat 3 -->
+        <div class="border-l border-outline-variant/40 pl-6 md:pl-8">
+          <div id="stat-val-winrate" class="text-4xl md:text-5xl font-serif font-light text-on-surface tracking-tight leading-none">0%</div>
+          <div class="text-[10px] font-mono tracking-[0.15em] text-outline uppercase mt-3">Avg Win Rate</div>
+        </div>
+        <!-- Stat 4 -->
+        <div class="border-l border-outline-variant/40 pl-6 md:pl-8">
+          <div id="stat-val-calls" class="text-4xl md:text-5xl font-serif font-light text-on-surface tracking-tight leading-none">0</div>
+          <div class="text-[10px] font-mono tracking-[0.15em] text-outline uppercase mt-3">Calls This Month</div>
+        </div>
+      </div>
+      
+      <!-- Scroll Indicator -->
+      <div class="mt-12 pl-6 md:pl-8 flex flex-col items-start gap-3">
+        <span class="text-[10px] font-mono tracking-[0.15em] text-outline uppercase select-none">Scroll</span>
+        <div class="w-[1px] h-14 bg-outline-variant/30 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-1/2 bg-error animate-scroll-line"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Market Pricing Loop Strip -->
+  <section class="w-full bg-surface-container border-b border-outline-variant/30 h-[44px] flex items-center overflow-hidden select-none sticky top-[80px] z-40">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop relative w-full">
+      <div class="ticker-wrap flex items-center">
+        <div class="ticker-title font-semibold text-xs tracking-wider uppercase text-primary mr-6 flex items-center gap-1 shrink-0">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+          </span>
+          Live Markets:
+        </div>
+        <div id="price-ticker" class="flex gap-12 whitespace-nowrap animate-ticker custom-scrollbar overflow-x-auto py-0.5">
+          <!-- Populated by JavaScript -->
+          <div class="ticker-item inline-flex items-center gap-2">
+            <span class="font-bold text-xs text-on-surface">AAPL</span>
+            <span class="font-mono text-xs text-outline" id="price-AAPL">---</span>
+            <span class="font-mono text-xs font-semibold" id="change-AAPL">---</span>
+          </div>
+          <div class="ticker-item inline-flex items-center gap-2">
+            <span class="font-bold text-xs text-on-surface">MSFT</span>
+            <span class="font-mono text-xs text-outline" id="price-MSFT">---</span>
+            <span class="font-mono text-xs font-semibold" id="change-MSFT">---</span>
+          </div>
+          <div class="ticker-item inline-flex items-center gap-2">
+            <span class="font-bold text-xs text-on-surface">TSLA</span>
+            <span class="font-mono text-xs text-outline" id="price-TSLA">---</span>
+            <span class="font-mono text-xs font-semibold" id="change-TSLA">---</span>
+          </div>
+          <div class="ticker-item inline-flex items-center gap-2">
+            <span class="font-bold text-xs text-on-surface">NVDA</span>
+            <span class="font-mono text-xs text-outline" id="price-NVDA">---</span>
+            <span class="font-mono text-xs font-semibold" id="change-NVDA">---</span>
+          </div>
+          <div class="ticker-item inline-flex items-center gap-2">
+            <span class="font-bold text-xs text-on-surface">AMZN</span>
+            <span class="font-mono text-xs text-outline" id="price-AMZN">---</span>
+            <span class="font-mono text-xs font-semibold" id="change-AMZN">---</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Leaderboard Section -->
+  <section id="leaderboard" class="w-full py-16 md:py-24 bg-surface-container-lowest border-y border-outline-variant/30 relative">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-4">THE HALL</h2>
+        <p class="text-on-surface-variant">
+          Live rankings updated hourly. Click a trader to explore their profile, view verified historical suggestions, and subscribe to gain terminal access.
+        </p>
+      </div>
+
+      <!-- Leaderboard Filter Controls -->
+      <div class="bg-surface-container-low border border-outline-variant/30 rounded-2xl p-4 md:p-6 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <!-- Search -->
+        <div class="relative w-full md:w-80">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+          <input type="text" id="leaderboard-search" placeholder="Search traders..." class="w-full pl-11 pr-4 py-2.5 bg-surface-container-lowest border border-outline-variant/50 rounded-xl text-on-surface placeholder:text-outline focus:outline-none focus:border-primary transition-colors text-sm"/>
+        </div>
+
+        <!-- Filters & Sorting -->
+        <div class="flex flex-wrap gap-3 w-full md:w-auto items-center justify-end">
+          <select id="leaderboard-strategy" class="bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2.5 text-xs text-on-surface focus:outline-none focus:border-primary transition-colors">
+            <option value="all">All Strategies</option>
+            <option value="algorithmic">Algorithmic & Swing</option>
+            <option value="quant">Quant Strategy</option>
+            <option value="scalping">Scalping & Options</option>
+            <option value="arbitrage">Arbitrage & Crypto</option>
+          </select>
+
+          <select id="leaderboard-sort" class="bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2.5 text-xs text-on-surface focus:outline-none focus:border-primary transition-colors">
+            <option value="rank">Rank: High to Low</option>
+            <option value="roi">ROI: High to Low</option>
+            <option value="winrate">Win Rate: High to Low</option>
+            <option value="subs">Subscribers: High to Low</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Leaderboard Table/Grid (Desktop Only) -->
+      <div class="hidden md:block border border-outline-variant/40 rounded-2xl overflow-hidden bg-surface-container-lowest shadow-[0_4px_20px_0_rgba(53,61,50,0.02)]">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse min-w-[700px]">
+            <thead>
+              <tr class="bg-surface-container-low border-b border-outline-variant/30 text-on-surface-variant font-medium text-xs tracking-wider uppercase">
+                <th class="py-4 px-6 text-center w-16">Rank</th>
+                <th class="py-4 px-6">Trader</th>
+                <th class="py-4 px-6">Strategy</th>
+                <th class="py-4 px-6 text-right">Win Rate</th>
+                <th class="py-4 px-6 text-right">30d ROI</th>
+                <th class="py-4 px-6 text-right">Active Subs</th>
+                <th class="py-4 px-6 text-center w-40">Action</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body" class="divide-y divide-outline-variant/20 text-sm">
+              <!-- Rendered by app.js dynamically -->
+              <tr class="hover:bg-surface-container-low/50 transition-colors">
+                <td colspan="7" class="py-12 text-center text-outline">Loading elite traders rankings...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Leaderboard Mobile Cards (Mobile Only) -->
+      <div id="leaderboard-mobile" class="block md:hidden space-y-4">
+        <div class="py-8 text-center text-outline text-sm">Loading elite traders rankings...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Trader Comparison CTA Section -->
+  <section id="compare-cta" class="w-full py-12 bg-surface-container-low border-b border-outline-variant/30 relative overflow-hidden">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgba(53,61,50,0.04)] flex flex-col lg:flex-row justify-between items-center gap-6 relative overflow-hidden">
+        <!-- Ambient subtle glow -->
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
+        
+        <div class="flex-1 space-y-3 z-10 text-center lg:text-left">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary uppercase tracking-wider">
+            <span class="material-symbols-outlined text-[14px]">balance</span> New Feature
+          </span>
+          <h3 class="text-2xl md:text-3xl font-bold tracking-tight text-on-surface">Find Your Perfect Trader Match</h3>
+          <p class="text-on-surface-variant max-w-2xl text-sm leading-relaxed">
+            Not sure who to subscribe to? Use our guided 3-step comparison tool to evaluate their strategy, win rate, 30d ROI, and subscriber metrics side-by-side.
+          </p>
+        </div>
+        
+        <div class="shrink-0 z-10 w-full lg:w-auto flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div class="hidden md:flex items-center gap-6 text-xs text-outline font-semibold pr-4">
+            <div class="flex items-center gap-1.5">
+              <span class="w-5 h-5 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-mono">1</span> Select
+            </div>
+            <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            <div class="flex items-center gap-1.5">
+              <span class="w-5 h-5 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-mono">2</span> Metrics
+            </div>
+            <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            <div class="flex items-center gap-1.5">
+              <span class="w-5 h-5 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-mono">3</span> Compare
+            </div>
+          </div>
+          <button onclick="openCompareModal()" class="w-full sm:w-auto bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold px-8 py-3.5 rounded-xl hover:opacity-95 text-center transition-all shadow-[0_4px_15px_rgba(82,99,74,0.15)] flex items-center justify-center gap-2">
+            Compare Traders
+            <span class="material-symbols-outlined text-[18px]">compare_arrows</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Complimentary Trading Channels Section -->
+  <section id="calls" class="w-full py-16">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary uppercase tracking-wider mb-3">
+            <span class="material-symbols-outlined text-[14px]">cell_tower</span> Novice Friendly
+          </span>
+          <h2 class="text-3xl font-extrabold tracking-tight text-on-surface font-sans">Complimentary Intelligence Channels</h2>
+          <p class="text-on-surface-variant text-sm mt-1.5 max-w-xl">
+            Top market analysts share 3 complimentary trade suggestions. Select a channel to review their approach and unlock premium signals.
+          </p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-semibold text-on-surface-variant">
+          <span class="h-2.5 w-2.5 rounded-full bg-primary animate-pulse"></span>
+          <span>11 Active Trader Streams</span>
+        </div>
+      </div>
+
+      <!-- Mobile Dropdown Selector (visible only on mobile) -->
+      <div class="block md:hidden mb-6">
+        <label for="mobile-trader-channel-select" class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Select Trader Channel</label>
+        <select id="mobile-trader-channel-select" onchange="switchTraderChannel(this.value)" class="w-full bg-surface-container border border-outline-variant/60 rounded-xl p-3 text-sm text-on-surface focus:outline-none focus:border-primary">
+          <!-- Populated by JS -->
+        </select>
+      </div>
+
+      <!-- War Room Layout -->
+      <div class="wr-layout">
+        <!-- Sidebar: Trader Channels List -->
+        <div class="wr-col">
+          <div class="wr-head bg-surface-container/5">
+            <span class="wr-head-label">Trader Channels</span>
+            <span class="material-symbols-outlined text-on-surface-variant text-[16px]">menu_open</span>
+          </div>
+          <div class="wr-body" id="trader-channels-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Main Feed Window -->
+        <div class="wr-col">
+          <!-- Chat Header -->
+          <div class="wr-head bg-surface-container/5" id="chat-header-area">
+            <div class="flex items-center gap-2.5">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              </span>
+              <span class="font-bold text-sm text-on-surface" id="active-channel-title">Loading feed...</span>
+            </div>
+            <span class="text-xs font-mono text-primary" id="active-channel-roi">--% ROI</span>
+          </div>
+
+          <!-- Chat Messages Body -->
+          <div class="feed-body" id="chat-feed-body">
+            <!-- Dynamically populated with chat history -->
+          </div>
+
+          <!-- Mock Feed Input Footer -->
+          <div class="feed-foot bg-surface-container/5">
+            <input type="text" id="chat-mock-input" disabled placeholder="Subscribe to start private chatting..." class="feed-inp w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface placeholder:text-outline focus:outline-none focus:border-primary disabled:opacity-75 disabled:cursor-not-allowed"/>
+            <button id="chat-premium-cta-btn" onclick="handleSubscribeFromChat()" class="bg-primary hover:bg-primary-container text-on-primary font-extrabold text-xs px-5 py-2.5 rounded-lg transition-colors whitespace-nowrap flex items-center gap-1">
+              Unlock Daily Signals
+              <span class="material-symbols-outlined text-[14px]">lock_open</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Panel: Rank Movers Today -->
+        <div class="wr-col">
+          <div class="wr-head bg-surface-container/5">
+            <span class="wr-head-label">Rank Movers Today</span>
+            <span class="text-[9px] font-mono text-primary uppercase font-bold tracking-wider">Top ROI</span>
+          </div>
+          <div class="wr-body" id="rank-movers-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- Why Choose Saudaa Over Telegram Trading Channels Section -->
+  <section id="why-choose" class="w-full py-20 bg-surface-container border-b border-outline-variant/30">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
+      
+      <!-- Section Title Header -->
+      <div class="max-w-2xl mx-auto text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-on-surface">Why Choose Saudaa Over Telegram Trading Channels?</h2>
+        <p class="text-xs text-on-surface-variant mt-3 font-mono uppercase tracking-widest">Vetted Professional Analytics vs Channel Chat Clutter</p>
+      </div>
+
+      <!-- Comparative Grid of 6 Points -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- Point 1 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-xs font-mono">1</span>
+              <h3 class="text-sm font-bold text-on-surface">Verified Traders vs Anonymous Admins</h3>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Most Telegram trading channels are run by anonymous individuals with no verified identity, qualifications, or track record. Anyone can create a channel, delete losing calls, and post fake profit screenshots.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-outline-variant/20 space-y-2 text-[11px] font-semibold text-primary">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Traders are verified before listing</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Performance history is fully trackable</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Point 2 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-xs font-mono">2</span>
+              <h3 class="text-sm font-bold text-on-surface">No Fake Profit Screenshots</h3>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Telegram channels often edit or delete losing calls, share only successful trades, use manipulated P&L screenshots, and promise "90% accuracy" or "guaranteed profit."
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-outline-variant/20 space-y-2 text-[11px] font-semibold text-primary">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Real trader performance visibility</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Consistent analysis over hype</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Point 3 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-xs font-mono">3</span>
+              <h3 class="text-sm font-bold text-on-surface">Structured Subscription System</h3>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Telegram groups usually depend on random payments, lack professional customer support, have no clear refund policies, and result in unorganized, scattered communication.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-outline-variant/20 space-y-2 text-[11px] font-semibold text-primary">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Organized, secure subscription portal</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Access to multiple experts in one platform</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Point 4 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-xs font-mono">4</span>
+              <h3 class="text-sm font-bold text-on-surface">Reduced Scam Risk</h3>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Telegram has become a hotspot for pump-and-dump groups, fake option calls, impersonation scams, "double your money" frauds, and unregulated financial advice.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-outline-variant/20 space-y-2 text-[11px] font-semibold text-primary">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Verified experts with tied credentials</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Drastically reduced market manipulation</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Point 5 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-xs font-mono">5</span>
+              <h3 class="text-sm font-bold text-on-surface">One Platform, Multiple Experts</h3>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Instead of joining dozens of cluttered Telegram groups, you can compare performance metrics side-by-side and follow strategies tailored to your target returns.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-outline-variant/20 space-y-2 text-[11px] font-semibold text-primary">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Compare traders easily in one place</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Choose based on trading style and ROI</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Point 6 -->
+        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-xs font-mono">6</span>
+              <h3 class="text-sm font-bold text-on-surface">Clean Terminal vs Cluttered Chat Feeds</h3>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Telegram channels bury crucial entry ranges, profit targets, and stop-loss levels in chaotic streams of chat messages, system ads, and general feed noise.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-outline-variant/20 space-y-2 text-[11px] font-semibold text-primary">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Clean, structured trader terminals</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">done</span>
+              <span>Isolated suggestion logs with zero spam</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Differentiate Section & Tagline -->
+      <div class="mt-16 bg-surface-container-low border border-outline-variant/40 rounded-2xl p-6 md:p-8 max-w-4xl mx-auto space-y-8 shadow-sm">
+        
+        <!-- Header -->
+        <div class="text-center">
+          <span class="text-xs font-mono font-bold tracking-[0.2em] text-primary uppercase bg-primary/10 border border-primary/20 px-3 py-1 rounded-full">Differentiate</span>
+        </div>
+
+        <!-- Two Bullet Points -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+          <div class="flex gap-3 items-start">
+            <span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">balance</span>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              When comparing Saudaa to Telegram call groups, consider the value of a curated platform with verified traders versus the risks of unregulated and anonymous advice.
+            </p>
+          </div>
+          <div class="flex gap-3 items-start">
+            <span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">shield</span>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              By choosing Saudaa, users prioritize transparency, accountability, and trust-based relationships with trading experts.
+            </p>
+          </div>
+        </div>
+
+        <!-- Strong Brand Positioning Line -->
+        <div class="border-t border-outline-variant/30 pt-6 text-center">
+          <p class="text-lg md:text-xl font-serif italic text-primary font-medium tracking-tight">
+            “Telegram gives you noise. Saudaa gives you verified expertise.”
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Checkout / Subscription Modal -->
+  <div id="checkout-modal" class="fixed inset-0 bg-on-background/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar p-6 shadow-2xl transition-transform duration-300 scale-95">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h3 class="text-lg font-bold text-on-surface">Secure Checkout Gateway</h3>
+          <p class="text-xs text-on-surface-variant">Complete subscription to get terminal credentials</p>
+        </div>
+        <button onclick="closeCheckout()" class="text-on-surface-variant hover:bg-surface-container p-1 rounded-full transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Checkout Form -->
+      <form id="checkout-form" class="space-y-4" onsubmit="handleCheckout(event)">
+        <input type="hidden" id="checkout-trader-id"/>
+        
+        <!-- Step 1: Account Creation -->
+        <div class="space-y-2 border-b border-outline-variant/30 pb-4">
+          <h4 class="text-xs font-bold text-primary tracking-wider uppercase mb-2">1. Setup Login Credentials</h4>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">Trader to Subscribe</label>
+            <select id="checkout-trader-select" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface">
+              <!-- Filled via app.js -->
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-2 mt-2">
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">Tier Layer</label>
+              <select id="checkout-plan-select" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface">
+                <option value="standard">Standard (₹59/mo)</option>
+                <option value="pro" selected>Pro Elite (₹99/mo)</option>
+                <option value="vip">VIP (₹249/mo)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">Email Address</label>
+              <input type="email" id="checkout-email" required placeholder="name@domain.com" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">Password (for dashboard login)</label>
+            <input type="password" id="checkout-password" required placeholder="Choose login password" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+          </div>
+        </div>
+
+        <!-- Step 2: Payment Gateway Details -->
+        <div class="space-y-3">
+          <h4 class="text-xs font-bold text-primary tracking-wider uppercase">2. Card Billing Details</h4>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">Card Number</label>
+            <div class="relative">
+              <input type="text" id="checkout-card" required placeholder="4111 2222 3333 4444" pattern="[0-9\s]{16,22}" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg pl-10 pr-4 p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary font-mono"/>
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">credit_card</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">Expiration (MM/YY)</label>
+              <input type="text" id="checkout-expiry" required placeholder="12/28" pattern="(0[1-9]|1[0-2])\/[0-9]{2}" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary font-mono text-center"/>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-on-surface-variant mb-1">Security CVC</label>
+              <input type="text" id="checkout-cvc" required placeholder="123" pattern="[0-9]{3,4}" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary font-mono text-center"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error display -->
+        <div id="checkout-error" class="text-xs text-error font-medium hidden bg-error-container p-2.5 rounded-lg"></div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="checkout-submit" class="w-full bg-primary hover:opacity-95 text-on-primary font-bold text-xs py-3 rounded-lg transition-opacity flex justify-center items-center gap-2">
+          <span class="material-symbols-outlined text-[16px]">lock</span>
+          Process Payment & Subscribe
+        </button>
+      </form>
+
+      <!-- Checkout Success Screen (Hidden by default) -->
+      <div id="checkout-success" class="hidden text-center py-6 space-y-6">
+        <div class="w-12 h-12 bg-primary-fixed rounded-full flex items-center justify-center mx-auto text-primary">
+          <span class="material-symbols-outlined text-[28px] font-bold">check_circle</span>
+        </div>
+        <div>
+          <h4 class="text-lg font-bold text-on-surface">Payment Successful!</h4>
+          <p class="text-xs text-on-surface-variant mt-1">Your premium terminal subscriber account is generated.</p>
+        </div>
+
+        <div class="bg-surface-container border border-outline-variant/40 rounded-xl p-4 text-left space-y-2">
+          <div class="flex justify-between items-center text-xs border-b border-outline-variant/20 pb-2">
+            <span class="font-semibold text-on-surface-variant">Premium ID:</span>
+            <span class="font-mono font-bold text-primary" id="success-subid">SA-XXXX-ELITE</span>
+          </div>
+          <div class="flex justify-between items-center text-xs border-b border-outline-variant/20 pb-2">
+            <span class="font-semibold text-on-surface-variant">Login User/Email:</span>
+            <span class="font-mono text-on-surface" id="success-email">---</span>
+          </div>
+          <div class="flex justify-between items-center text-xs pb-1">
+            <span class="font-semibold text-on-surface-variant">Password:</span>
+            <span class="font-mono text-on-surface" id="success-password">---</span>
+          </div>
+        </div>
+
+        <p class="text-[10px] text-outline leading-normal px-2">
+          Note: Write down your credentials. You can use either your Email or the premium ID along with the password to log in to your dashboard.
+        </p>
+
+        <a href="/dashboard.html" class="block w-full bg-primary hover:opacity-90 text-on-primary font-bold text-xs py-3 rounded-lg transition-opacity text-center shadow-sm">
+          Access Subscriber Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trader Comparison Modal -->
+  <div id="compare-modal" class="fixed inset-0 bg-on-background/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar p-6 md:p-8 shadow-2xl transition-transform duration-300 scale-95 flex flex-col relative">
+      <!-- Close button -->
+      <button onclick="closeCompareModal()" class="absolute right-4 top-4 text-on-surface-variant hover:bg-surface-container p-1.5 rounded-full transition-colors z-20">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <!-- Stepper / Header -->
+      <div class="mb-8 pr-12">
+        <h3 class="text-xl font-bold text-on-surface flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">balance</span>
+          Trader Comparison Wizard
+        </h3>
+        <p class="text-xs text-on-surface-variant mt-1">Evaluate and match with the verified trading providers on Saudaa</p>
+
+        <!-- Dynamic Visual Stepper -->
+        <div class="flex items-center justify-between max-w-md mt-6 relative">
+          <!-- Connector line -->
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-surface-container-high w-full -z-10 rounded">
+            <div id="compare-stepper-progress" class="h-full bg-primary transition-all duration-300 w-0"></div>
+          </div>
+
+          <!-- Step 1 badge -->
+          <div id="step-badge-1" class="flex flex-col items-center gap-1.5 bg-surface-container-lowest px-2">
+            <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs font-mono shadow-sm transition-all duration-200">1</div>
+            <span class="text-[10px] font-bold text-primary uppercase tracking-wider">Select</span>
+          </div>
+
+          <!-- Step 2 badge -->
+          <div id="step-badge-2" class="flex flex-col items-center gap-1.5 bg-surface-container-lowest px-2">
+            <div class="w-8 h-8 rounded-full bg-surface-container-high text-outline flex items-center justify-center font-bold text-xs font-mono transition-all duration-200">2</div>
+            <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Metrics</span>
+          </div>
+
+          <!-- Step 3 badge -->
+          <div id="step-badge-3" class="flex flex-col items-center gap-1.5 bg-surface-container-lowest px-2">
+            <div class="w-8 h-8 rounded-full bg-surface-container-high text-outline flex items-center justify-center font-bold text-xs font-mono transition-all duration-200">3</div>
+            <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Compare</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 1 View: Select Traders -->
+      <div id="compare-view-1" class="space-y-6">
+        <div class="flex justify-between items-center flex-wrap gap-2">
+          <div>
+            <h4 class="text-sm font-bold text-on-surface">Select 2 or 3 Traders</h4>
+            <p class="text-xs text-outline">Click the trader cards to select them for a head-to-head comparison.</p>
+          </div>
+          <div class="bg-primary/5 border border-primary/20 rounded-lg px-3 py-1.5 text-xs text-primary font-bold">
+            Selected: <span id="compare-selected-count">0</span> / 3
+          </div>
+        </div>
+
+        <!-- Traders Grid -->
+        <div id="compare-traders-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-[45vh] overflow-y-auto pr-1 py-1 custom-scrollbar">
+          <!-- Rendered dynamically by JavaScript -->
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between items-center border-t border-outline-variant/30 pt-6">
+          <button onclick="closeCompareModal()" class="px-5 py-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low text-xs font-bold text-outline transition-colors">
+            Cancel
+          </button>
+          <button id="compare-next-to-metrics" onclick="goToCompareStep(2)" disabled class="bg-primary disabled:opacity-50 disabled:cursor-not-allowed text-on-primary font-bold text-xs px-6 py-2.5 rounded-lg hover:opacity-95 transition-opacity flex items-center gap-2">
+            Continue to Metrics
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2 View: Choose Metrics -->
+      <div id="compare-view-2" class="space-y-6 hidden">
+        <div>
+          <h4 class="text-sm font-bold text-on-surface">Select Comparison Metrics</h4>
+          <p class="text-xs text-outline">Select the data points you want to analyze side-by-side.</p>
+        </div>
+
+        <!-- Metrics Options Grid -->
+        <div id="compare-metrics-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Checkbox cards for metrics -->
+          <label class="flex items-start gap-4 p-4 rounded-xl border border-outline-variant/40 bg-surface-container-low hover:bg-surface-container-high/40 transition-colors cursor-pointer select-none">
+            <input type="checkbox" value="roi" checked class="compare-metric-checkbox h-4 w-4 rounded border-outline-variant text-primary focus:ring-primary mt-0.5" />
+            <div>
+              <span class="block text-xs font-bold text-on-surface">30d ROI (%)</span>
+              <span class="block text-[11px] text-on-surface-variant mt-0.5">Net percentage yield generated by suggestions over the last 30 days.</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-4 p-4 rounded-xl border border-outline-variant/40 bg-surface-container-low hover:bg-surface-container-high/40 transition-colors cursor-pointer select-none">
+            <input type="checkbox" value="winRate" checked class="compare-metric-checkbox h-4 w-4 rounded border-outline-variant text-primary focus:ring-primary mt-0.5" />
+            <div>
+              <span class="block text-xs font-bold text-on-surface">Win Rate (%)</span>
+              <span class="block text-[11px] text-on-surface-variant mt-0.5">Percentage of completed inside suggestions that hit target objectives.</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-4 p-4 rounded-xl border border-outline-variant/40 bg-surface-container-low hover:bg-surface-container-high/40 transition-colors cursor-pointer select-none">
+            <input type="checkbox" value="subscribers" checked class="compare-metric-checkbox h-4 w-4 rounded border-outline-variant text-primary focus:ring-primary mt-0.5" />
+            <div>
+              <span class="block text-xs font-bold text-on-surface">Active Subscribers</span>
+              <span class="block text-[11px] text-on-surface-variant mt-0.5">Number of premium investors currently subscribing and copying positions.</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-4 p-4 rounded-xl border border-outline-variant/40 bg-surface-container-low hover:bg-surface-container-high/40 transition-colors cursor-pointer select-none">
+            <input type="checkbox" value="strategy" checked class="compare-metric-checkbox h-4 w-4 rounded border-outline-variant text-primary focus:ring-primary mt-0.5" />
+            <div>
+              <span class="block text-xs font-bold text-on-surface">Trading Strategy</span>
+              <span class="block text-[11px] text-on-surface-variant mt-0.5">Primary style: Algorithmic, Swing, Scalping, Option Hedging, etc.</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-4 p-4 rounded-xl border border-outline-variant/40 bg-surface-container-low hover:bg-surface-container-high/40 transition-colors cursor-pointer select-none">
+            <input type="checkbox" value="description" checked class="compare-metric-checkbox h-4 w-4 rounded border-outline-variant text-primary focus:ring-primary mt-0.5" />
+            <div>
+              <span class="block text-xs font-bold text-on-surface">Trader Background / Bio</span>
+              <span class="block text-[11px] text-on-surface-variant mt-0.5">The professional biography and asset focus of the service provider.</span>
+            </div>
+          </label>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between items-center border-t border-outline-variant/30 pt-6">
+          <button onclick="goToCompareStep(1)" class="px-5 py-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low text-xs font-bold text-outline transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+            Back to Traders
+          </button>
+          <button onclick="generateComparison()" class="bg-primary text-on-primary font-bold text-xs px-6 py-2.5 rounded-lg hover:opacity-95 transition-opacity flex items-center gap-2">
+            Generate Comparison
+            <span class="material-symbols-outlined text-[16px]">analytics</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3 View: Results -->
+      <div id="compare-view-3" class="space-y-6 hidden">
+        <div class="flex justify-between items-center flex-wrap gap-2">
+          <div>
+            <h4 class="text-sm font-bold text-on-surface">Comparison Report</h4>
+            <p class="text-xs text-outline">Review performance side-by-side. The best performer is highlighted in green.</p>
+          </div>
+          <button onclick="goToCompareStep(1)" class="text-xs text-primary hover:text-primary-container font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px]">refresh</span> Start Over
+          </button>
+        </div>
+
+        <!-- Dynamic Results Grid Container -->
+        <div id="compare-results-container" class="overflow-x-auto border border-outline-variant/30 rounded-xl bg-surface-container-low/35 max-h-[50vh] custom-scrollbar">
+          <!-- Filled by JavaScript -->
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between items-center border-t border-outline-variant/30 pt-6">
+          <button onclick="goToCompareStep(2)" class="px-5 py-2.5 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low text-xs font-bold text-outline transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+            Modify Metrics
+          </button>
+          <button onclick="closeCompareModal()" class="bg-primary text-on-primary font-bold text-xs px-6 py-2.5 rounded-lg hover:opacity-95 transition-opacity">
+            Close Comparison
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Free Discord-Style Chatbot Floating Widget -->
+  <div id="discord-bot-widget" class="fixed bottom-6 right-6 z-40 flex flex-col items-end">
+    <!-- Chatbot Window -->
+    <div id="discord-bot-window" class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl w-[360px] h-[500px] shadow-2xl flex flex-col overflow-hidden mb-3 hidden opacity-0 transition-opacity duration-300">
+      
+      <!-- Window Title Bar -->
+      <div class="bg-primary text-on-primary px-4 py-3.5 flex justify-between items-center shrink-0">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-on-primary/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[20px]">forum</span>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold font-mono tracking-tight flex items-center gap-1.5">
+              Saudaa Lounge
+              <span class="h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
+            </h4>
+            <p class="text-[9px] text-on-primary/70">Discord Support Community</p>
+          </div>
+        </div>
+        <button onclick="toggleDiscordBot()" class="text-on-primary/80 hover:text-on-primary">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Discord Workspace layout -->
+      <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar Channels List -->
+        <div class="w-[110px] bg-surface-container-low border-r border-outline-variant/30 flex flex-col p-2 shrink-0 select-none">
+          <span class="text-[9px] font-bold text-outline uppercase tracking-wider mb-2 px-1">CHANNELS</span>
+          <div class="space-y-1 overflow-y-auto custom-scrollbar flex-1">
+            <button onclick="switchDiscordChannel('welcome')" id="chan-welcome" class="w-full flex items-center gap-1 px-1.5 py-1.5 rounded text-[10px] text-primary font-bold bg-surface-container">
+              <span class="font-mono text-outline">#</span> welcome
+            </button>
+            <button onclick="switchDiscordChannel('announcements')" id="chan-announcements" class="w-full flex items-center gap-1 px-1.5 py-1.5 rounded text-[10px] text-on-surface-variant hover:bg-surface-container-high transition-colors">
+              <span class="font-mono text-outline">#</span> updates
+            </button>
+            <button onclick="switchDiscordChannel('support')" id="chan-support" class="w-full flex items-center gap-1 px-1.5 py-1.5 rounded text-[10px] text-on-surface-variant hover:bg-surface-container-high transition-colors">
+              <span class="font-mono text-outline">#</span> support-bot
+            </button>
+            <button onclick="switchDiscordChannel('general')" id="chan-general" class="w-full flex items-center gap-1 px-1.5 py-1.5 rounded text-[10px] text-on-surface-variant hover:bg-surface-container-high transition-colors">
+              <span class="font-mono text-outline">#</span> general-chat
+            </button>
+          </div>
+        </div>
+
+        <!-- Channel Chat Interface -->
+        <div class="flex-1 flex flex-col bg-surface-container-lowest overflow-hidden">
+          <!-- Channel Chat messages log -->
+          <div id="discord-messages" class="flex-1 overflow-y-auto custom-scrollbar p-3.5 space-y-4">
+            <!-- Populated dynamically by app.js -->
+          </div>
+
+          <!-- Channel input area (only available in #support-bot and #general-chat) -->
+          <div id="discord-input-container" class="p-2.5 border-t border-outline-variant/30 bg-surface-container-low shrink-0">
+            <form id="discord-input-form" onsubmit="sendDiscordMessage(event)" class="relative flex items-center">
+              <input type="text" id="discord-input-field" placeholder="Message #welcome" class="w-full pl-3 pr-10 py-2 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-xs text-on-surface placeholder:text-outline focus:outline-none focus:border-primary"/>
+              <button type="submit" class="absolute right-2 text-primary hover:text-primary-container transition-colors">
+                <span class="material-symbols-outlined text-[18px]">send</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toggle Button -->
+    <button onclick="toggleDiscordBot()" class="bg-primary hover:scale-105 transition-all text-on-primary w-14 h-14 rounded-full flex items-center justify-center shadow-xl border border-primary-container z-50">
+      <span class="material-symbols-outlined text-[26px]">forum</span>
+    </button>
+  </div>
+
+  <!-- Market Heatmap Section -->
+  <section id="heatmap" class="w-full py-16 md:py-24 bg-surface-container border-t border-outline-variant/30 relative">
+    <div class="max-w-[1648px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-4 flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[32px] md:text-[40px]">grid_view</span>
+          Market Heatmap
+        </h2>
+        <p class="text-on-surface-variant text-sm mb-4">
+          Track the S&P 500 market landscape. Visualize sector performance, market capitalization distributions, and real-time fluctuations.
+        </p>
+        <!-- Scroll to bottom button after the text description -->
+        <button onclick="scrollToHeatmapBottom()" class="inline-flex bg-primary/90 hover:bg-primary text-on-primary w-10 h-10 rounded-full items-center justify-center shadow-lg border border-primary/20 transition-all hover:scale-110 hover:shadow-xl cursor-pointer" title="Scroll to Bottom of Heatmap">
+          <span class="material-symbols-outlined text-[20px] animate-bounce">arrow_downward</span>
+        </button>
+      </div>
+
+      <!-- TradingView Heatmap Widget -->
+      <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-4 md:p-6 shadow-md relative">
+        <div class="tradingview-widget-container custom-heatmap-container w-full rounded-xl overflow-hidden bg-background relative flex flex-col justify-between">
+          <div class="tradingview-widget-container__widget custom-heatmap-widget w-full"></div>
+          <div class="tradingview-widget-copyright text-right px-4 py-2 border-t border-outline-variant/20 bg-surface-container-low text-[10px] text-outline font-mono">
+            <a href="https://www.tradingview.com/heatmap/stock/" rel="noopener nofollow" target="_blank" class="text-primary font-bold hover:underline">Stock Heatmap</a> by TradingView
+          </div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>
+            {
+              "dataSource": "SPX500",
+              "blockSize": "market_cap_basic",
+              "blockColor": "change",
+              "grouping": "sector",
+              "locale": "en",
+              "symbolUrl": "",
+              "colorTheme": "dark",
+              "exchanges": [],
+              "hasTopBar": false,
+              "isDataSetEnabled": false,
+              "isZoomEnabled": true,
+              "hasSymbolTooltip": true,
+              "isMonoSize": false,
+              "width": "100%",
+              "height": "100%"
+            }
+          </script>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="w-full bg-surface-container-low border-t border-outline-variant/30 pt-16 pb-12 mt-auto">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <!-- Grid Container -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 pb-12 border-b border-outline-variant/20">
+        
+        <!-- Column 1: Company Profile -->
+        <div class="md:col-span-4 space-y-6">
+          <div class="flex items-center gap-2.5">
+            <div class="w-[45px] h-[45px] flex items-center justify-center bg-transparent shrink-0">
+              <img src="/Assets/logo/logo.png" alt="Saudaa Logo" class="w-full h-full object-contain"/>
+            </div>
+            <span class="text-lg font-bold tracking-tight text-on-surface">Saudaa</span>
+          </div>
+          <p class="text-xs text-on-surface-variant leading-relaxed max-w-sm">
+            Saudaa is a verified market intelligence platform. We connect novice traders with top-performing experts through live setups, dashboard metrics, and interactive community discussions.
+          </p>
+          <!-- Social Icons -->
+          <div class="flex gap-4 pt-2">
+            <a href="#" class="social-icon-btn w-8 h-8 rounded-full border border-outline-variant/40 hover:border-primary hover:bg-primary/5 flex items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200" title="Twitter / X">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="#" class="social-icon-btn w-8 h-8 rounded-full border border-outline-variant/40 hover:border-primary hover:bg-primary/5 flex items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200" title="LinkedIn">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            </a>
+            <a href="#" class="social-icon-btn w-8 h-8 rounded-full border border-outline-variant/40 hover:border-primary hover:bg-primary/5 flex items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200" title="Telegram">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.017c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.46c.538-.196 1.006.128.832.941z"/></svg>
+            </a>
+            <a href="#" class="social-icon-btn w-8 h-8 rounded-full border border-outline-variant/40 hover:border-primary hover:bg-primary/5 flex items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200" title="Discord">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.094 13.094 0 0 1-1.873-.894.077.077 0 0 1-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 0 1 .077-.011c3.92 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.009c.12.099.246.195.373.289a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.156 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.156 2.418z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Column 2: Platform Links -->
+        <div class="md:col-span-2 space-y-4">
+          <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider">Navigation</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="/" class="text-on-surface-variant hover:text-primary transition-colors">Home</a></li>
+            <li><a href="#leaderboard" class="text-on-surface-variant hover:text-primary transition-colors">Leaderboard</a></li>
+            <li><a href="#heatmap" class="text-on-surface-variant hover:text-primary transition-colors">Market Edge</a></li>
+            <li><a href="#calls" class="text-on-surface-variant hover:text-primary transition-colors">Free Signals Feed</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Contact Details -->
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider">Contact Info</h4>
+          <ul class="space-y-3 text-xs text-on-surface-variant">
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-[16px] text-primary mt-0.5">mail</span>
+              <a href="mailto:contact@saudaa.com" class="hover:text-primary transition-colors">contact@saudaa.com</a>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-[16px] text-primary mt-0.5">phone</span>
+              <a href="tel:+912261234567" class="hover:text-primary transition-colors">+91 22 6123 4567</a>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-[16px] text-primary mt-0.5">location_on</span>
+              <span>14th Floor, Maker Chambers IV, Nariman Point, Mumbai, MH 400021</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Legal & Policy -->
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider">Legal</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#" class="text-on-surface-variant hover:text-primary transition-colors">Risk Disclosure Policy</a></li>
+            <li><a href="#" class="text-on-surface-variant hover:text-primary transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="text-on-surface-variant hover:text-primary transition-colors">Privacy Agreement</a></li>
+            <li><a href="#" class="text-on-surface-variant hover:text-primary transition-colors">Refund Policy</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-secondary">
+        <p class="text-center md:text-left">
+          © 2026 Saudaa Suggestions Platform. Real-time market research only. Past performance is not indicative of future returns.
+        </p>
+        <div class="flex gap-4 font-mono text-[9px] uppercase tracking-wider text-outline">
+          <span class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            <span>All Systems Operational</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Site JS Controller -->
+  <script src="/app.js"></script>
+</body>
+</html>

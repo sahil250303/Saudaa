@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Saudaa - Trader Terminal Dashboard</title>
+  <meta name="description" content="Access your personalized Saudaa Trader Terminal. Broadcast trading suggestions, manage subscriber communications, and track verified performance metrics."/>
+  
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/app.css"/>
+  
+  <!-- Tailwind Configuration matching Stitch -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#42682b",
+            "primary-container": "#8bb56f",
+            "primary-fixed": "#c2f0a3",
+            "primary-fixed-dim": "#a7d38a",
+            "on-primary-container": "#22460d",
+            "on-primary-fixed": "#092100",
+            "on-primary-fixed-variant": "#2b5015",
+            "inverse-primary": "#a7d38a",
+            "inverse-surface": "#30312e",
+            "inverse-on-surface": "#f2f1ec",
+            "surface-tint": "#42682b",
+            secondary: "#635f4b",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#e7e0c7",
+            "on-secondary-container": "#67634f",
+            "secondary-fixed": "#eae2c9",
+            "secondary-fixed-dim": "#cdc7ae",
+            "on-secondary-fixed": "#1e1c0c",
+            "on-secondary-fixed-variant": "#4b4734",
+            tertiary: "#57615c",
+            "on-tertiary": "#ffffff",
+            "tertiary-container": "#a2aca6",
+            "on-tertiary-container": "#37403c",
+            "tertiary-fixed": "#dbe5df",
+            "tertiary-fixed-dim": "#bfc9c3",
+            "on-tertiary-fixed": "#151d1a",
+            "on-tertiary-fixed-variant": "#3f4945",
+            background: "#faf9f4",
+            surface: "#faf9f4",
+            "surface-dim": "#dbdad5",
+            "surface-bright": "#faf9f4",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f4ef",
+            "surface-container": "#efeee9",
+            "surface-container-high": "#e9e8e3",
+            "surface-container-highest": "#e3e3de",
+            "surface-variant": "#e3e3de",
+            "on-primary": "#ffffff",
+            "on-background": "#1b1c19",
+            "on-surface": "#1b1c19",
+            "on-surface-variant": "#444840",
+            outline: "#747870",
+            "outline-variant": "#c4c8be",
+            error: "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error": "#ffffff",
+            "on-error-container": "#93000a"
+          },
+          fontFamily: {
+            sans: ['Manrope', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          fontSize: {
+            'display-lg': ['48px', { lineHeight: '56px', letterSpacing: '-0.02em', fontWeight: '700' }],
+            'display-lg-mobile': ['36px', { lineHeight: '44px', letterSpacing: '-0.02em', fontWeight: '700' }],
+            'headline-md': ['32px', { lineHeight: '40px', letterSpacing: '-0.01em', fontWeight: '600' }],
+            'headline-sm': ['24px', { lineHeight: '32px', letterSpacing: '0em', fontWeight: '600' }],
+            'body-lg': ['18px', { lineHeight: '28px', letterSpacing: '0.01em', fontWeight: '400' }],
+            'body-md': ['16px', { lineHeight: '24px', letterSpacing: '0.01em', fontWeight: '400' }],
+            'label-md': ['14px', { lineHeight: '20px', letterSpacing: '0.05em', fontWeight: '500' }],
+            'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0.05em', fontWeight: '600' }],
+          },
+          spacing: {
+            gutter: "24px",
+            xs: "4px",
+            sm: "12px",
+            md: "24px",
+            lg: "48px",
+            xl: "80px",
+            base: "8px",
+            "margin-desktop": "40px",
+            "margin-mobile": "16px"
+          },
+          borderRadius: {
+            sm: "0.25rem",
+            DEFAULT: "0.5rem",
+            md: "0.75rem",
+            lg: "1rem",
+            xl: "1.5rem",
+            full: "9999px"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex antialiased">
+
+  <!-- ==================== LOGIN SCREEN (Conditional) ==================== -->
+  <div id="login-container" class="flex-1 flex flex-col justify-center items-center p-6 bg-gradient-to-b from-surface to-background min-h-screen">
+    <a href="/" class="flex items-center gap-3 mb-8 group">
+      <div class="w-[55px] h-[55px] flex items-center justify-center bg-transparent shrink-0">
+        <img src="/Assets/logo/logo.png" alt="Saudaa Logo" class="w-full h-full object-contain"/>
+      </div>
+      <div>
+        <span class="text-xl font-bold tracking-tight text-on-background block">Saudaa Terminal</span>
+        <span class="text-[10px] text-primary tracking-widest uppercase font-bold block -mt-1">Secure Authorization</span>
+      </div>
+    </a>
+
+    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-8 w-full max-w-sm shadow-[0_12px_40px_rgba(53,61,50,0.06)]">
+      <h3 class="text-lg font-bold text-on-surface mb-2">Terminal Access Portal</h3>
+      <p class="text-xs text-on-surface-variant mb-6">Enter your credentials or premium subscriber ID to unlock your dashboard.</p>
+
+      <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
+        <div>
+          <label class="block text-xs font-semibold text-on-surface-variant mb-1">Email, Trader Username, or Sub ID</label>
+          <input type="text" id="login-username" required placeholder="name@domain.com or SA-XXXX-ELITE" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-on-surface-variant mb-1">Access Password</label>
+          <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+        </div>
+        <div id="login-error" class="text-xs text-error font-medium hidden bg-error-container p-2.5 rounded-lg"></div>
+        <button type="submit" class="w-full bg-primary hover:opacity-95 text-on-primary font-bold text-xs py-3 rounded-lg transition-opacity flex justify-center items-center gap-2 shadow-sm">
+          <span class="material-symbols-outlined text-[16px]">vpn_key</span>
+          Unlock Terminal
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-outline-variant/20 text-center">
+        <p class="text-[11px] text-outline">Don't have a subscriber account yet? <a href="/#leaderboard" class="text-primary font-semibold hover:underline">Select a trader and subscribe</a></p>
+      </div>
+    </div>
+
+    <!-- Quick Seed helper to simplify grading / testing -->
+    <div class="mt-8 bg-surface-container-low border border-outline-variant/30 rounded-xl p-4 w-full max-w-sm">
+      <h4 class="text-[10px] font-bold text-primary tracking-wider uppercase mb-2">💡 Quick Login Credentials for Testing</h4>
+      <div class="text-[11px] text-on-surface-variant space-y-1">
+        <div><strong class="text-on-surface">Trader:</strong> Username: <code class="bg-surface-container-highest px-1 rounded">alex_pro</code> | Password: <code class="bg-surface-container-highest px-1 rounded">password123</code></div>
+        <div><strong class="text-on-surface">Client:</strong> Email: <code class="bg-surface-container-highest px-1 rounded">demo@saudaa.com</code> | Password: <code class="bg-surface-container-highest px-1 rounded">password123</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN DASHBOARD LAYOUT (Hidden on load) ==================== -->
+  <div id="dashboard-container" class="flex-1 flex flex-col md:flex-row hidden min-h-screen">
+    
+    <!-- Sidebar Desktop Navigation -->
+    <nav class="hidden md:flex flex-col p-md space-y-base h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant/30 z-40">
+      <div class="mb-lg px-2 flex items-center gap-sm">
+        <div class="w-[45px] h-[45px] flex items-center justify-center bg-transparent shrink-0">
+          <img src="/Assets/logo/logo.png" alt="Saudaa Logo" class="w-full h-full object-contain"/>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold text-on-background">Saudaa Dashboard</h1>
+          <p id="nav-tier-badge" class="text-[9px] font-bold tracking-widest text-primary uppercase">Elite Suite</p>
+        </div>
+      </div>
+
+      <ul class="flex-1 space-y-2">
+        <li>
+          <a class="flex items-center gap-sm px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-bold text-xs" href="#">
+            <span class="material-symbols-outlined text-[18px]">dashboard</span>
+            Main Overview
+          </a>
+        </li>
+      </ul>
+
+      <!-- User Info Mini Footer -->
+      <div class="mt-auto border-t border-outline-variant/30 pt-4 px-2 space-y-4">
+        <div class="flex items-center gap-3">
+          <img id="nav-avatar" src="" alt="User" class="w-9 h-9 rounded-full object-cover border border-outline-variant/40"/>
+          <div class="min-w-0">
+            <p id="nav-username" class="font-bold text-xs text-on-surface truncate">Name</p>
+            <p id="nav-user-sub" class="text-[9px] text-outline truncate">SubID</p>
+          </div>
+        </div>
+        <button onclick="handleLogout()" class="w-full bg-surface-container-low hover:bg-surface-container-high border border-outline-variant/40 text-error font-bold text-[11px] py-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors">
+          <span class="material-symbols-outlined text-[16px]">logout</span>
+          Secure Logout
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 md:ml-64 bg-background min-h-screen flex flex-col">
+      <!-- Mobile Dashboard Header (Mobile Only) -->
+      <header class="flex md:hidden items-center justify-between bg-surface-container-low border-b border-outline-variant/30 px-6 py-4 sticky top-0 z-40 shrink-0">
+        <div class="flex items-center gap-2">
+          <div class="w-[32px] h-[32px] flex items-center justify-center bg-transparent shrink-0">
+            <img src="/Assets/logo/logo.png" alt="Saudaa Logo" class="w-full h-full object-contain"/>
+          </div>
+          <div>
+            <h1 class="text-xs font-bold text-on-background leading-tight">Saudaa Terminal</h1>
+            <p id="mobile-tier-badge" class="text-[8px] font-bold tracking-widest text-primary uppercase leading-tight">Elite Suite</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <img id="mobile-nav-avatar" src="" alt="User" class="w-7 h-7 rounded-full object-cover border border-outline-variant/40"/>
+          <button onclick="handleLogout()" class="text-error hover:bg-error/10 p-2 rounded-lg transition-colors focus:outline-none flex items-center justify-center" title="Secure Logout">
+            <span class="material-symbols-outlined text-[20px]">logout</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="p-6 md:p-10 flex-1">
+      <!-- Dashboard Dynamic Header -->
+      <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h2 id="dash-welcome-title" class="text-2xl md:text-3xl font-bold text-on-surface">Overview</h2>
+          <p id="dash-welcome-subtitle" class="text-xs text-on-surface-variant mt-1">Terminal connection secure.</p>
+        </div>
+        <div id="dash-action-container">
+          <!-- Populated dynamically (e.g. New Trade button for traders) -->
+        </div>
+      </header>
+
+      <!-- DYNAMIC ROLE WRAPPERS -->
+      <div id="dashboard-views" class="space-y-6">
+        
+        <!-- TRADER DASHBOARD VIEW -->
+        <div id="view-trader" class="hidden space-y-6">
+          <!-- Metrics Row -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-6 shadow-sm">
+              <span class="text-[10px] text-outline font-bold tracking-wider uppercase">VERIFIED WIN RATE</span>
+              <h3 id="trader-stat-win" class="text-2xl font-bold text-on-surface mt-2">--%</h3>
+              <p class="text-[10px] text-primary mt-1">Verified on Leaderboard</p>
+            </div>
+            <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-6 shadow-sm">
+              <span class="text-[10px] text-outline font-bold tracking-wider uppercase">ACTIVE SUBSCRIBERS</span>
+              <h3 id="trader-stat-subs" class="text-2xl font-bold text-on-surface mt-2">--</h3>
+              <p class="text-[10px] text-primary mt-1">Generating premium income</p>
+            </div>
+            <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-6 shadow-sm">
+              <span class="text-[10px] text-outline font-bold tracking-wider uppercase">CURRENT RANKING</span>
+              <h3 id="trader-stat-rank" class="text-2xl font-bold text-on-surface mt-2">#--</h3>
+              <p class="text-[10px] text-primary mt-1">Based on performance metrics</p>
+            </div>
+          </div>
+
+          <!-- Bottom Grid: Signals list & Multi-User Chat -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Trader suggestions log -->
+            <div class="lg:col-span-7 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 shadow-sm flex flex-col h-[520px]">
+              <div class="flex justify-between items-center mb-4">
+                <h4 class="font-bold text-sm text-on-surface flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[18px]">analytics</span>
+                  Your Posted Signals
+                </h4>
+                <button onclick="openNewTradeModal()" class="bg-primary hover:opacity-90 text-on-primary font-bold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[16px]">add</span> New Inside
+                </button>
+              </div>
+              
+              <div class="flex-1 overflow-y-auto custom-scrollbar space-y-3" id="trader-signals-feed">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Trader Active Chat box (Subscribers tabs) -->
+            <div class="lg:col-span-5 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-0 shadow-sm flex flex-col h-[520px] overflow-hidden">
+              <div class="bg-surface-container-low border-b border-outline-variant/30 p-4 shrink-0">
+                <h4 class="font-bold text-sm text-on-surface flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[18px]">chat</span>
+                  Client Communications
+                </h4>
+                <p class="text-[10px] text-outline">Select subscriber to answer chats</p>
+              </div>
+
+              <!-- Chat Inner Split -->
+              <div class="flex flex-1 overflow-hidden">
+                <!-- Client tabs -->
+                <div class="w-[120px] bg-surface-container-low border-r border-outline-variant/30 overflow-y-auto custom-scrollbar p-2 space-y-1 select-none shrink-0" id="trader-clients-list">
+                  <!-- Rendered dynamically -->
+                </div>
+                
+                <!-- Chat Window -->
+                <div class="flex-1 flex flex-col overflow-hidden bg-surface-container-lowest">
+                  <div id="trader-chat-messages" class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3">
+                    <p class="text-xs text-outline text-center mt-20">Select an active client to view chat history.</p>
+                  </div>
+                  <div id="trader-chat-input-box" class="p-3 border-t border-outline-variant/30 bg-surface-container-low hidden">
+                    <form onsubmit="handleSendTraderChat(event)" class="relative flex items-center">
+                      <input type="text" id="trader-chat-field" placeholder="Reply to subscriber..." class="w-full pl-3 pr-10 py-2.5 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-xs text-on-surface placeholder:text-outline focus:outline-none focus:border-primary"/>
+                      <button type="submit" class="absolute right-2 text-primary hover:text-primary-container transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">send</span>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- CLIENT SUBSCRIBER VIEW -->
+        <div id="view-client" class="hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Client Left Column: Subscribed Trader profile & active signals list -->
+            <div class="lg:col-span-7 space-y-6">
+              <!-- Trader profile details -->
+              <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4">
+                <img id="client-trader-avatar" src="" alt="Trader" class="w-16 h-16 rounded-full object-cover border border-primary/20 shrink-0"/>
+                <div>
+                  <div class="flex flex-col sm:flex-row items-center gap-2">
+                    <h3 id="client-trader-name" class="text-lg font-bold text-on-surface">Trader Name</h3>
+                    <span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">Your Subscribed Expert</span>
+                  </div>
+                  <p id="client-trader-strategy" class="text-xs font-semibold text-primary mt-0.5">Strategy details</p>
+                  <p id="client-trader-description" class="text-xs text-on-surface-variant mt-2 leading-relaxed">Trader details description goes here...</p>
+                </div>
+              </div>
+
+              <!-- Suggestions Feed -->
+              <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 shadow-sm flex flex-col h-[380px]">
+                <h4 class="font-bold text-sm text-on-surface flex items-center gap-1.5 mb-4 shrink-0">
+                  <span class="material-symbols-outlined text-[18px]">trending_up</span>
+                  Active suggestions Insides
+                </h4>
+                <div class="flex-1 overflow-y-auto custom-scrollbar space-y-3" id="client-suggestions-feed">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Client Right Column: Direct Chat Box with trader -->
+            <div class="lg:col-span-5 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl shadow-sm flex flex-col h-[520px] overflow-hidden">
+              <div class="bg-surface-container-low border-b border-outline-variant/30 p-4 shrink-0 flex items-center gap-2.5">
+                <img id="chat-header-avatar" src="" class="w-8 h-8 rounded-full border border-primary/10"/>
+                <div>
+                  <h4 class="font-bold text-sm text-on-surface" id="chat-header-name">Chat Room</h4>
+                  <p class="text-[9px] text-primary font-bold tracking-widest uppercase">Direct connection active</p>
+                </div>
+              </div>
+
+              <!-- Message log -->
+              <div id="client-chat-messages" class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3">
+                <!-- Messages rendered dynamically -->
+              </div>
+
+              <!-- Send input -->
+              <div class="p-3 border-t border-outline-variant/30 bg-surface-container-low shrink-0">
+                <form onsubmit="handleSendClientChat(event)" class="relative flex items-center">
+                  <input type="text" id="client-chat-field" placeholder="Send secure message to expert..." class="w-full pl-3 pr-10 py-2.5 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-xs text-on-surface placeholder:text-outline focus:outline-none focus:border-primary"/>
+                  <button type="submit" class="absolute right-2 text-primary hover:text-primary-container transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">send</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== NEW TRADE MODAL (Trader only) ==================== -->
+  <div id="new-trade-modal" class="fixed inset-0 bg-on-background/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar p-6 shadow-2xl transition-transform duration-300 scale-95">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h3 class="text-lg font-bold text-on-surface">Publish New Trading suggestion</h3>
+          <p class="text-xs text-on-surface-variant">This signal will broadcast to all active subscribers instantly</p>
+        </div>
+        <button onclick="closeNewTradeModal()" class="text-on-surface-variant hover:bg-surface-container p-1 rounded-full transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form id="new-trade-form" class="space-y-4" onsubmit="handleNewTradeSubmit(event)">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">Asset Ticker</label>
+            <input type="text" id="trade-asset" required placeholder="e.g. BTC/USD" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">Signal Type</label>
+            <select id="trade-type" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface">
+              <option value="Buy">BUY / LONG</option>
+              <option value="Sell">SELL / SHORT</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-on-surface-variant mb-1">Entry Range</label>
+          <input type="text" id="trade-entry" required placeholder="e.g. 64,100 - 64,250" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">Take Profit Target</label>
+            <input type="text" id="trade-target" required placeholder="e.g. 66,500" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">Stop Loss</label>
+            <input type="text" id="trade-stop-loss" required placeholder="e.g. 63,200" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">Risk Assessment</label>
+            <select id="trade-risk" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface">
+              <option value="Low">Low Risk</option>
+              <option value="Medium" selected>Medium Risk</option>
+              <option value="High">High Risk</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">Trade Category</label>
+            <select id="trade-asset-type" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface">
+              <option value="Stocks">Stocks (Company Shares)</option>
+              <option value="Forex">Forex (Currency Pairs)</option>
+              <option value="Commodity">Commodity (Gold, Oil, etc.)</option>
+              <option value="Crypto">Crypto (Digital Coins)</option>
+              <option value="Indices">Indices (Market Baskets)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">Trading Strategy</label>
+            <select id="trade-strategy" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface">
+              <option value="Scalp">Scalp (Quick short trades)</option>
+              <option value="Day Trade">Day Trade (Same day closed)</option>
+              <option value="Swing">Swing (Held for days/weeks)</option>
+              <option value="Position">Position Trade (Held for weeks/months)</option>
+              <option value="Long Term">Long Term (Longer investing)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-on-surface-variant mb-1">Technical Rationale & Notes</label>
+          <textarea id="trade-notes" placeholder="Reasoning..." class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary h-20 resize-none"></textarea>
+        </div>
+
+        <div id="trade-error" class="text-xs text-error font-medium hidden bg-error-container p-2.5 rounded-lg"></div>
+
+        <button type="submit" class="w-full bg-primary hover:opacity-95 text-on-primary font-bold text-xs py-3 rounded-lg transition-opacity flex justify-center items-center gap-2 shadow-sm">
+          <span class="material-symbols-outlined text-[16px]">campaign</span>
+          Broadcast Suggestion
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard JavaScript File -->
+  <script src="/dashboard.js"></script>
+</body>
+</html>

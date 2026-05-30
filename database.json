@@ -1,0 +1,323 @@
+{
+  "traders": [
+    {
+      "id": "alex_pro",
+      "name": "Alex Pro",
+      "strategy": "Algorithmic & Swing",
+      "winRate": 82.9,
+      "roi": 68.5,
+      "subscribers": 2,
+      "rank": 1,
+      "password": "password123",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuA5eU9Y4jFzvTSMF0XOKV2Sa1gIbmi6EPjwiiKlBm68b5MOXG9uQAGhY35yzrTSQYERVpT6fm0Lfe1Jcmli5pIUcVn10kppVXPnOgH3N17fWPVElt_mSRdFetzhOdNb51XWFuAl8LfFzNe75_BrEB0N7vIBapvpvE_-SHt4kePGIpbnVxOBV2QE4C57rD7j4JMCKemBqq7XggVmtMJQsptK_25o3WCkJ_Jw51Il68DuCG47PKkOOUktcaUfDZDpNqfhokVVCURoWv8",
+      "description": "Systematic developer specialized in automated trend-following models and mid-term swing signals on high liquidity indices.",
+      "status": "active"
+    },
+    {
+      "id": "Rushi Bhosale",
+      "name": "Rushi_07",
+      "strategy": "option",
+      "roi": 56,
+      "winRate": 74,
+      "subscribers": 1,
+      "rank": 2,
+      "password": "Rushi@123",
+      "avatar": "https://www.vecteezy.com/free-photos/man",
+      "description": "Best",
+      "status": "active"
+    },
+    {
+      "id": "echo_zulu",
+      "name": "EchoZulu",
+      "strategy": "Quant Strategy",
+      "winRate": 76.4,
+      "roi": 42.1,
+      "subscribers": 0,
+      "rank": 3,
+      "password": "password123",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuB_mNw7LeqbrFZVqy-Mw3gcywLNynCD4feJl1zX_zmKtQ-Xfc6dDRH3oXpt2lH50BpxmARiqF6kq5ytDQxAMAjFNGe130WxQFGsTXMAtMMnEmxupZt-vyadmtJuWBBQUOhQFk71Jnk_Ts_arnf1-KXJYerU1RnN9WyP7CJUE3Ohca-Lxw8iZFdOlL4pH_g02rieMWZZj3kH5DfKqiu_Cxhk-JNoBxhbOdd_pRP65lyZHEZkx5jU1Tuqc5L4l02xbSAilwf_p-bMJYE",
+      "description": "Quantitative analyst with a focus on mathematical arbitrage and statistical cointegration in forex and major cryptocurrencies."
+    },
+    {
+      "id": "neon_ghost",
+      "name": "NeonGhost",
+      "strategy": "Swing Trade",
+      "winRate": 71.2,
+      "roi": 38.9,
+      "subscribers": 0,
+      "rank": 4,
+      "password": "password123",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuCzU1RExMPa-2uPZkp35KKf_WZpw-DV9baBDhQaVNUobLbhbIcb0ksLOhu321KfgPAy81uaqWrZ3aPEVDgl3gjweHDrUtfIzG2dt7bGv3m0vWisgUj4L5-yxkSlCLQ936IEf19Rjvd6Gu0jHSIkcZScWgv8g_PvfK1DfMWccdOggiYDhvUG1Yudf0xIO6MXczsG5AjOhUDOPvKDX8EB7yCPiJNtQvUMsGYxljSStBERNDeEZgXzL22ELZNJEByncgASJ254gOfPnz8",
+      "description": "Chart pattern perfectionist specializing in high-momentum swing positions, identifying clean support/resistance zones."
+    },
+    {
+      "id": "apex_predator",
+      "name": "ApexPredator",
+      "strategy": "Scalping & Options",
+      "winRate": 69.8,
+      "roi": 34.2,
+      "subscribers": 0,
+      "rank": 5,
+      "password": "password123",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuCnS0sxmrJRxMU6x9PGml7yfa_P6IIw_1bWld_8rlthSPKRETFGaW6ZCFPQjJDTD1RAyu1o2gXFIv2tVmKu9hXZgpZumIXLQTemBhs8cbYz6g1C-pEcsV-KgJepyiS1MLcOCY1JgWqYoyL-0siw5yJq8fNpnx9ej9pFQmurhgG6qFYi9EvsF46YnnJr0lACFNHaO7vaZVhq0xJvOeidaDm2KW90VFeeGGjIgA_KqEexuAZtwmPQJgpitxLY4eSOWgufAH1yAHDeJpY",
+      "description": "Short-term momentum scalper. Leverages order-flow imbalances and deep option liquidity analysis for quick, decisive intraday signals."
+    },
+    {
+      "id": "luna_tick",
+      "name": "LunaTick",
+      "strategy": "Arbitrage & Crypto",
+      "winRate": 70.1,
+      "roi": 31.5,
+      "subscribers": 0,
+      "rank": 6,
+      "password": "password123",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuA3ZTMLK745sJYQTEgMRlZ9DGVOh8RopnWuZPWKNBTNCB0Y1fn5AoSlfaa6GsyKGgSWDE9wHpgjAluXC3oNN0OfdzbzNx7e36bExHdv5axhJdYxn6LzeXagSejvqkXXBen9G8GK2fpC_7zspsI_X5Txo4oMQxOCeyKuU2i67imhfvOU9f_v2fK3khXgSxKK_yL_flYHVV_Z_6FBAH2wfL1DRDu4YlmUWx8Ed-epIaFr42_AYeonSVdj8CVIWjpq_AlJ5QzeSVQX2H4",
+      "description": "Dedicated cryptocurrency researcher locating market inefficiencies and funding-rate arbitrage signals across top-tier DEXs and CEXs."
+    },
+    {
+      "id": "macro_bull",
+      "name": "MacroBull",
+      "strategy": "Long Term Equities",
+      "winRate": 65.4,
+      "roi": 28.9,
+      "subscribers": 0,
+      "rank": 7,
+      "password": "password123",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuCObfA2HNvxcI4s12Jvz9Ni7hXBHSQv_3-qq016-pzt5a-7mkKQhYcpe89PqZITZNp5iir3AfMt-gdepv-1WByBr2N9qFzPAI1Gfh5mJiGLFgPtg4Y1fbqRnAIYFq_3lgy3_JsYoVCQ9bTjnpkqHvSbfplX7EZdz3Xrycc2gPQtzt2syxCZkxRfa2WieYsB52TnrPPvC0SYbEO661jTLrR1uYsIlkAJ0OE5sHBLlWciDQ_XJ85rcpsd2bc83WnJOgghIQQ5ebuit-Y",
+      "description": "Macroeconomic-driven trading strategies on equity index futures, utilizing interest rate models, CPI breakouts, and policy decisions."
+    },
+    {
+      "id": "alpha_wave",
+      "name": "AlphaWave",
+      "strategy": "Momentum Growth",
+      "winRate": 68.2,
+      "roi": 26.4,
+      "subscribers": 0,
+      "rank": 8,
+      "password": "password123",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuCXoHNJVkwXSK6I_XaW9hwLhbhiPcRFfohqupaJG3DCwJ6aVFkERzlbXW9jwSIjHU-pSDNVV2ptvfa7fQiO0UOk3N7-uKsdmQOISVth4jV0VTeHLc5qix0XRQTZ3ZDTrUeeYI_Fe3gDJPUW-dKhjqqRaYc5XJmXntlHzzO06MDyWDGIWc2rX4KDAF8l10to2Be9cI4yPReyGfiolyONbyxvacdpHUnBfXBOOb2KG_AOyNh9201_DAcOqLO6-raEhmUFCEymIuvaOyY",
+      "description": "Captures high velocity trends in mid-cap and mega-cap tech stocks, managing positions using advanced exponential moving averages."
+    },
+    {
+      "id": "adii",
+      "name": "adii_2004",
+      "strategy": "option",
+      "roi": 24.5,
+      "winRate": 74.2,
+      "subscribers": 0,
+      "rank": 9,
+      "password": "Adii@123",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuA5eU9Y4jFzvTSMF0XOKV2Sa1gIbmi6EPjwiiKlBm68b5MOXG9uQAGhY35yzrTSQYERVpT6fm0Lfe1Jcmli5pIUcVn10kppVXPnOgH3N17fWPVElt_mSRdFetzhOdNb51XWFuAl8LfFzNe75_BrEB0N7vIBapvpvE_-SHt4kePGIpbnVxOBV2QE4C57rD7j4JMCKemBqq7XggVmtMJQsptK_25o3WCkJ_Jw51Il68DuCG47PKkOOUktcaUfDZDpNqfhokVVCURoWv8",
+      "description": "best trader"
+    },
+    {
+      "id": "delta_hedge",
+      "name": "DeltaHedge",
+      "strategy": "Options Hedging",
+      "winRate": 74.8,
+      "roi": 24.3,
+      "subscribers": 0,
+      "rank": 10,
+      "password": "password123",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuD4ldlC0l7f1tSED1_SV3GL0xoo88STemly3M1OWj7KXnBSGx3FOy1ibN3I8CAdbvXcMr0EhcaC30eQD1c8cszwgm5jOfDYFqjyQKdcNYboXZIVx3qHAdskzLrWDKLGrJA1IFL0TBlWZesDmebt2VBE2RP3Nbx6OpXX8LS5KhzLbYrnOzl32yFmpH62dyctK8cduk9P6mecSjqgi3IhboN6Io2SIBa4CQzaPPFR6QL_NHZYyhXKY0fp53-OBgznwXPD-cnk9NqC3sw",
+      "description": "Structured option strategies focusing on neutral premium collection: Iron Condors, Calendar Spreads, and Delta-Neutral adjustments."
+    },
+    {
+      "id": "zen_trader",
+      "name": "ZenTrader",
+      "strategy": "Swing Commodities",
+      "winRate": 70.5,
+      "roi": 21.8,
+      "subscribers": 0,
+      "rank": 11,
+      "password": "password123",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuD4ldlC0l7f1tSED1_SV3GL0xoo88STemly3M1OWj7KXnBSGx3FOy1ibN3I8CAdbvXcMr0EhcaC30eQD1c8cszwgm5jOfDYFqjyQKdcNYboXZIVx3qHAdskzLrWDKLGrJA1IFL0TBlWZesDmebt2VBE2RP3Nbx6OpXX8LS5KhzLbYrnOzl32yFmpH62dyctK8cduk9P6mecSjqgi3IhboN6Io2SIBa4CQzaPPFR6QL_NHZYyhXKY0fp53-OBgznwXPD-cnk9NqC3sw",
+      "description": "Patient commodity swing trader specializing in Gold, Crude Oil, and agricultural markets, prioritizing risk-to-reward ratios of 1:3+."
+    },
+    {
+      "id": "quantum_scalp",
+      "name": "QuantumScalp",
+      "strategy": "HFT & Futures",
+      "winRate": 67.9,
+      "roi": 19.5,
+      "subscribers": 0,
+      "rank": 12,
+      "password": "password123",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuD4ldlC0l7f1tSED1_SV3GL0xoo88STemly3M1OWj7KXnBSGx3FOy1ibN3I8CAdbvXcMr0EhcaC30eQD1c8cszwgm5jOfDYFqjyQKdcNYboXZIVx3qHAdskzLrWDKLGrJA1IFL0TBlWZesDmebt2VBE2RP3Nbx6OpXX8LS5KhzLbYrnOzl32yFmpH62dyctK8cduk9P6mecSjqgi3IhboN6Io2SIBa4CQzaPPFR6QL_NHZYyhXKY0fp53-OBgznwXPD-cnk9NqC3sw",
+      "description": "High-frequency futures trading simulator, utilizing volume delta profile breakout cues and order book cluster analysis."
+    }
+  ],
+  "suggestions": [
+    {
+      "id": "sig_yaynra058",
+      "traderId": "alex_pro",
+      "asset": "tata",
+      "type": "Buy",
+      "entry": "6455",
+      "target": "7000",
+      "stopLoss": "6460",
+      "risk": "Low",
+      "assetType": "Stocks",
+      "strategy": "Swing",
+      "notes": ".",
+      "createdAt": "2026-05-24T14:35:26.698Z",
+      "edited": true
+    },
+    {
+      "id": "sig_zv58xoi2n",
+      "traderId": "alex_pro",
+      "asset": "tata",
+      "type": "Buy",
+      "entry": "6450",
+      "target": "7000",
+      "stopLoss": "6460",
+      "risk": "Medium",
+      "notes": "4",
+      "createdAt": "2026-05-23T12:02:22.839Z"
+    },
+    {
+      "id": "sig_pnrknahxf",
+      "traderId": "alex_pro",
+      "asset": "AAPL",
+      "type": "Buy",
+      "entry": "180.00",
+      "target": "190.00",
+      "stopLoss": "175.00",
+      "risk": "Medium",
+      "notes": "Testing initial creation",
+      "createdAt": "2026-05-23T11:59:04.054Z"
+    }
+  ],
+  "clients": [
+    {
+      "id": "client_e4517xp5a",
+      "email": "test@gmail.com",
+      "password": "Test@123",
+      "subId": "SA-1742-ELITE",
+      "subscription": {
+        "traderId": "Rushi Bhosale",
+        "plan": "pro",
+        "expiresAt": "2026-06-22T08:34:26.965Z"
+      },
+      "status": "active"
+    },
+    {
+      "id": "client_b9nt8f0l2",
+      "email": "test1@gmail.com",
+      "password": "Test@1234",
+      "subId": "SA-1965-ELITE",
+      "subscription": {
+        "traderId": "alex_pro",
+        "plan": "pro",
+        "expiresAt": "2026-06-23T14:32:06.700Z"
+      }
+    },
+    {
+      "id": "client_qdpjfgfrr",
+      "email": "sahilreghate@gmail.com",
+      "password": "1234567",
+      "subId": "SA-2915-ELITE",
+      "subscription": {
+        "traderId": "alex_pro",
+        "plan": "pro",
+        "expiresAt": "2026-06-26T14:09:24.098Z"
+      }
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg_m173s5nq1",
+      "senderId": "client_e4517xp5a",
+      "receiverId": "Rushi Bhosale",
+      "traderId": "Rushi Bhosale",
+      "content": "hello",
+      "timestamp": "2026-05-23T08:35:17.142Z"
+    },
+    {
+      "id": "msg_0wgn1rmh7",
+      "senderId": "client_b9nt8f0l2",
+      "receiverId": "alex_pro",
+      "traderId": "alex_pro",
+      "content": "hello",
+      "timestamp": "2026-05-24T14:33:07.299Z"
+    },
+    {
+      "id": "msg_wsxpcflp3",
+      "senderId": "client_qdpjfgfrr",
+      "receiverId": "alex_pro",
+      "traderId": "alex_pro",
+      "content": "Hello",
+      "timestamp": "2026-05-27T14:10:16.609Z"
+    }
+  ],
+  "admin": {
+    "username": "admin",
+    "salt": "719292c9757002d1f8997b6eb905bba6",
+    "passwordHash": "e54cb42c747fdf638d78ea81baaaffca5ed0d0667f25ac5f79b6a7e29050442d0d1758713a70e02fcf764c5b87d7e7439fc7be04fd87ae5bf5a64bdab980cdb1",
+    "mfaSecret": "ce58a141f1668c9788a63060c291e558880a881c"
+  },
+  "plans": [
+    {
+      "id": "standard",
+      "name": "Standard Plan",
+      "price": 59,
+      "features": [
+        "General Community Access",
+        "Standard Signals List"
+      ]
+    },
+    {
+      "id": "pro",
+      "name": "Pro Elite Plan",
+      "price": 99,
+      "features": [
+        "1-on-1 Private Trader Chat",
+        "Advanced Signals Feed"
+      ]
+    },
+    {
+      "id": "vip",
+      "name": "VIP Plan",
+      "price": 249,
+      "features": [
+        "Access to 10 Trader Dashboards",
+        "Option Hedging Insights"
+      ]
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay_lwpx40tf9",
+      "email": "sahilreghate@gmail.com",
+      "subId": "SA-2915-ELITE",
+      "traderId": "alex_pro",
+      "traderName": "Alex Pro",
+      "plan": "pro",
+      "amount": 99,
+      "timestamp": "2026-05-27T14:09:24.098Z",
+      "status": "success"
+    },
+    {
+      "id": "pay_ypcg5hgsd",
+      "email": "test1@gmail.com",
+      "subId": "SA-1965-ELITE",
+      "traderId": "alex_pro",
+      "traderName": "Alex Pro",
+      "plan": "pro",
+      "amount": 99,
+      "timestamp": "2026-05-24T14:32:06.700Z",
+      "status": "success"
+    },
+    {
+      "id": "pay_16duulfm3",
+      "email": "test@gmail.com",
+      "subId": "SA-1742-ELITE",
+      "traderId": "Rushi Bhosale",
+      "traderName": "Rushi_07",
+      "plan": "pro",
+      "amount": 99,
+      "timestamp": "2026-05-23T08:34:26.965Z",
+      "status": "success"
+    }
+  ]
+}
