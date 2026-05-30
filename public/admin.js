@@ -479,6 +479,11 @@ window.openTraderModal = function(traderId = '') {
     document.getElementById('trader-password').required = true;
   }
   
+  // Refresh the dynamic avatar upload dropzone preview UI
+  if (window.updateAvatarUI) {
+    window.updateAvatarUI();
+  }
+  
   modal.classList.remove('hidden');
 };
 
@@ -663,4 +668,132 @@ window.savePlansConfiguration = async function() {
 // Utilities
 function toggleTheme() {
   document.documentElement.classList.toggle('dark');
+}
+
+// Avatar Drag and Drop + File Select Upload Mechanics
+window.updateAvatarUI = function() {
+  const avatarInput = document.getElementById('trader-avatar');
+  const dropzone = document.getElementById('trader-avatar-dropzone');
+  const instructions = document.getElementById('avatar-upload-instructions');
+  const previewContainer = document.getElementById('avatar-preview-container');
+  const previewImg = document.getElementById('avatar-preview-img');
+  const fileNameEl = document.getElementById('avatar-file-name');
+  const fileSizeEl = document.getElementById('avatar-file-size');
+  
+  if (!avatarInput || !dropzone || !instructions || !previewContainer) return;
+  
+  const avatarValue = avatarInput.value.trim();
+  if (avatarValue) {
+    // Show preview state
+    instructions.classList.add('hidden');
+    previewContainer.classList.remove('hidden');
+    previewImg.src = avatarValue;
+    
+    // Set human-readable file details if it is Base64, otherwise use URL
+    if (avatarValue.startsWith('data:image')) {
+      fileNameEl.textContent = 'Uploaded Image';
+      // Calculate approximate size from Base64 string length
+      const approximateSizeKB = Math.round((avatarValue.length * 0.75) / 1024);
+      fileSizeEl.textContent = `${approximateSizeKB} KB`;
+    } else {
+      fileNameEl.textContent = 'External Image URL';
+      fileSizeEl.textContent = 'Remote Hosted';
+    }
+  } else {
+    // Show upload instructions state
+    instructions.classList.remove('hidden');
+    previewContainer.classList.add('hidden');
+    previewImg.src = '';
+    fileNameEl.textContent = '';
+    fileSizeEl.textContent = '';
+  }
+};
+
+window.handleAvatarDragOver = function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  const dropzone = document.getElementById('trader-avatar-dropzone');
+  if (dropzone) {
+    dropzone.classList.add('border-primary', 'bg-surface-container-high/60');
+    dropzone.classList.remove('border-outline-variant/40');
+  }
+};
+
+window.handleAvatarDragLeave = function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  const dropzone = document.getElementById('trader-avatar-dropzone');
+  if (dropzone) {
+    dropzone.classList.remove('border-primary', 'bg-surface-container-high/60');
+    dropzone.classList.add('border-outline-variant/40');
+  }
+};
+
+window.handleAvatarDrop = function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  const dropzone = document.getElementById('trader-avatar-dropzone');
+  if (dropzone) {
+    dropzone.classList.remove('border-primary', 'bg-surface-container-high/60');
+    dropzone.classList.add('border-outline-variant/40');
+  }
+  
+  if (event.dataTransfer && event.dataTransfer.files.length > 0) {
+    processAvatarFile(event.dataTransfer.files[0]);
+  }
+};
+
+window.handleAvatarFileSelect = function(input) {
+  if (input.files && input.files.length > 0) {
+    processAvatarFile(input.files[0]);
+  }
+};
+
+window.clearAvatarSelection = function(event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  
+  const avatarInput = document.getElementById('trader-avatar');
+  const fileInput = document.getElementById('trader-avatar-file');
+  if (avatarInput) avatarInput.value = '';
+  if (fileInput) fileInput.value = '';
+  
+  window.updateAvatarUI();
+};
+
+function processAvatarFile(file) {
+  // Check that file is indeed an image
+  if (!file.type.match('image.*')) {
+    alert('Please select an image file (PNG or JPG).');
+    return;
+  }
+  
+  // Check that file size is <= 5MB (5,242,880 bytes)
+  if (file.size > 5242880) {
+    alert('The file is too large. Please select an image smaller than 5MB.');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const avatarInput = document.getElementById('trader-avatar');
+    if (avatarInput) {
+      avatarInput.value = e.target.result; // Set Base64 data URL
+    }
+    
+    // Set UI preview
+    const fileNameEl = document.getElementById('avatar-file-name');
+    const fileSizeEl = document.getElementById('avatar-file-size');
+    if (fileNameEl) fileNameEl.textContent = file.name;
+    if (fileSizeEl) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      fileSizeEl.textContent = `${sizeMB} MB`;
+    }
+    
+    window.updateAvatarUI();
+  };
+  
+  reader.readAsDataURL(file);
 }

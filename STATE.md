@@ -3,6 +3,7 @@
 ## Current Status
 - Project fully completed, tested, verified, and deployed to Vercel.
 - **Purged all dummy user accounts, traders, signals, chat logs, and payments from the primary database, and refactored automated Playwright verification scripts to dynamically seed and restore test credentials at runtime so they execute successfully without leaving residual data.**
+- **Redesigned the avatar profile photo upload interface in the admin panel to support drag-and-drop or local file selection, encoding uploads into Base64 format for secure database storage and serverless platform persistence.**
 - Live Vercel URL: https://saudaa.vercel.app
 - GitHub Repository: https://github.com/sahil250303/Saudaa (with custom documentation README.md uploaded)
 - Node.js server configured for serverless Vercel function using @vercel/node builder.

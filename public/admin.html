@@ -472,9 +472,48 @@
         </div>
 
         <div class="space-y-1">
-          <label class="block text-[10px] font-bold uppercase text-on-surface-variant">Avatar URL (Optional)</label>
-          <input type="url" id="trader-avatar" placeholder="https://..." 
-            class="w-full bg-surface-container border border-outline-variant/40 rounded-xl p-3 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+          <label class="block text-[10px] font-bold uppercase text-on-surface-variant">Profile Photo</label>
+          
+          <!-- Hidden input for file selection -->
+          <input type="file" id="trader-avatar-file" accept="image/png, image/jpeg" class="hidden" onchange="handleAvatarFileSelect(this)"/>
+          
+          <!-- Hidden text input to store Base64 string for compatibility with saveTrader() -->
+          <input type="hidden" id="trader-avatar"/>
+          
+          <!-- Interactive Drag-and-Drop Dropzone -->
+          <div id="trader-avatar-dropzone" 
+               class="w-full min-h-[120px] bg-surface-container border-2 border-dashed border-outline-variant/40 rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:border-primary/60 transition-all relative group"
+               onclick="document.getElementById('trader-avatar-file').click()"
+               ondragover="handleAvatarDragOver(event)"
+               ondragleave="handleAvatarDragLeave(event)"
+               ondrop="handleAvatarDrop(event)">
+            
+            <!-- Default State: Upload Instructions -->
+            <div id="avatar-upload-instructions" class="flex flex-col items-center space-y-2 pointer-events-none">
+              <!-- Upload Cloud SVG -->
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-outline-variant group-hover:text-primary transition-colors">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+              </svg>
+              <div class="text-xs text-on-surface font-semibold">
+                <span class="md:inline hidden">Drag and drop your photo here, or click to choose</span>
+                <span class="md:hidden inline">Tap here to choose a photo</span>
+              </div>
+              <div class="text-[10px] text-outline">Supports PNG or JPG images up to 5MB</div>
+            </div>
+
+            <!-- Preview State: Rendered uploaded image -->
+            <div id="avatar-preview-container" class="hidden flex items-center gap-4 w-full text-left pointer-events-auto">
+              <img id="avatar-preview-img" src="" class="w-16 h-16 rounded-xl object-cover border border-outline-variant/40 shrink-0"/>
+              <div class="flex-grow space-y-1">
+                <div class="text-xs font-bold text-on-surface truncate max-w-[200px]" id="avatar-file-name">profile-image.png</div>
+                <div class="text-[10px] text-outline" id="avatar-file-size">1.2 MB</div>
+                <button type="button" onclick="clearAvatarSelection(event)" 
+                  class="px-2.5 py-1 text-[10px] font-bold text-error bg-error/10 hover:bg-error/15 rounded-md transition-colors border border-error/20">
+                  Remove Photo
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="space-y-1">
