@@ -96,13 +96,13 @@ CREATE TABLE IF NOT EXISTS payments (
 -- Enable Row Level Security (RLS) policies or leave disabled for public client connection
 -- (By default, Supabase tables restrict direct anonymous access if RLS is on.
 --  Since our node server connects via the service_role key, it bypasses RLS).
-ALTER TABLE traders DISABLE ROW LEVEL SECURITY;
-ALTER TABLE suggestions DISABLE ROW LEVEL SECURITY;
-ALTER TABLE clients DISABLE ROW LEVEL SECURITY;
-ALTER TABLE messages DISABLE ROW LEVEL SECURITY;
-ALTER TABLE admin DISABLE ROW LEVEL SECURITY;
-ALTER TABLE plans DISABLE ROW LEVEL SECURITY;
-ALTER TABLE payments DISABLE ROW LEVEL SECURITY;
+ALTER TABLE traders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE suggestions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE admin ENABLE ROW LEVEL SECURITY;
+ALTER TABLE plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 
 -- 8. Create Free Signals Table
 CREATE TABLE IF NOT EXISTS free_signals (
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS free_signals (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-ALTER TABLE free_signals DISABLE ROW LEVEL SECURITY;
+ALTER TABLE free_signals ENABLE ROW LEVEL SECURITY;
 
 -- Indexes for performance queries
 CREATE INDEX IF NOT EXISTS idx_suggestions_trader_id ON suggestions(trader_id);
