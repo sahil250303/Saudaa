@@ -494,6 +494,32 @@ setInterval(() => {
   }
 }, 300000);
 
+let dbInitialized = false;
+let dbInitializationPromise = null;
+
+async function ensureDbInitialized() {
+  if (dbInitialized) return;
+  if (!dbInitializationPromise) {
+    dbInitializationPromise = (async () => {
+      await initAdminDB();
+      await migrateDatabasePasswords();
+      dbInitialized = true;
+    })();
+  }
+  await dbInitializationPromise;
+}
+
+// Middleware to ensure DB is initialized before handling requests
+app.use(async (req, res, next) => {
+  try {
+    await ensureDbInitialized();
+    next();
+  } catch (error) {
+    console.error('Database initialization failed:', error);
+    res.status(500).json({ error: 'Internal Server Error: Database initialization failed.' });
+  }
+});
+
 // API Routes
 
 // Live Market Ticker Endpoint (no browser caching)
@@ -1312,18 +1338,17 @@ app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start Server with async Database initialization
-async function startServer() {
-  try {
-    await initAdminDB();
-    await migrateDatabasePasswords();
+// Start Server
+if (!process.env.VERCEL) {
+  ensureDbInitialized().then(() => {
     app.listen(PORT, () => {
       console.log(`Saudaa Server is running on http://localhost:${PORT}`);
     });
-  } catch (error) {
+  }).catch(error => {
     console.error('Failed to initialize database and start server:', error);
     process.exit(1);
-  }
+  });
 }
-startServer();
+
+module.exports = app;
 

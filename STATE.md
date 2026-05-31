@@ -1,7 +1,9 @@
 # GSD State Persistence - Saudaa
 
 ## Current Status
-- Project fully completed, secured, tested, verified, and deployed to Vercel.
+- Project fully completed, secured, tested, verified, and deployed to Vercel with serverless cold-start optimizations.
+- **Fixed Vercel Serverless Function Crash (500 Internal Server Error / FUNCTION_INVOCATION_FAILED) by exporting the Express app and gating `app.listen()` for non-Vercel environments.**
+- **Introduced request-gated DB initialization middleware in `server.js` to ensure Supabase configuration is loaded before handling any API requests without race conditions.**
 - **Implemented security hotfixes: Gated `/api/admin/dev-mfa` route, rotated Alpha Vantage key and forced environment-variable usage, and removed password echo from the subscribe response.**
 - **Migrated session tokens and JWT secrets to database persistence (using `admin_sessions` and database-stored `jwtSecret` config in Supabase/JSON DB) to resolve serverless state resetting.**
 - **Added Helmet security headers with CSP directives and express-rate-limit for brute-force mitigation on authentication and checkout routes.**
@@ -14,6 +16,8 @@
 - Node.js server configured for serverless Vercel function using @vercel/node builder.
 
 ## Completed Tasks
+- [x] Fix Vercel Serverless Function Crash by exporting the Express app and conditionalizing app.listen
+- [x] Implement request-gated middleware to ensure DB is initialized asynchronously on first request without cold-start race conditions
 - [x] Gate the `/api/admin/dev-mfa` endpoint behind a non-production check
 - [x] Rotate the Alpha Vantage API key (remove hardcoded fallback and require env variable)
 - [x] Remove plaintext password from `/api/subscribe` response
