@@ -2,6 +2,7 @@
 
 ## Current Status
 - Project fully completed, secured, tested, verified, and deployed to Vercel with serverless cold-start optimizations.
+- **Configured production Supabase service_role keys on local `.env` and Vercel environment variables to bypass RLS policies on internal backend operations.**
 - **Fixed Vercel Serverless Function Crash (500 Internal Server Error / FUNCTION_INVOCATION_FAILED) by exporting the Express app and gating `app.listen()` for non-Vercel environments.**
 - **Introduced request-gated DB initialization middleware in `server.js` to ensure Supabase configuration is loaded before handling any API requests without race conditions.**
 - **Implemented security hotfixes: Gated `/api/admin/dev-mfa` route, rotated Alpha Vantage key and forced environment-variable usage, and removed password echo from the subscribe response.**
