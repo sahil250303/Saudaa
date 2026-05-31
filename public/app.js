@@ -123,20 +123,30 @@ function startLiveTicker() {
 }
 
 function updateTickerUI() {
-  Object.keys(livePrices).forEach(ticker => {
-    const priceEl = document.getElementById(`price-${ticker}`);
-    const changeEl = document.getElementById(`change-${ticker}`);
+  const tickerEl = document.getElementById('price-ticker');
+  if (!tickerEl) return;
 
-    if (priceEl && changeEl) {
-      const val = livePrices[ticker];
-      const changePct = val.changePercent !== undefined ? val.changePercent : val.change;
-      const isUp = changePct >= 0;
-      
-      priceEl.textContent = `₹${val.price.toFixed(2)}`;
-      changeEl.textContent = `${isUp ? '+' : ''}${changePct.toFixed(2)}%`;
-      changeEl.className = `font-mono text-xs font-semibold ${isUp ? 'text-primary' : 'text-error'}`;
-    }
-  });
+  const tickers = Object.keys(livePrices);
+  if (tickers.length === 0) return;
+
+  const itemsHtml = tickers.map(ticker => {
+    const val = livePrices[ticker];
+    const changePct = val.changePercent !== undefined ? val.changePercent : val.change;
+    const isUp = changePct >= 0;
+    
+    return `
+      <div class="ticker-item inline-flex items-center gap-2">
+        <span class="font-bold text-xs text-on-surface">${ticker}</span>
+        <span class="font-mono text-xs text-outline">₹${val.price.toFixed(2)}</span>
+        <span class="font-mono text-xs font-semibold ${isUp ? 'text-primary' : 'text-error'}">
+          ${isUp ? '+' : ''}${changePct.toFixed(2)}%
+        </span>
+      </div>
+    `;
+  }).join('');
+
+  // Duplicate the HTML items to create a seamless marquee loop
+  tickerEl.innerHTML = itemsHtml + itemsHtml;
 }
 
 // 3. Fetch Traders & Leaderboard Ranking System
