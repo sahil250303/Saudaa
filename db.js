@@ -4,9 +4,33 @@ const { createClient } = require('@supabase/supabase-js');
 
 const DB_PATH = path.join(__dirname, 'database.json');
 
+// Load environment variables from .env file if it exists (zero-dependency parser)
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  try {
+    const envContent = fs.readFileSync(envPath, 'utf-8');
+    envContent.split(/\r?\n/).forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) return;
+      const index = trimmed.indexOf('=');
+      if (index > 0) {
+        const key = trimmed.substring(0, index).trim();
+        let val = trimmed.substring(index + 1).trim();
+        // Remove surrounding quotes if present
+        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+          val = val.substring(1, val.length - 1);
+        }
+        process.env[key] = val;
+      }
+    });
+  } catch (err) {
+    console.error('[DB] Failed to load .env file:', err);
+  }
+}
+
 // Supabase config
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
 let supabase = null;
 if (supabaseUrl && supabaseKey) {
@@ -231,13 +255,21 @@ async function writeDB(data) {
         created_at: fs.createdAt
       }));
 
-      // Execute upserts in parallel
+      // Write parent tables (traders, plans) sequentially first to prevent foreign-key race conditions in parallel execution
+      if (tradersData.length) {
+        const { error } = await supabase.from('traders').upsert(tradersData);
+        if (error) throw error;
+      }
+      if (plansData.length) {
+        const { error } = await supabase.from('plans').upsert(plansData);
+        if (error) throw error;
+      }
+
+      // Parallelize writes for other non-dependent or child tables
       await Promise.all([
-        tradersData.length ? supabase.from('traders').upsert(tradersData) : Promise.resolve(),
         suggestionsData.length ? supabase.from('suggestions').upsert(suggestionsData) : Promise.resolve(),
         clientsData.length ? supabase.from('clients').upsert(clientsData) : Promise.resolve(),
         messagesData.length ? supabase.from('messages').upsert(messagesData) : Promise.resolve(),
-        plansData.length ? supabase.from('plans').upsert(plansData) : Promise.resolve(),
         paymentsData.length ? supabase.from('payments').upsert(paymentsData) : Promise.resolve(),
         adminData.length ? supabase.from('admin').upsert(adminData) : Promise.resolve(),
         freeSignalsData.length ? supabase.from('free_signals').upsert(freeSignalsData) : Promise.resolve()

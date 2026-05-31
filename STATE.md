@@ -2,6 +2,7 @@
 
 ## Current Status
 - Project fully completed, tested, verified, and deployed to Vercel.
+- **Migrated database to cloud-hosted remote Supabase instance (implemented schema SQL DDL tables, configured secure credential environment variables, coded zero-dependency env parser fallback, serialized database writes to prevent foreign-key race conditions, and deployed live in production on Vercel).**
 - **Configured the live market pricing strip to rotate automatically from right to left in a seamless infinite marquee animation (applied hover-pause behavior in CSS and duplicated elements inside the dynamic JS layout render loop to ensure visual continuity).**
 - **Fixed landing page preloader getting stuck. Diagnosed a JavaScript syntax compiler error in `public/app.js` (stray closing brackets left behind during dynamic list cleanup) which prevented script load and execution. Corrected and verified successfully via console/preloader test runners.**
 - **Removed all hardcoded static dummy free signals and 11-trader references from the homepage, making the active streams count, expert status badges, and channel description header dynamically match the database's live active traders count.**
@@ -36,6 +37,7 @@
 - **Verified complete system cleanup through automated verification tests.**
 
 ## Completed Tasks
+- [x] Migrate project database to remote Supabase cloud-hosted PostgreSQL database and configure production environment variables on Vercel
 - [x] Configure live stock ticker strip to scroll seamlessly from right to left in a marquee layout with hover-pause control
 - [x] Remove all hardcoded static dummy free signals and 11-trader references from the homepage, replacing with dynamic counters
 - [x] Redesign "Client Communications" dashboard widget to support free signals broadcaster and enforce 3-signal daily limit

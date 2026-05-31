@@ -144,7 +144,7 @@ async function initAdminDB() {
     console.log('[INIT] Default admin account seeded.');
   }
 
-  if (!db.plans) {
+  if (!db.plans || db.plans.length === 0) {
     db.plans = [
       { id: "standard", name: "Standard Plan", price: 59, features: ["General Community Access", "Standard Signals List"] },
       { id: "pro", name: "Pro Elite Plan", price: 99, features: ["1-on-1 Private Trader Chat", "Advanced Signals Feed"] },
@@ -154,7 +154,7 @@ async function initAdminDB() {
     console.log('[INIT] Default plans seeded.');
   }
 
-  if (!db.payments) {
+  if (!db.payments || db.payments.length === 0) {
     db.payments = [];
     updated = true;
     console.log('[INIT] Default payments list seeded.');
