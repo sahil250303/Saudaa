@@ -2,6 +2,7 @@
 
 ## Current Status
 - Project fully completed, tested, verified, and deployed to Vercel.
+- **Configured the live market pricing strip to rotate automatically from right to left in a seamless infinite marquee animation (applied hover-pause behavior in CSS and duplicated elements inside the dynamic JS layout render loop to ensure visual continuity).**
 - **Fixed landing page preloader getting stuck. Diagnosed a JavaScript syntax compiler error in `public/app.js` (stray closing brackets left behind during dynamic list cleanup) which prevented script load and execution. Corrected and verified successfully via console/preloader test runners.**
 - **Removed all hardcoded static dummy free signals and 11-trader references from the homepage, making the active streams count, expert status badges, and channel description header dynamically match the database's live active traders count.**
 - **Redesigned the "Client Communications" section in the trader's dashboard to include a toggleable "Free Signal" broadcasting tab allowing traders to post up to 3 free signals per calendar day, strictly enforced server-side, and dynamically populated in the public `#free-signals` lounge feed on the homepage.**
@@ -35,6 +36,7 @@
 - **Verified complete system cleanup through automated verification tests.**
 
 ## Completed Tasks
+- [x] Configure live stock ticker strip to scroll seamlessly from right to left in a marquee layout with hover-pause control
 - [x] Remove all hardcoded static dummy free signals and 11-trader references from the homepage, replacing with dynamic counters
 - [x] Redesign "Client Communications" dashboard widget to support free signals broadcaster and enforce 3-signal daily limit
 - [x] Integrate live homepage lounge `#free-signals` chat feed to fetch and render broadcaster signals
