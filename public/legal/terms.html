@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Saudaa - Terms of Service</title>
+  
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#42682b",
+            background: "#faf9f4",
+            surface: "#faf9f4",
+            "on-surface": "#1b1c19",
+            "on-surface-variant": "#444840",
+            outline: "#747870",
+            "outline-variant": "#c4c8be",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f4ef"
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col antialiased font-sans">
+
+  <!-- Header Nav -->
+  <header class="w-full bg-surface/80 backdrop-blur-md sticky top-0 z-50 border-b border-outline-variant/30">
+    <div class="max-w-[800px] mx-auto h-20 px-6 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider hover:opacity-85 transition-opacity">
+        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+        Back to Home
+      </a>
+      <div class="h-10 w-10 flex items-center justify-center">
+        <img src="/Assets/logo/logo.png" alt="Saudaa Logo" class="h-full object-contain"/>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content Workspace -->
+  <main class="flex-grow max-w-[800px] mx-auto px-6 py-12 md:py-16 space-y-8">
+    <div class="space-y-4">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-on-surface">Terms of Service</h1>
+      <p class="text-xs text-outline font-mono">Last Updated: May 31, 2026</p>
+    </div>
+
+    <!-- SEBI & RBI Regulatory Alert -->
+    <div class="p-5 rounded-2xl bg-amber-50 border border-amber-300/60 text-amber-900 text-xs leading-relaxed space-y-2">
+      <div class="flex items-center gap-2 font-bold uppercase tracking-wider text-[10px] text-amber-800">
+        <span class="material-symbols-outlined text-[16px]">gavel</span> Regulatory & SEBI Compliance Notice
+      </div>
+      <p>
+        Saudaa is an educational research suggestions marketplace. The platform does NOT provide personalized investment advice. All suggestions posted by traders on the marketplace are for research and paper trading purposes only. Saudaa is NOT a registered Investment Advisor under SEBI (Investment Advisers) Regulations, 2013.
+      </p>
+    </div>
+
+    <article class="prose prose-sm text-on-surface-variant max-w-none space-y-6 text-xs leading-relaxed">
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-on-surface mt-6">1. Platform Scope & Services</h2>
+        <p>
+          Saudaa provides a marketplace connecting independent market analysis professionals (Traders) with registered users (Clients). Traders share market research alerts containing entry levels, profit targets, and stop-loss estimates. These alerts are generated using technical indicators and quantitative models and are strictly for educational exercises.
+        </p>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-on-surface mt-6">2. Subscriber Account & Security Obligations</h2>
+        <p>
+          Subscribers are assigned a unique identification code (e.g., SA-XXXX-ELITE). You are strictly prohibited from sharing your subscriber credentials, session tokens, or transaction receipts with third parties. Sharing terminals or scraping signals violates intellectual property protections and results in immediate suspension without refund.
+        </p>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-on-surface mt-6">3. Payment Gateway & INR Transactions (RBI Compliance)</h2>
+        <p>
+          All pricing options are charged in Indian Rupees (₹). Payments are securely routed through RBI-compliant, PCI-DSS certified payment processors (Razorpay). Subscribers agree to pay monthly renewal amounts on selected tiers. By completing a transaction, you authorize Saudaa and the gateway to charge your selected payment option.
+        </p>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-on-surface mt-6">4. Limitation of Liability</h2>
+        <p>
+          Saudaa, its administrators, and its independent traders are not responsible for any financial losses incurred from market activities. Equity, derivative, and commodity markets carry substantial volatility risks. Subscribers acknowledge they make execution decisions at their own discretion.
+        </p>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-on-surface mt-6">5. Changes to Terms</h2>
+        <p>
+          We reserve the right to modify these terms at any time. Continued use of the platform constitutes agreement to the updated Terms of Service.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-8 border-t border-outline-variant/30 text-center text-[10px] text-outline font-mono">
+    © 2026 Saudaa Suggestions Platform. Registered Office: Nariman Point, Mumbai.
+  </footer>
+
+</body>
+</html>

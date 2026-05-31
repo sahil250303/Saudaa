@@ -1,42 +1,37 @@
 # GSD State Persistence - Saudaa
 
 ## Current Status
-- Project fully completed, tested, verified, and deployed to Vercel.
-- **Migrated database to cloud-hosted remote Supabase instance (implemented schema SQL DDL tables, configured secure credential environment variables, coded zero-dependency env parser fallback, serialized database writes to prevent foreign-key race conditions, and deployed live in production on Vercel).**
-- **Configured the live market pricing strip to rotate automatically from right to left in a seamless infinite marquee animation (applied hover-pause behavior in CSS and duplicated elements inside the dynamic JS layout render loop to ensure visual continuity).**
-- **Fixed landing page preloader getting stuck. Diagnosed a JavaScript syntax compiler error in `public/app.js` (stray closing brackets left behind during dynamic list cleanup) which prevented script load and execution. Corrected and verified successfully via console/preloader test runners.**
-- **Removed all hardcoded static dummy free signals and 11-trader references from the homepage, making the active streams count, expert status badges, and channel description header dynamically match the database's live active traders count.**
-- **Redesigned the "Client Communications" section in the trader's dashboard to include a toggleable "Free Signal" broadcasting tab allowing traders to post up to 3 free signals per calendar day, strictly enforced server-side, and dynamically populated in the public `#free-signals` lounge feed on the homepage.**
-- **Purged all dummy user accounts, traders, signals, chat logs, and payments from the primary database, and refactored automated Playwright verification scripts to dynamically seed and restore test credentials at runtime so they execute successfully without leaving residual data.**
-- **Redesigned the avatar profile photo upload interface in the admin panel to support drag-and-drop or local file selection, encoding uploads into Base64 format for secure database storage and serverless platform persistence.**
+- Project fully completed, secured, tested, verified, and deployed to Vercel.
+- **Implemented security hotfixes: Gated `/api/admin/dev-mfa` route, rotated Alpha Vantage key and forced environment-variable usage, and removed password echo from the subscribe response.**
+- **Migrated session tokens and JWT secrets to database persistence (using `admin_sessions` and database-stored `jwtSecret` config in Supabase/JSON DB) to resolve serverless state resetting.**
+- **Added Helmet security headers with CSP directives and express-rate-limit for brute-force mitigation on authentication and checkout routes.**
+- **Created 4 regulatory-compliant legal pages (Terms, Privacy, Refund, Risk) under the `/legal/` folder aligned with SEBI and RBI rules.**
+- **Optimized Vercel deployment bundle sizes by moving Playwright to devDependencies in package.json.**
+- **Configured visibilitychange event listener to automatically pause market poller updates when the browser tab is hidden.**
+- **Corrected hero terminal mockups to display NIFTY50 equity buy alerts instead of BTC/USD crypto signals.**
 - Live Vercel URL: https://saudaa.vercel.app
-- GitHub Repository: https://github.com/sahil250303/Saudaa (with custom documentation README.md uploaded)
+- GitHub Repository: https://github.com/sahil250303/Saudaa
 - Node.js server configured for serverless Vercel function using @vercel/node builder.
-- **Integrated comprehensive mobile responsive layout optimizations across the homepage and user/trader dashboards, featuring collapsible navbar drawer, mobile exclusive cards leaderboard, aspect-square stock heatmap, mobile dashboard header status bar, and horizontal subscriber chat list carousels.**
-- **Updated the homepage's navbar to display only the logo graphic, removing the "Saudaa" brand name text and scaling the logo's size by 20% to 54px while retaining proportional constraints and overall navbar alignments.**
-- **Added a dynamic background animation to the hero section mimicking a share market chart with falling red and green stock candlesticks (implemented via HTML5 canvas and canvas rendering loop, with adjusted opacity and wick boldness for optimal contrast).**
-- **Updated all currency representations across the platform to Indian Rupees (₹), formatting stock ticker pricing, mock signals, subscription plan checkout selections, chatbot logs, and administrative ledger tables.**
-- **Removed all references to "Elite Trading" from the application branding (title, navigation header sub-label, comparison wizard description, and footer brand name).**
-- **Fixed landing page preloader getting stuck. Diagnosed an unclosed script tag on the TradingView Heatmap widget inside index.html which prevented app.js from loading. Resolved by adding the missing closing script tag, restoring preloader fade-out animation and main page visibility.**
-- **Integrated custom logo (/Assets/logo/logo.png) into navbar, footer, login screens, dashboard sidebar, and preloader animation. Placed the logo centered directly on top of the text preloader and progress bar, and scaled it dynamically via CSS to maximize artwork visibility.**
-- **Enhanced traders' dashboard suggestions form with Trade Category and Trading Strategy dropdown options. Formatted options with parenthetical explanations to assist novice users, and configured cards to render these properties as styling badges.**
-- **Optimized the Market Heatmap size to fit within the viewport on desktop screens (reduced height from 950px to 700px) and designed a floating "Scroll to Bottom" downward arrow button inside the widget card to smoothly scroll users to the base of the heatmap.**
-- Frontend interfaces, CSS styling, dynamic stock strips, interactive dashboards, chatbots, and databases are operational.
-- **Relocated the "Live Market" ticker strip below the homepage hero section, configuring it to stick at top-[80px] (directly below the sticky navbar) when scrolled.**
-- **Mapped the navbar "Market Edge" option to link directly to the Live Market Heatmap section (#heatmap).**
-- **Redesigned the homepage hero section, replacing the "Trader Portal Login" CTA with an inviting, professional chat box widget promoting "Free Insights Chats".**
-- **Redesigned the navbar to include an always-visible, prominent Home option and optimized the layout to limit to 5 primary links.**
-- **Integrated Organic Minimalist Light design system, updating color palettes, typography tokens, and border radii across files.**
-- **Group-unified all free trading channel signals into a single continuous Discord-style feed (#free-signals) with a secondary #welcome-lounge info channel.**
-- **Removed the landing page "Subscription Tiers" pricing section, pointing all entry points to the leaderboard instead.**
-- **Updated Lounge bot chat responses and dashboard fallback links to route users to the leaderboard for subscriptions.**
-- **Added Secure Admin Dashboard for User Overview, Payments, Trader Accounts, and Plan Modifier.**
-- **Completed Standard Plan pricing update to $59 (updated landing page dynamically).**
-- **Purged all mock user accounts, payment history, messages, and signals from the database.**
-- **Reset all trader subscriber counts to 0 to clear out simulated metrics.**
-- **Verified complete system cleanup through automated verification tests.**
 
 ## Completed Tasks
+- [x] Gate the `/api/admin/dev-mfa` endpoint behind a non-production check
+- [x] Rotate the Alpha Vantage API key (remove hardcoded fallback and require env variable)
+- [x] Remove plaintext password from `/api/subscribe` response
+- [x] Remove admin MFA code from console logs in `/api/admin/login`
+- [x] Migrate admin session tokens and JWT secrets to database sessions table
+- [x] Add per-IP rate limiting to login and subscription endpoints
+- [x] Add Helmet.js security headers with custom CSP configuration
+- [x] Enforce subscription expiry check on signal retrieval inside `/api/suggestions`
+- [x] Gate sandbox payment mode in production if Razorpay is not configured
+- [x] Add admin logout endpoint and enforce session expiry
+- [x] Move Playwright to devDependencies in package.json
+- [x] Pause market ticker polling when browser tab is hidden
+- [x] Seed database with 11 professional trader profiles at startup
+- [x] Replace hardcoded BTC/USD crypto signal in hero terminal widget with NIFTY50 equity alert
+- [x] Add environment variable verification check on startup
+- [x] Create and publish 4 legal pages (Terms, Privacy, Refund, Risk) under `/legal/`
+- [x] Update testimonial reference to match seeded trader name
+- [x] Verify footer link paths to the new legal pages
 - [x] Migrate project database to remote Supabase cloud-hosted PostgreSQL database and configure production environment variables on Vercel
 - [x] Configure live stock ticker strip to scroll seamlessly from right to left in a marquee layout with hover-pause control
 - [x] Remove all hardcoded static dummy free signals and 11-trader references from the homepage, replacing with dynamic counters
@@ -88,7 +83,7 @@
 - [x] Design, integrate, and verify animated stats strip and scroll indicator at the bottom of the hero section
 - [x] Match Complimentary Trading Channels styling, variables, input, and colors with light cream and sage green theme
 - [x] Remove "Elite Trading" references from application branding and index.html
-- [x] Convert all platform currency symbols to Indian Rupees (₹)
+- [x] Convert all currency representations across the platform to Indian Rupees (₹)
 - [x] Programmatically trim transparent padding from the logo image (from 1024x1024 to 394x336 pixels)
 - [x] Adjust logo layout across preloader, navigation header, and dashboard sidebar/login pages to utilize the cropped logo (removing scale-[2.5] and overflow cropping hacks)
 - [x] Redesign footer with a responsive, 4-column structured grid (Company Profile with social SVGs, Navigation, Contact Details with Nariman Point office, Legal & Policies) matching the Organic Minimalist Light design theme
@@ -99,11 +94,8 @@
 
 ## Final Notes
 - The application is running at `http://localhost:3000`.
-- Admin credentials seeded: `admin` username. The password is set via `ADMIN_PASSWORD` in `.env` (or a random secure password is generated and logged to console on startup).
-- Default plans structure (standard, pro, vip) maintained with updated standard price ($59).
-- Clean database holds 11 traders (retained for marketplace UI) with 0 subscribers each.
-- Home page includes an interactive, theme-compliant Chatbox section demonstrating three free trading signals for novice users.
-- Home page features an animated statistics strip and micro-animated scroll indicator at the bottom of the hero section.
-- Complimentary Intelligence Channels chat widget matches the light cream background, sage green accents, and theme-compliant inputs.
-- Branding logo was optimized, resized, and integrated consistently across preloader, header navigation, footer, dashboard login, and sidebar views.
-- Minimalistic responsive footer was fully integrated and styled.
+- Admin credentials seeded: `admin` username. The password is set via `ADMIN_PASSWORD` in `.env`.
+- Database includes 11 seeded traders with 0 subscribers each.
+- Active stock ticker strip pauses updates dynamically when tab is backgrounded.
+- Home page includes verified statistics strip animation pulling values directly from `/api/traders`.
+- The footer has active, styled regulatory pages compliant with SEBI and RBI guidelines.

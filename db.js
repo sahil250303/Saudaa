@@ -120,7 +120,8 @@ async function readDB() {
           username: admin.data[0].username,
           salt: admin.data[0].salt,
           passwordHash: admin.data[0].password_hash || admin.data[0].passwordHash,
-          mfaSecret: admin.data[0].mfa_secret || admin.data[0].mfaSecret
+          mfaSecret: admin.data[0].mfa_secret || admin.data[0].mfaSecret,
+          jwtSecret: admin.data[0].jwt_secret || admin.data[0].jwtSecret
         } : null,
         plans: (plans.data || []).map(p => ({
           id: p.id,
@@ -243,7 +244,8 @@ async function writeDB(data) {
         username: data.admin.username,
         salt: data.admin.salt,
         password_hash: data.admin.passwordHash,
-        mfa_secret: data.admin.mfaSecret
+        mfa_secret: data.admin.mfaSecret,
+        jwt_secret: data.admin.jwtSecret
       }] : [];
 
       const freeSignalsData = (data.freeSignals || []).map(fs => ({
@@ -290,4 +292,65 @@ async function writeDB(data) {
   }
 }
 
-module.exports = { readDB, writeDB, isSupabase: () => !!supabase };
+// Session store helper functions
+async function getAdminSession(token) {
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('admin_sessions')
+      .select('expires_at')
+      .eq('token', token)
+      .single();
+    if (error || !data) return null;
+    return data;
+  } else {
+    const db = await readDB();
+    if (!db.admin_sessions) db.admin_sessions = {};
+    const session = db.admin_sessions[token];
+    if (!session) return null;
+    if (new Date(session.expires_at) < new Date()) {
+      delete db.admin_sessions[token];
+      await writeDB(db);
+      return null;
+    }
+    return session;
+  }
+}
+
+async function saveAdminSession(token, expiresAt) {
+  if (supabase) {
+    const { error } = await supabase
+      .from('admin_sessions')
+      .upsert({ token, expires_at: expiresAt });
+    if (error) console.error('Error saving admin session to Supabase:', error);
+  } else {
+    const db = await readDB();
+    if (!db.admin_sessions) db.admin_sessions = {};
+    db.admin_sessions[token] = { token, expires_at: expiresAt };
+    await writeDB(db);
+  }
+}
+
+async function deleteAdminSession(token) {
+  if (supabase) {
+    const { error } = await supabase
+      .from('admin_sessions')
+      .delete()
+      .eq('token', token);
+    if (error) console.error('Error deleting admin session from Supabase:', error);
+  } else {
+    const db = await readDB();
+    if (db.admin_sessions && db.admin_sessions[token]) {
+      delete db.admin_sessions[token];
+      await writeDB(db);
+    }
+  }
+}
+
+module.exports = {
+  readDB,
+  writeDB,
+  isSupabase: () => !!supabase,
+  getAdminSession,
+  saveAdminSession,
+  deleteAdminSession
+};

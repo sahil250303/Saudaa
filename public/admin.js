@@ -15,7 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     showLogin();
   }
+  checkDevMfaAvailability();
 });
+
+async function checkDevMfaAvailability() {
+  try {
+    const res = await fetch('/api/admin/dev-mfa');
+    if (!res.ok) {
+      // Hide the dev MFA button container
+      const devContainer = document.querySelector('button[onclick="autofillMfaDev()"]')?.parentElement;
+      if (devContainer) devContainer.classList.add('hidden');
+    }
+  } catch (err) {
+    const devContainer = document.querySelector('button[onclick="autofillMfaDev()"]')?.parentElement;
+    if (devContainer) devContainer.classList.add('hidden');
+  }
+}
 
 // Authentication Step 1: Username & Password Verification
 window.submitStep1 = async function(event) {

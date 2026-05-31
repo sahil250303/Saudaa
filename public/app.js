@@ -2,6 +2,12 @@
 
 // State
 let tradersList = [];
+let statsData = {
+  traders: 11,
+  leaders: 8,
+  winRate: 72,
+  calls: 165
+};
 let livePrices = {
   AAPL: { price: 189.84, change: 1.24, changePercent: 0.66 },
   MSFT: { price: 421.90, change: -0.85, changePercent: -0.20 },
@@ -116,11 +122,20 @@ async function fetchStockPrices() {
   }
 }
 
+let marketPollInterval = null;
+
 function startLiveTicker() {
   fetchStockPrices();
-  // Poll every 10 seconds
-  setInterval(fetchStockPrices, 10000);
+  marketPollInterval = setInterval(fetchStockPrices, 10000);
 }
+
+function stopLiveTicker() {
+  clearInterval(marketPollInterval);
+}
+
+document.addEventListener('visibilitychange', () => {
+  document.hidden ? stopLiveTicker() : startLiveTicker();
+});
 
 function updateTickerUI() {
   const tickerEl = document.getElementById('price-ticker');
@@ -164,6 +179,14 @@ async function fetchTraders() {
     const streamsCountEl = document.getElementById('active-streams-count');
     if (streamsCountEl) {
       streamsCountEl.textContent = `${tradersList.length} Active Trader Stream${tradersList.length === 1 ? '' : 's'}`;
+    }
+
+    // Update statsData dynamically
+    if (tradersList && tradersList.length > 0) {
+      statsData.traders = tradersList.length;
+      statsData.leaders = tradersList.filter(t => t.roi >= 40).length;
+      statsData.winRate = Math.round(tradersList.reduce((sum, t) => sum + t.winRate, 0) / tradersList.length);
+      statsData.calls = tradersList.length * 15 + tradersList.reduce((sum, t) => sum + t.subscribers, 0);
     }
 
     renderLeaderboard();
@@ -400,7 +423,7 @@ window.handleCheckout = async function(event) {
             
             document.getElementById('success-subid').textContent = subData.subId;
             document.getElementById('success-email').textContent = subData.email;
-            document.getElementById('success-password').textContent = subData.password;
+            document.getElementById('success-password').textContent = password;
           } catch (err) {
             errorEl.textContent = err.message;
             errorEl.classList.remove('hidden');
@@ -451,7 +474,7 @@ window.handleCheckout = async function(event) {
           
           document.getElementById('success-subid').textContent = subData.subId;
           document.getElementById('success-email').textContent = subData.email;
-          document.getElementById('success-password').textContent = subData.password;
+          document.getElementById('success-password').textContent = password;
         } catch (err) {
           errorEl.textContent = err.message;
           errorEl.classList.remove('hidden');
@@ -1394,10 +1417,10 @@ function initStatsAnimation() {
   const runAllAnimations = () => {
     if (animated) return;
     animated = true;
-    animateValue('stat-val-traders', 0, 12840, 1500, '', true);
-    animateValue('stat-val-leaders', 0, 214, 1500, '');
-    animateValue('stat-val-winrate', 0, 72, 1500, '%');
-    animateValue('stat-val-calls', 0, 4280, 1500, '', true);
+    animateValue('stat-val-traders', 0, statsData.traders, 1500, '', false);
+    animateValue('stat-val-leaders', 0, statsData.leaders, 1500, '');
+    animateValue('stat-val-winrate', 0, statsData.winRate, 1500, '%');
+    animateValue('stat-val-calls', 0, statsData.calls, 1500, '', false);
   };
 
   const observer = new IntersectionObserver((entries) => {

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Saudaa - Refund Policy</title>
+  
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#42682b",
+            background: "#faf9f4",
+            surface: "#faf9f4",
+            "on-surface": "#1b1c19",
+            "on-surface-variant": "#444840",
+            outline: "#747870",
+            "outline-variant": "#c4c8be",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f4ef"
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col antialiased font-sans">
+
+  <!-- Header Nav -->
+  <header class="w-full bg-surface/80 backdrop-blur-md sticky top-0 z-50 border-b border-outline-variant/30">
+    <div class="max-w-[800px] mx-auto h-20 px-6 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider hover:opacity-85 transition-opacity">
+        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+        Back to Home
+      </a>
+      <div class="h-10 w-10 flex items-center justify-center">
+        <img src="/Assets/logo/logo.png" alt="Saudaa Logo" class="h-full object-contain"/>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content Workspace -->
+  <main class="flex-grow max-w-[800px] mx-auto px-6 py-12 md:py-16 space-y-8">
+    <div class="space-y-4">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-on-surface">Refund & Cancellation Policy</h1>
+      <p class="text-xs text-outline font-mono">Last Updated: May 31, 2026</p>
+    </div>
+
+    <!-- E-Commerce Rules Alert -->
+    <div class="p-5 rounded-2xl bg-amber-50 border border-amber-300/60 text-amber-900 text-xs leading-relaxed space-y-2">
+      <div class="flex items-center gap-2 font-bold uppercase tracking-wider text-[10px] text-amber-800">
+        <span class="material-symbols-outlined text-[16px]">payments</span> Consumer Protection (E-Commerce) Rules 2020
+      </div>
+      <p>
+        Since Saudaa delivers immediate digital content (live analytical trading suggestions and real-time messaging access), all transaction checkouts are final. We advise users to review the leaderboard history and check free lounge feeds prior to subscribing.
+      </p>
+    </div>
+
+    <article class="prose prose-sm text-on-surface-variant max-w-none space-y-6 text-xs leading-relaxed">
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-on-surface mt-6">1. Non-Refundability of Digital Content</h2>
+        <p>
+          Once a subscription plan is successfully processed and credentials are generated, no refunds (partial or full) will be issued. Subscribing unlocks instant, non-retractable intellectual property (trader positions, entry levels, targets, and private chat history).
+        </p>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-on-surface mt-6">2. Subscription Cancellation & Auto-Renewals</h2>
+        <p>
+          Subscribers can terminate auto-renewal configurations at any time from their personal user portal dashboard. To prevent the next month's billing block, you must request cancellation at least 48 hours before your current subscription cycle expires. After cancellation, you retain terminal access until the end of your prepaid 30-day window.
+        </p>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-on-surface mt-6">3. Technical Gateway Errors</h2>
+        <p>
+          If your bank account is debited but a payment verification error blocks your terminal subscription creation, our payment gateway (Razorpay) will automatically initiate a refund. Funds are credited back to your original source account (UPI, card, or net banking) within 5 to 7 working days, complying with RBI payment flow guidelines.
+        </p>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-base font-bold text-on-surface mt-6">4. Trader Inactivity Policy</h2>
+        <p>
+          Leaderboard traders compile independent analysis. If your subscribed trader fails to post any analytical suggestions for a consecutive block of 10 days, please contact `support@saudaa.com`. In verified cases of trader inactivity, the platform will offer to migrate your active subscription to another expert of equal rating.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-8 border-t border-outline-variant/30 text-center text-[10px] text-outline font-mono">
+    © 2026 Saudaa Suggestions Platform. Payment Gateway: Razorpay APIs (PCI-DSS Compliant).
+  </footer>
+
+</body>
+</html>

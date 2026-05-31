@@ -3,25 +3,70 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const crypto = require('crypto');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DB_PATH = path.join(__dirname, 'database.json');
 
-// In-memory sessions for admin
-const tempTokens = new Map(); // token -> { expiresAt }
-const activeAdminTokens = new Set();
+// Security Headers via Helmet
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.tailwindcss.com", "https://checkout.razorpay.com", "https://*.tradingview.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.tailwindcss.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
+      imgSrc: ["'self'", "data:", "https:", "http:", "*.googleusercontent.com"],
+      connectSrc: ["'self'", "https:", "http:"],
+      frameSrc: ["'self'", "https://checkout.razorpay.com", "https://*.tradingview.com", "https://*.tradingview-widget.com"],
+    },
+  },
+}));
 
+// Rate Limiters
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // 10 attempts
+  message: { error: 'Too many authentication attempts. Please try again after 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const subscribeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: 'Too many subscription attempts. Please try again after 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const { readDB, writeDB } = require('./db.js');
+const {
+  readDB,
+  writeDB,
+  getAdminSession,
+  saveAdminSession,
+  deleteAdminSession
+} = require('./db.js');
 
 // Native JWT implementation using HMAC-SHA256
-const JWT_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
+let JWT_SECRET = process.env.SESSION_SECRET;
+
+function checkEnvVars() {
+  const required = ['SESSION_SECRET', 'SUPABASE_URL', 'SUPABASE_KEY',
+                    'RAZORPAY_KEY_ID', 'RAZORPAY_KEY_SECRET', 'ALPHA_VANTAGE_API_KEY'];
+  const missing = required.filter(k => !process.env[k]);
+  if (missing.length) {
+    console.warn('[CONFIG] Missing environment variables:', missing.join(', '));
+  }
+}
+checkEnvVars();
 if (!process.env.SESSION_SECRET) {
   console.warn('[SECURITY WARNING] SESSION_SECRET environment variable is missing. Generated a random session secret.');
 }
@@ -138,10 +183,183 @@ async function initAdminDB() {
       username: adminUser,
       salt: salt,
       passwordHash: hash,
-      mfaSecret: crypto.randomBytes(20).toString('hex')
+      mfaSecret: crypto.randomBytes(20).toString('hex'),
+      jwtSecret: crypto.randomBytes(32).toString('hex')
     };
     updated = true;
     console.log('[INIT] Default admin account seeded.');
+  } else if (!db.admin.jwtSecret) {
+    db.admin.jwtSecret = crypto.randomBytes(32).toString('hex');
+    updated = true;
+    console.log('[INIT] Generated persistent jwtSecret for existing admin account.');
+  }
+
+  if (!JWT_SECRET) {
+    JWT_SECRET = db.admin.jwtSecret;
+  }
+
+  if (!db.traders || db.traders.length === 0) {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const defaultPassHash = crypto.scryptSync('password123', salt, 64).toString('hex');
+
+    db.traders = [
+      {
+        id: "alex_pro",
+        name: "Alex Pro",
+        strategy: "Algorithmic & Swing",
+        winRate: 82.9,
+        roi: 68.5,
+        subscribers: 0,
+        rank: 1,
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
+        description: "Professional quant trader specializing in index swing trading and high-frequency algorithms.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "neon_ghost",
+        name: "Neon Ghost",
+        strategy: "Scalping & Options",
+        winRate: 78.4,
+        roi: 59.2,
+        subscribers: 0,
+        rank: 2,
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+        description: "Derivative analyst focusing on Nifty/BankNifty weekly option writing and theta decay strategies.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "macro_bull",
+        name: "Macro Bull",
+        strategy: "Global Macro",
+        winRate: 74.1,
+        roi: 52.4,
+        subscribers: 0,
+        rank: 3,
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
+        description: "Macro economist tracking interest rates, inflation, and global liquidity trends for gold and bond yields.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "alpha_scalp",
+        name: "Alpha Scalp",
+        strategy: "Intraday Momentum",
+        winRate: 76.5,
+        roi: 48.9,
+        subscribers: 0,
+        rank: 4,
+        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200",
+        description: "Intraday momentum trader focusing on breakout stocks and order book flow analysis.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "delta_wanderer",
+        name: "Delta Wanderer",
+        strategy: "Arbitrage & Hedging",
+        winRate: 85.0,
+        roi: 42.1,
+        subscribers: 0,
+        rank: 5,
+        avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+        description: "Delta-neutral option strategist and cross-exchange crypto arbitrage specialist.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "satoshi_trader",
+        name: "Satoshi Trader",
+        strategy: "Crypto & DeFi",
+        winRate: 69.2,
+        roi: 45.8,
+        subscribers: 0,
+        rank: 6,
+        avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200",
+        description: "Blockchain analyst trading top-cap assets and liquid staking tokens.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "trend_rider",
+        name: "Trend Rider",
+        strategy: "Momentum Trend Follower",
+        winRate: 68.4,
+        roi: 39.5,
+        subscribers: 0,
+        rank: 7,
+        avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=200",
+        description: "Medium-term trend follower utilizing moving averages and MACD breakout indicators.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "commodities_pro",
+        name: "Commodities Pro",
+        strategy: "Commodity Cycles",
+        winRate: 72.3,
+        roi: 36.8,
+        subscribers: 0,
+        rank: 8,
+        avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200",
+        description: "Physical commodity trader predicting cycles in crude oil, natural gas, and copper.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "value_investor",
+        name: "Value Investor",
+        strategy: "Fundamental Value",
+        winRate: 70.5,
+        roi: 31.2,
+        subscribers: 0,
+        rank: 9,
+        avatar: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
+        description: "Discount cash flow modeling expert investing in undervalued mid-cap growth stocks.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "quantum_trade",
+        name: "Quantum Trade",
+        strategy: "Statistical Arbitrage",
+        winRate: 88.5,
+        roi: 29.8,
+        subscribers: 0,
+        rank: 10,
+        avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=200",
+        description: "Quantitative researcher utilizing mean reversion and statistical arbitrage on pairs trading.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "theta_gang",
+        name: "Theta Gang",
+        strategy: "Premium Selling",
+        winRate: 81.2,
+        roi: 28.5,
+        subscribers: 0,
+        rank: 11,
+        avatar: "https://images.unsplash.com/photo-1489980508314-941910ded1f4?auto=format&fit=crop&q=80&w=200",
+        description: "Structured options income strategies including iron condors, credit spreads, and covered calls.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      }
+    ];
+    updated = true;
+    console.log('[INIT] Seeding 11 professional traders...');
   }
 
   if (!db.plans || db.plans.length === 0) {
@@ -189,9 +407,6 @@ function generateTOTP(secret) {
   return generateTOTPWithCounter(secret, counter);
 }
 
-// Database will be initialized asynchronously in the startServer wrapper at startup
-
-
 // Helper to generate a subscription premium ID
 function generatePremiumID() {
   const num = Math.floor(1000 + Math.random() * 9000);
@@ -199,10 +414,13 @@ function generatePremiumID() {
 }
 
 // Live Market Stock Data Strip Configuration & Background Poller
-const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || 'VX8H607E3Y6T4M2B';
+const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
+if (!ALPHA_VANTAGE_API_KEY) {
+  console.warn('[WARNING] ALPHA_VANTAGE_API_KEY not set. Market strip will use simulation only.');
+}
 const symbols = ['AAPL', 'MSFT', 'TSLA', 'NVDA', 'AMZN'];
 let currentSymbolIndex = 0;
-let apiRateLimited = false;
+let apiRateLimited = !ALPHA_VANTAGE_API_KEY;
 
 let stockCache = {
   timestamp: new Date().toISOString(),
@@ -310,7 +528,7 @@ app.get('/api/traders', async (req, res) => {
 });
 
 // 2. Authentication Login (Trader or Client)
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', authLimiter, async (req, res) => {
   const { usernameOrEmail, password } = req.body;
   if (!usernameOrEmail || !password) {
     return res.status(400).json({ error: 'Username/Email and password are required.' });
@@ -463,8 +681,14 @@ app.post('/api/payment/order', async (req, res) => {
 });
 
 // 4b. Subscription Creation (Verifying signature and generating client login)
-app.post('/api/subscribe', async (req, res) => {
+app.post('/api/subscribe', subscribeLimiter, async (req, res) => {
   const { email, password, traderId, plan, paymentId, orderId, signature } = req.body;
+
+  if (!razorpay && process.env.NODE_ENV === 'production') {
+    return res.status(503).json({
+      error: 'Payment processing is not configured. Contact support.'
+    });
+  }
 
   if (!email || !password || !traderId || !plan) {
     return res.status(400).json({ error: 'Required fields missing: email, password, traderId, plan.' });
@@ -562,7 +786,6 @@ app.post('/api/subscribe', async (req, res) => {
     success: true,
     subId: client.subId,
     email: client.email,
-    password: password, // Reflect back selected password for client success UI display
     traderName: trader.name,
     plan: plan
   });
@@ -589,6 +812,13 @@ app.get('/api/suggestions', verifyUserToken, async (req, res) => {
     const client = db.clients.find(c => c.id === req.user.id);
     if (!client || !client.subscription) {
       return res.status(403).json({ error: 'No active subscription found. Subscribe to a trader to view signals.' });
+    }
+    // Enforce subscription expiry
+    if (new Date(client.subscription.expiresAt) < new Date()) {
+      return res.status(403).json({
+        error: 'Your subscription has expired. Please renew to continue.',
+        expired: true
+      });
     }
     const signals = db.suggestions.filter(s => s.traderId === client.subscription.traderId);
     return res.json(signals);
@@ -842,20 +1072,21 @@ app.post('/api/free-signals', verifyUserToken, async (req, res) => {
 });
 
 // Admin Token Authentication Middleware
-function verifyAdminToken(req, res, next) {
+async function verifyAdminToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Access denied. No token provided.' });
   }
   const token = authHeader.substring(7);
-  if (!activeAdminTokens.has(token)) {
+  const session = await getAdminSession(token);
+  if (!session || new Date(session.expires_at) < new Date()) {
     return res.status(403).json({ error: 'Access denied. Invalid or expired session.' });
   }
   next();
 }
 
 // 11. Admin Login Step 1: Credentials verification
-app.post('/api/admin/login', async (req, res) => {
+app.post('/api/admin/login', authLimiter, async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required.' });
@@ -878,27 +1109,26 @@ app.post('/api/admin/login', async (req, res) => {
 
   // Credentials correct. Generate temporary MFA token
   const tempToken = 'temp_' + crypto.randomBytes(32).toString('hex');
-  tempTokens.set(tempToken, { expiresAt: Date.now() + 5 * 60 * 1000 }); // 5 minutes
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString(); // 5 minutes
+  await saveAdminSession(tempToken, expiresAt);
 
   // Generate current MFA code
   const code = generateTOTP(db.admin.mfaSecret);
-  console.log(`\n========================================`);
-  console.log(`[SECURITY] Admin Login MFA Code generated.`);
-  console.log(`Current MFA Verification Code: ${code}`);
-  console.log(`========================================\n`);
+  console.log('[SECURITY] Admin MFA challenge issued.');
+  // Code intentionally not logged to prevent log-based MFA bypass.
 
   res.json({ success: true, tempToken });
 });
 
 // 12. Admin Login Step 2: MFA Verification
-app.post('/api/admin/mfa-verify', async (req, res) => {
+app.post('/api/admin/mfa-verify', authLimiter, async (req, res) => {
   const { tempToken, code } = req.body;
   if (!tempToken || !code) {
     return res.status(400).json({ error: 'tempToken and MFA code are required.' });
   }
 
-  const session = tempTokens.get(tempToken);
-  if (!session || session.expiresAt < Date.now()) {
+  const session = await getAdminSession(tempToken);
+  if (!session || new Date(session.expires_at) < new Date()) {
     return res.status(401).json({ error: 'MFA verification session expired or invalid.' });
   }
 
@@ -913,23 +1143,35 @@ app.post('/api/admin/mfa-verify', async (req, res) => {
 
   // Upgrade to active admin session token
   const adminToken = 'adm_' + crypto.randomBytes(32).toString('hex');
-  activeAdminTokens.add(adminToken);
+  const adminExpiresAt = new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString(); // 8 hours expiry
+  await saveAdminSession(adminToken, adminExpiresAt);
 
   // Clean up temp token
-  tempTokens.delete(tempToken);
+  await deleteAdminSession(tempToken);
 
   res.json({ success: true, adminToken });
 });
 
-// Developer convenience endpoint to retrieve MFA code (enabled for testing in our dev environment)
-app.get('/api/admin/dev-mfa', async (req, res) => {
-  const db = await readDB();
-  if (!db.admin) {
-    return res.status(500).json({ error: 'Admin database not initialized.' });
+// Admin Logout Endpoint
+app.post('/api/admin/logout', verifyAdminToken, async (req, res) => {
+  const token = req.headers['authorization']?.substring(7);
+  if (token) {
+    await deleteAdminSession(token);
   }
-  const code = generateTOTP(db.admin.mfaSecret);
-  res.json({ code });
+  res.json({ success: true });
 });
+
+// Developer convenience endpoint to retrieve MFA code (enabled for testing in our dev environment)
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/api/admin/dev-mfa', async (req, res) => {
+    const db = await readDB();
+    if (!db.admin) {
+      return res.status(500).json({ error: 'Admin database not initialized.' });
+    }
+    const code = generateTOTP(db.admin.mfaSecret);
+    res.json({ code });
+  });
+}
 
 // 13. Admin Endpoint: List all clients (omitting password hash)
 app.get('/api/admin/users', verifyAdminToken, async (req, res) => {

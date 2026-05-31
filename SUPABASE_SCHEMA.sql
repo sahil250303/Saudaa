@@ -60,8 +60,17 @@ CREATE TABLE IF NOT EXISTS admin (
   username TEXT PRIMARY KEY,
   salt TEXT NOT NULL,
   password_hash TEXT NOT NULL,
-  mfa_secret TEXT
+  mfa_secret TEXT,
+  jwt_secret TEXT
 );
+
+-- 5b. Create Admin Sessions Table
+CREATE TABLE IF NOT EXISTS admin_sessions (
+  token TEXT PRIMARY KEY,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL
+);
+ALTER TABLE admin_sessions DISABLE ROW LEVEL SECURITY;
 
 -- 6. Create Plans Table
 CREATE TABLE IF NOT EXISTS plans (
