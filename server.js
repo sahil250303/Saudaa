@@ -1112,7 +1112,7 @@ async function verifyAdminToken(req, res, next) {
   next();
 }
 
-// 11. Admin Login Step 1: Credentials verification
+// 11. Admin Login: Credentials verification (MFA/OTP system disabled)
 app.post('/api/admin/login', authLimiter, async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -1134,47 +1134,10 @@ app.post('/api/admin/login', authLimiter, async (req, res) => {
     return res.status(401).json({ error: 'Invalid admin credentials.' });
   }
 
-  // Credentials correct. Generate temporary MFA token
-  const tempToken = 'temp_' + crypto.randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString(); // 5 minutes
-  await saveAdminSession(tempToken, expiresAt);
-
-  // Generate current MFA code
-  const code = generateTOTP(db.admin.mfaSecret);
-  console.log('[SECURITY] Admin MFA challenge issued.');
-  // Code intentionally not logged to prevent log-based MFA bypass.
-
-  res.json({ success: true, tempToken });
-});
-
-// 12. Admin Login Step 2: MFA Verification
-app.post('/api/admin/mfa-verify', authLimiter, async (req, res) => {
-  const { tempToken, code } = req.body;
-  if (!tempToken || !code) {
-    return res.status(400).json({ error: 'tempToken and MFA code are required.' });
-  }
-
-  const session = await getAdminSession(tempToken);
-  if (!session || new Date(session.expires_at) < new Date()) {
-    return res.status(401).json({ error: 'MFA verification session expired or invalid.' });
-  }
-
-  const db = await readDB();
-  const currentCode = generateTOTP(db.admin.mfaSecret);
-  const lastCounter = Math.floor(Date.now() / 30000) - 1;
-  const lastCode = generateTOTPWithCounter(db.admin.mfaSecret, lastCounter);
-
-  if (code !== currentCode && code !== lastCode) {
-    return res.status(401).json({ error: 'Invalid MFA verification code.' });
-  }
-
-  // Upgrade to active admin session token
+  // Credentials correct. Generate active admin session token directly
   const adminToken = 'adm_' + crypto.randomBytes(32).toString('hex');
   const adminExpiresAt = new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString(); // 8 hours expiry
   await saveAdminSession(adminToken, adminExpiresAt);
-
-  // Clean up temp token
-  await deleteAdminSession(tempToken);
 
   res.json({ success: true, adminToken });
 });
@@ -1187,18 +1150,6 @@ app.post('/api/admin/logout', verifyAdminToken, async (req, res) => {
   }
   res.json({ success: true });
 });
-
-// Developer convenience endpoint to retrieve MFA code (enabled for testing in our dev environment)
-if (process.env.NODE_ENV !== 'production') {
-  app.get('/api/admin/dev-mfa', async (req, res) => {
-    const db = await readDB();
-    if (!db.admin) {
-      return res.status(500).json({ error: 'Admin database not initialized.' });
-    }
-    const code = generateTOTP(db.admin.mfaSecret);
-    res.json({ code });
-  });
-}
 
 // 13. Admin Endpoint: List all clients (omitting password hash)
 app.get('/api/admin/users', verifyAdminToken, async (req, res) => {

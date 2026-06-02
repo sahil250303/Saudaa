@@ -15,24 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     showLogin();
   }
-  checkDevMfaAvailability();
 });
 
-async function checkDevMfaAvailability() {
-  try {
-    const res = await fetch('/api/admin/dev-mfa');
-    if (!res.ok) {
-      // Hide the dev MFA button container
-      const devContainer = document.querySelector('button[onclick="autofillMfaDev()"]')?.parentElement;
-      if (devContainer) devContainer.classList.add('hidden');
-    }
-  } catch (err) {
-    const devContainer = document.querySelector('button[onclick="autofillMfaDev()"]')?.parentElement;
-    if (devContainer) devContainer.classList.add('hidden');
-  }
-}
-
-// Authentication Step 1: Username & Password Verification
+// Authentication: Username & Password Verification
 window.submitStep1 = async function(event) {
   event.preventDefault();
   const usernameEl = document.getElementById('login-username');
@@ -58,76 +43,14 @@ window.submitStep1 = async function(event) {
       throw new Error(data.error || 'Failed to authenticate.');
     }
     
-    // Step 1 Success. Save tempToken and switch to Step 2
-    tempToken = data.tempToken;
-    document.getElementById('login-step1-form').classList.add('hidden');
-    document.getElementById('login-step2-form').classList.remove('hidden');
-    document.getElementById('login-mfa-code').focus();
-    
-  } catch (err) {
-    showLoginError(err.message);
-  }
-};
-
-// Authentication Step 2: MFA Code Verification
-window.submitStep2 = async function(event) {
-  event.preventDefault();
-  const codeEl = document.getElementById('login-mfa-code');
-  
-  if (!codeEl) return;
-  
-  try {
-    const res = await fetch('/api/admin/mfa-verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tempToken: tempToken,
-        code: codeEl.value.trim()
-      })
-    });
-    
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || 'Verification failed.');
-    }
-    
-    // Step 2 Success. Save admin token and enter dashboard
+    // Success: Save admin token and enter dashboard
     adminToken = data.adminToken;
     localStorage.setItem('saudaaAdminToken', adminToken);
-    
     enterDashboard();
     
   } catch (err) {
     showLoginError(err.message);
-    codeEl.value = '';
-    codeEl.focus();
   }
-};
-
-// Developer Convenience: Autofill MFA Code
-window.autofillMfaDev = async function() {
-  try {
-    const res = await fetch('/api/admin/dev-mfa');
-    if (!res.ok) throw new Error('Could not retrieve dev MFA.');
-    const data = await res.json();
-    const codeEl = document.getElementById('login-mfa-code');
-    if (codeEl && data.code) {
-      codeEl.value = data.code;
-      // Auto-submit the form
-      const submitEvent = new Event('submit', { cancelable: true });
-      document.getElementById('login-step2-form').dispatchEvent(submitEvent);
-    }
-  } catch (err) {
-    console.error('Dev MFA autofill error:', err);
-    alert('Dev MFA retrieval failed: Make sure server is running and database is seeded.');
-  }
-};
-
-window.cancelStep2 = function() {
-  tempToken = '';
-  document.getElementById('login-step2-form').classList.add('hidden');
-  document.getElementById('login-step1-form').classList.remove('hidden');
-  document.getElementById('login-mfa-code').value = '';
 };
 
 function showLogin() {
@@ -153,7 +76,6 @@ async function enterDashboard() {
   document.getElementById('login-error').classList.add('hidden');
   document.getElementById('login-username').value = '';
   document.getElementById('login-password').value = '';
-  document.getElementById('login-mfa-code').value = '';
   
   // Load dashboard data
   await loadDashboardData();
