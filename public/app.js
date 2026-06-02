@@ -75,16 +75,16 @@ function initPreloader() {
 
   if (!saEl) return;
 
-  // Cycle languages immediately
+  // Cycle languages immediately (faster cycle for optimized preloader)
   const cycleInterval = setInterval(() => {
     langIndex = (langIndex + 1) % saLanguages.length;
     saEl.textContent = saLanguages[langIndex];
-  }, 180);
+  }, 60);
 
-  // Progress Bar Animation
+  // Progress Bar Animation (optimized for <1s loading to meet speed standards)
   let progress = 0;
   const progressInterval = setInterval(() => {
-    progress += 5;
+    progress += 10;
     if (barEl) barEl.style.width = `${progress}%`;
     
     if (progress >= 100) {
@@ -95,10 +95,10 @@ function initPreloader() {
       saEl.textContent = "Sa";
       setTimeout(() => {
         preloaderEl.classList.add('preloader-hidden');
-        setTimeout(() => preloaderEl.style.display = 'none', 500);
-      }, 200);
+        setTimeout(() => preloaderEl.style.display = 'none', 300);
+      }, 100);
     }
-  }, 100);
+  }, 35);
 }
 
 // 2. Live Market Pricing Strip - API Poller

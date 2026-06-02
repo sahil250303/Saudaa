@@ -121,3 +121,42 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_trader_id ON suggestions(trader_id);
 CREATE INDEX IF NOT EXISTS idx_messages_chat_flow ON messages(trader_id, sender_id, receiver_id);
 CREATE INDEX IF NOT EXISTS idx_payments_email ON payments(email);
 CREATE INDEX IF NOT EXISTS idx_free_signals_trader_id ON free_signals(trader_id);
+
+-- 9. Row Level Security Policies
+-- (Any table with RLS enabled and no policy will deny all public/anonymous operations by default).
+
+-- Allow public read access to plans (to view standard plans)
+CREATE POLICY "Allow public read access to plans"
+ON plans
+FOR SELECT
+TO public
+USING (true);
+
+-- Allow public read access to free_signals (to view free signals feed)
+CREATE POLICY "Allow public read access to free_signals"
+ON free_signals
+FOR SELECT
+TO public
+USING (true);
+
+-- Note on Suggestions, Clients, Admin, and Payments tables:
+-- RLS is enabled for these tables, but no policies are defined for the public/anonymous role.
+-- This restricts direct client-side operations (SELECT/INSERT/UPDATE/DELETE) via public API keys,
+-- preventing unauthorized users from accessing or modifying sensitive subscriber data, admin configuration,
+-- paid suggestions, or payment ledger records. Bypassed by the server-side service_role key.
+
+-- 10. Revoke EXECUTE on public.rls_auto_enable function if it exists
+-- This blocks direct execution via PostgREST RPC while maintaining its capability to run as a backend database event trigger.
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM pg_proc p 
+        JOIN pg_namespace n ON p.pronamespace = n.oid 
+        WHERE n.nspname = 'public' AND p.proname = 'rls_auto_enable'
+    ) THEN
+        EXECUTE 'REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM public;';
+        EXECUTE 'REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM anon;';
+        EXECUTE 'REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM authenticated;';
+    END IF;
+END
+$$;

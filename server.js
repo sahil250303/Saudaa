@@ -15,12 +15,13 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.tailwindcss.com", "https://checkout.razorpay.com", "https://*.tradingview.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.tailwindcss.com", "https://*.razorpay.com", "https://*.tradingview.com"],
+      scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.tailwindcss.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "data:", "https:", "http:", "*.googleusercontent.com"],
       connectSrc: ["'self'", "https:", "http:"],
-      frameSrc: ["'self'", "https://checkout.razorpay.com", "https://*.tradingview.com", "https://*.tradingview-widget.com"],
+      frameSrc: ["'self'", "https://*.razorpay.com", "https://*.tradingview.com", "https://*.tradingview-widget.com"],
     },
   },
 }));
