@@ -2,6 +2,7 @@
 
 ## Current Status
 - Project fully completed, secured, tested, verified, and deployed to Vercel with serverless cold-start optimizations.
+- **Updated the platform logo.png to the new design across root Assets and public folders, and removed the unused preloader_logo.png.**
 - **Optimized landing page preloader loading performance (reducing forced delay from 2.7s to 0.75s) and added script deferment, bringing website load time to under 1 second.**
 - **Fixed CSP configuration in server.js to allow inline script attributes (scriptSrcAttr: 'unsafe-inline') and wildcard Razorpay domains, resolving the unresponsive homepage CTA buttons issue.**
 - **Enabled Row-Level Security (RLS) on public tables (suggestions, clients, admin, plans, payments, free_signals) for the public role with selective view access for plans and free_signals.**
