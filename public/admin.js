@@ -10,6 +10,18 @@ let plansList = [];
 
 // Initialize Page
 document.addEventListener('DOMContentLoaded', () => {
+  // Restore theme preference
+  const savedTheme = localStorage.getItem('adminTheme');
+  if (savedTheme === 'light') {
+    document.documentElement.classList.remove('dark');
+    const icon = document.getElementById('theme-toggle-icon');
+    if (icon) icon.textContent = 'light_mode';
+  } else {
+    document.documentElement.classList.add('dark');
+    const icon = document.getElementById('theme-toggle-icon');
+    if (icon) icon.textContent = 'dark_mode';
+  }
+
   if (adminToken) {
     enterDashboard();
   } else {
@@ -603,9 +615,14 @@ window.savePlansConfiguration = async function() {
 };
 
 // Utilities
-function toggleTheme() {
-  document.documentElement.classList.toggle('dark');
-}
+window.toggleTheme = function() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('adminTheme', isDark ? 'dark' : 'light');
+  const icon = document.getElementById('theme-toggle-icon');
+  if (icon) {
+    icon.textContent = isDark ? 'dark_mode' : 'light_mode';
+  }
+};
 
 // Avatar Drag and Drop + File Select Upload Mechanics
 window.updateAvatarUI = function() {

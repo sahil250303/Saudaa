@@ -18,24 +18,24 @@
       theme: {
         extend: {
           colors: {
-            primary: "#8bb56f",
-            "primary-container": "#42682b",
+            primary: "var(--color-primary)",
+            "primary-container": "var(--color-primary-container)",
             secondary: "#e7e0c7",
             "secondary-container": "#635f4b",
-            background: "#1b1c19",
-            surface: "#1b1c19",
-            "surface-container-lowest": "#0e100d",
-            "surface-container-low": "#131512",
-            "surface-container": "#181b16",
-            "surface-container-high": "#222620",
-            "surface-container-highest": "#2c312a",
-            "on-primary": "#1b1c19",
+            background: "var(--color-background)",
+            surface: "var(--color-surface)",
+            "surface-container-lowest": "var(--color-surface-container-lowest)",
+            "surface-container-low": "var(--color-surface-container-low)",
+            "surface-container": "var(--color-surface-container)",
+            "surface-container-high": "var(--color-surface-container-high)",
+            "surface-container-highest": "var(--color-surface-container-highest)",
+            "on-primary": "var(--color-on-primary)",
             "on-secondary": "#1b1c19",
-            "on-background": "#e3e3de",
-            "on-surface": "#e3e3de",
-            "on-surface-variant": "#c4c8be",
-            outline: "#8e9289",
-            "outline-variant": "#444840",
+            "on-background": "var(--color-on-background)",
+            "on-surface": "var(--color-on-surface)",
+            "on-surface-variant": "var(--color-on-surface-variant)",
+            outline: "var(--color-outline)",
+            "outline-variant": "var(--color-outline-variant)",
             error: "#ffb4ab",
             "error-container": "#93000a",
             "on-error": "#690005"
@@ -49,11 +49,49 @@
     body {
       font-family: 'Manrope', sans-serif;
     }
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.65);
+      --glass-border: rgba(142, 146, 137, 0.12);
+      --color-primary: #42682b;
+      --color-primary-container: #8bb56f;
+      --color-background: #faf9f4;
+      --color-surface: #faf9f4;
+      --color-surface-container-lowest: #ffffff;
+      --color-surface-container-low: #f5f4ef;
+      --color-surface-container: #efeee9;
+      --color-surface-container-high: #e9e8e3;
+      --color-surface-container-highest: #e3e3de;
+      --color-on-primary: #ffffff;
+      --color-on-background: #1b1c19;
+      --color-on-surface: #1b1c19;
+      --color-on-surface-variant: #635f4b;
+      --color-outline: #8e9289;
+      --color-outline-variant: #c4c8be;
+    }
+    .dark {
+      --glass-bg: rgba(24, 27, 22, 0.45);
+      --glass-border: rgba(142, 146, 137, 0.15);
+      --color-primary: #8bb56f;
+      --color-primary-container: #42682b;
+      --color-background: #1b1c19;
+      --color-surface: #1b1c19;
+      --color-surface-container-lowest: #0e100d;
+      --color-surface-container-low: #131512;
+      --color-surface-container: #181b16;
+      --color-surface-container-high: #222620;
+      --color-surface-container-highest: #2c312a;
+      --color-on-primary: #1b1c19;
+      --color-on-background: #e3e3de;
+      --color-on-surface: #e3e3de;
+      --color-on-surface-variant: #c4c8be;
+      --color-outline: #8e9289;
+      --color-outline-variant: #444840;
+    }
     .glass-card {
-      background: rgba(24, 27, 22, 0.45);
+      background: var(--glass-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(142, 146, 137, 0.15);
+      border: 1px solid var(--glass-border);
     }
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
@@ -192,8 +230,8 @@
               <p class="text-[9px] text-outline font-mono">SYSTEM ROLE</p>
             </div>
           </div>
-          <button onclick="toggleTheme()" class="text-outline hover:text-on-surface p-1.5 rounded-lg hover:bg-surface-container-high/40 transition-colors">
-            <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+          <button onclick="toggleTheme()" class="text-outline hover:text-on-surface p-1.5 rounded-lg hover:bg-surface-container-high/40 transition-colors" title="Toggle Light/Dark Theme">
+            <span id="theme-toggle-icon" class="material-symbols-outlined text-[18px]">dark_mode</span>
           </button>
         </div>
         <button onclick="logoutAdmin()" 
