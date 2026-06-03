@@ -72,17 +72,20 @@ const {
 } = require('./db.js');
 
 // ── JWT Secret ────────────────────────────────────────────────────────────────
-// SESSION_SECRET MUST be set as an environment variable.
-// It must NEVER fall back to a value stored in the database (which could be public).
+// SESSION_SECRET should be set as a Vercel environment variable.
+// IMPORTANT: Never call process.exit() in a Vercel serverless function —
+// it crashes the function container and returns 500 on every request.
+// Instead we fall back to an ephemeral secret and log a loud warning.
 let JWT_SECRET = process.env.SESSION_SECRET;
 if (!JWT_SECRET) {
-  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
-    console.error('[FATAL] SESSION_SECRET environment variable is not set. Refusing to start in production.');
-    process.exit(1);
-  }
-  // Dev-only: generate a random ephemeral secret (tokens won't survive restarts)
   JWT_SECRET = crypto.randomBytes(32).toString('hex');
-  console.warn('[SECURITY] SESSION_SECRET not set. Using ephemeral secret — tokens will not survive a server restart.');
+  if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+    console.error('[SECURITY] SESSION_SECRET is not set in environment variables! ' +
+      'Auth tokens will not survive cold starts. ' +
+      'Fix: add SESSION_SECRET in Vercel Dashboard → Settings → Environment Variables.');
+  } else {
+    console.warn('[SECURITY] SESSION_SECRET not set. Using ephemeral secret for local dev.');
+  }
 }
 
 function checkEnvVars() {
@@ -1370,4 +1373,13 @@ app.get(/.*/, (req, res) => {
 if (!process.env.VERCEL) {
   ensureDbInitialized().then(() => {
     app.listen(PORT, () => {
-      console.log(`Saudaa
+      console.log(`Saudaa Server is running on http://localhost:${PORT}`);
+    });
+  }).catch(error => {
+    console.error('Failed to initialize database and start server:', error);
+    process.exit(1);
+  });
+}
+
+module.exports = app;
+
