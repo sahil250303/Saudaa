@@ -28,20 +28,32 @@ if (fs.existsSync(envPath)) {
   }
 }
 
-// Supabase config
-const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+// ── Supabase config ───────────────────────────────────────────────────────────
+// Only SUPABASE_URL + SUPABASE_KEY (service role key) are accepted here.
+// NEXT_PUBLIC_* keys are intentionally excluded: they are public/publishable keys
+// with limited permissions and must never be used for server-side DB writes.
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
 
 let supabase = null;
 if (supabaseUrl && supabaseKey) {
   try {
-    supabase = createClient(supabaseUrl, supabaseKey);
-    console.log('[DB] Supabase database client initialized successfully.');
+    supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        persistSession: false,   // Server-side: no session persistence needed
+        autoRefreshToken: false,
+      }
+    });
+    console.log('[DB] Supabase client initialized (service role).');
   } catch (error) {
     console.error('[DB] Failed to initialize Supabase client:', error);
   }
 } else {
-  console.warn('[DB] Supabase credentials not found. Falling back to local file database.json.');
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
+    console.error('[FATAL] SUPABASE_URL and SUPABASE_KEY must be set in production. Falling back to read-only JSON (writes will fail).');
+  } else {
+    console.warn('[DB] Supabase credentials not found. Falling back to local file database.json.');
+  }
 }
 
 async function readDB() {

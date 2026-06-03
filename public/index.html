@@ -3,8 +3,50 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Saudaa - Trading Suggestions Marketplace</title>
-  <meta name="description" content="Access institutional-grade trading inside suggestions from top ranked traders. Secure checkout, real-time-like client-trader chat, and live market pricing."/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+  <!-- ── Primary SEO ─────────────────────────────────────────────────────── -->
+  <title>Saudaa – Verified Traders &amp; Live Trade Signals | India</title>
+  <meta name="description" content="Subscribe to India's top verified traders on Saudaa. Get live Nifty, BankNifty &amp; equity trade signals, real-time market data, and 1-on-1 trader chat. Plans from ₹59/month."/>
+  <meta name="keywords" content="trade signals India, verified traders, Nifty signals, BankNifty signals, stock signals, algo trading, Saudaa"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://saudaa.vercel.app/"/>
+
+  <!-- ── Open Graph (Facebook / WhatsApp / LinkedIn) ──────────────────────── -->
+  <meta property="og:type"        content="website"/>
+  <meta property="og:url"         content="https://saudaa.vercel.app/"/>
+  <meta property="og:site_name"   content="Saudaa"/>
+  <meta property="og:title"       content="Saudaa – Verified Traders &amp; Live Trade Signals | India"/>
+  <meta property="og:description" content="Subscribe to India's top verified traders. Live Nifty, BankNifty &amp; equity signals, real-time market strip, and 1-on-1 trader chat. Plans from ₹59/month."/>
+  <meta property="og:image"       content="https://saudaa.vercel.app/Assets/logo/logo.png"/>
+  <meta property="og:image:width"  content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:locale"      content="en_IN"/>
+
+  <!-- ── Twitter Card ──────────────────────────────────────────────────────── -->
+  <meta name="twitter:card"        content="summary_large_image"/>
+  <meta name="twitter:title"       content="Saudaa – Verified Traders &amp; Live Trade Signals"/>
+  <meta name="twitter:description" content="India's verified traders marketplace. Live signals, real-time market data, trader chat. Plans from ₹59/month."/>
+  <meta name="twitter:image"       content="https://saudaa.vercel.app/Assets/logo/logo.png"/>
+
+  <!-- ── Schema.org Structured Data ───────────────────────────────────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Saudaa",
+    "url": "https://saudaa.vercel.app",
+    "logo": "https://saudaa.vercel.app/Assets/logo/logo.png",
+    "description": "India's verified traders marketplace — live trade signals, market data, and 1-on-1 trader chat.",
+    "areaServed": "IN",
+    "currencyAccepted": "INR",
+    "inLanguage": "en-IN"
+  }
+  </script>
+
+  <!-- ── Favicon ───────────────────────────────────────────────────────────── -->
+  <link rel="icon"             type="image/png" href="/Assets/logo/logo.png"/>
+  <link rel="apple-touch-icon"                  href="/Assets/logo/logo.png"/>
   
   <!-- Tailwind CSS & Fonts -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -191,7 +233,8 @@
     <div class="absolute -right-20 bottom-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl pointer-events-none"></div>
 
     <!-- Dynamic Market Candles Background Canvas -->
-    <canvas id="hero-candles-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-[0.35]"></canvas>
+    <canvas id="hero-candles-canvas" role="presentation" aria-hidden="true"
+      class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-[0.35]"></canvas>
 
     <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
       <!-- Text Area -->
@@ -340,12 +383,19 @@
     <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop relative w-full">
       <div class="ticker-wrap flex items-center">
         <div class="ticker-title font-semibold text-[11px] tracking-wider uppercase text-primary mr-4 flex items-center gap-1.5 shrink-0 px-3 py-1 bg-[#faf9f4]/80 backdrop-blur-md border border-[#c4c8be]/40 rounded-full shadow-[0_2px_8px_rgba(66,104,43,0.08)] z-10">
-          <span class="relative flex h-2 w-2">
+          <span class="relative flex h-2 w-2" aria-hidden="true">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
           </span>
           Live Markets
         </div>
+        <!-- Simulated data disclaimer — shown by app.js when Alpha Vantage is rate-limited -->
+        <span id="market-sim-badge" title="Alpha Vantage API limit reached — prices are indicative only and not live market data."
+          style="display:none"
+          class="mr-3 shrink-0 text-[10px] font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5"
+          aria-live="polite">
+          ⚠ Simulated
+        </span>
         <div class="flex-1 overflow-hidden py-1 relative">
           <!-- Fade masks to blur/fade out ticker items at the edges -->
           <div class="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#efeee9] to-transparent z-10 pointer-events-none"></div>
@@ -1659,17 +1709,4 @@
   <div id="mobile-sticky-cta" class="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md border-t border-outline-variant/30 px-margin-mobile py-3.5 flex items-center justify-between shadow-[0_-8px_30px_rgba(53,61,50,0.1)] transition-transform duration-300 translate-y-full">
     <div class="flex flex-col text-left">
       <span class="text-[10px] font-bold tracking-wider text-primary uppercase">Saudaa Terminal</span>
-      <span class="text-xs font-bold text-on-surface">Verified Insights from ₹59/mo</span>
-    </div>
-    <a href="#leaderboard" class="bg-primary hover:opacity-95 text-on-primary font-bold text-xs px-5 py-2.5 rounded-lg shadow-md transition-all flex items-center gap-1">
-      <span>Get Started</span>
-      <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-    </a>
-  </div>
-
-  <!-- Razorpay Payment Gateway SDK -->
-  <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
-  <!-- Site JS Controller -->
-  <script src="/app.js" defer></script>
-</body>
-</html>
+      <span class="text-xs font-bold text-on-surfac

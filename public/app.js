@@ -109,9 +109,14 @@ async function fetchStockPrices() {
     const data = await res.json();
     
     if (data.source === 'simulated') {
-      console.warn('Live Stock Strip is running on simulated fallback data.');
+      console.warn('Market strip: running on simulated fallback data.');
+      // Show a visible disclaimer badge so users know prices are not live
+      const badge = document.getElementById('market-sim-badge');
+      if (badge) badge.style.display = 'inline-flex';
     } else {
-      console.log('Live Stock Strip updated via Alpha Vantage API.');
+      console.log('Market strip: updated via Alpha Vantage API.');
+      const badge = document.getElementById('market-sim-badge');
+      if (badge) badge.style.display = 'none';
     }
     
     // Update livePrices cache
@@ -1650,20 +1655,4 @@ window.toggleFaq = function(index) {
   for (let i = 1; i <= 4; i++) {
     const otherAns = document.getElementById(`faq-ans-${i}`);
     const otherIcon = document.getElementById(`faq-icon-${i}`);
-    if (otherAns && otherIcon && i !== index) {
-      otherAns.classList.add('hidden');
-      otherIcon.classList.remove('rotate-180');
-    }
-  }
-
-  if (isHidden) {
-    ans.classList.remove('hidden');
-    icon.classList.add('rotate-180');
-  } else {
-    ans.classList.add('hidden');
-    icon.classList.remove('rotate-180');
-  }
-};
-
-
-
+    if (otherAns && otherIcon && i !=

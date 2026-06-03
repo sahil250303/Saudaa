@@ -15,22 +15,37 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.tailwindcss.com", "https://*.razorpay.com", "https://*.tradingview.com"],
+      // 'unsafe-inline' is required while the frontend uses Tailwind CDN + inline scripts.
+      // 'unsafe-eval' has been intentionally removed — it was not needed.
+      // Once the frontend migrates off the CDN, remove 'unsafe-inline' and use CSP nonces.
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://fonts.googleapis.com"],
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.tailwindcss.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
-      imgSrc: ["'self'", "data:", "https:", "http:", "*.googleusercontent.com"],
-      connectSrc: ["'self'", "https:", "http:"],
-      frameSrc: ["'self'", "https://*.razorpay.com", "https://*.tradingview.com", "https://*.tradingview-widget.com"],
+      imgSrc: ["'self'", "data:", "https:", "*.googleusercontent.com"],
+      connectSrc: ["'self'", "https:"],
+      frameSrc: ["'none'"],
     },
   },
+  // Disable X-Powered-By (already done by Helmet) and enable HSTS
+  hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 }));
 
 // Rate Limiters
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // 10 attempts
+  max: 10,
   message: { error: 'Too many authentication attempts. Please try again after 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Registration-specific limiter — prevents account-creation spam
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5,
+  message: { error: 'Too many registration attempts from this IP. Please try again in an hour.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -44,8 +59,8 @@ const subscribeLimiter = rateLimit({
 });
 
 // Middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.json({ limit: '100kb' }));
+app.use(express.urlencoded({ limit: '100kb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const {
@@ -56,20 +71,59 @@ const {
   deleteAdminSession
 } = require('./db.js');
 
-// Native JWT implementation using HMAC-SHA256
+// ── JWT Secret ────────────────────────────────────────────────────────────────
+// SESSION_SECRET MUST be set as an environment variable.
+// It must NEVER fall back to a value stored in the database (which could be public).
 let JWT_SECRET = process.env.SESSION_SECRET;
+if (!JWT_SECRET) {
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
+    console.error('[FATAL] SESSION_SECRET environment variable is not set. Refusing to start in production.');
+    process.exit(1);
+  }
+  // Dev-only: generate a random ephemeral secret (tokens won't survive restarts)
+  JWT_SECRET = crypto.randomBytes(32).toString('hex');
+  console.warn('[SECURITY] SESSION_SECRET not set. Using ephemeral secret — tokens will not survive a server restart.');
+}
 
 function checkEnvVars() {
-  const required = ['SESSION_SECRET', 'SUPABASE_URL', 'SUPABASE_KEY',
-                    'RAZORPAY_KEY_ID', 'RAZORPAY_KEY_SECRET', 'ALPHA_VANTAGE_API_KEY'];
-  const missing = required.filter(k => !process.env[k]);
+  // SESSION_SECRET is critical — handled above.
+  const recommended = ['SUPABASE_URL', 'SUPABASE_KEY', 'ALPHA_VANTAGE_API_KEY'];
+  const missing = recommended.filter(k => !process.env[k]);
   if (missing.length) {
-    console.warn('[CONFIG] Missing environment variables:', missing.join(', '));
+    console.warn('[CONFIG] Missing recommended environment variables:', missing.join(', '));
   }
 }
 checkEnvVars();
-if (!process.env.SESSION_SECRET) {
-  console.warn('[SECURITY WARNING] SESSION_SECRET environment variable is missing. Generated a random session secret.');
+
+// ── Input Sanitization ────────────────────────────────────────────────────────
+// Escape HTML special characters to prevent stored XSS via user-supplied strings.
+function sanitize(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
+// ── CSRF: Origin / Referer validation for mutating admin routes ───────────────
+function verifySameOrigin(req, res, next) {
+  const origin  = req.headers['origin'];
+  const referer = req.headers['referer'];
+  const host    = req.headers['host'];
+  const check   = origin || referer;
+  if (check) {
+    try {
+      const url = new URL(check);
+      if (url.host !== host) {
+        return res.status(403).json({ error: 'CSRF check failed: cross-origin request rejected.' });
+      }
+    } catch {
+      return res.status(403).json({ error: 'CSRF check failed: invalid origin header.' });
+    }
+  }
+  next();
 }
 
 function generateSessionToken(user, role) {
@@ -195,9 +249,8 @@ async function initAdminDB() {
     console.log('[INIT] Generated persistent jwtSecret for existing admin account.');
   }
 
-  if (!JWT_SECRET) {
-    JWT_SECRET = db.admin.jwtSecret;
-  }
+  // JWT_SECRET is always sourced from the SESSION_SECRET env var (set above).
+  // We do NOT fall back to db.admin.jwtSecret — that value may be committed to version control.
 
   if (!db.traders || db.traders.length === 0) {
     const salt = crypto.randomBytes(16).toString('hex');
@@ -613,7 +666,7 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
 });
 
 // 3. Register Client (Static profile setup)
-app.post('/api/auth/register', async (req, res) => {
+app.post('/api/auth/register', registerLimiter, async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ error: 'Email and password are required.' });
@@ -711,9 +764,10 @@ app.post('/api/payment/order', async (req, res) => {
 app.post('/api/subscribe', subscribeLimiter, async (req, res) => {
   const { email, password, traderId, plan, paymentId, orderId, signature } = req.body;
 
-  if (!razorpay && process.env.NODE_ENV === 'production') {
+  // Block sandbox bypass: require Razorpay in any production environment (Vercel or NODE_ENV=production)
+  if (!razorpay && (process.env.NODE_ENV === 'production' || process.env.VERCEL)) {
     return res.status(503).json({
-      error: 'Payment processing is not configured. Contact support.'
+      error: 'Payment processing is not configured. Contact support to complete your subscription.'
     });
   }
 
@@ -875,15 +929,15 @@ app.post('/api/suggestions', verifyUserToken, async (req, res) => {
   const newSignal = {
     id: 'sig_' + Math.random().toString(36).substr(2, 9),
     traderId,
-    asset,
-    type,
-    entry,
-    target,
-    stopLoss,
-    risk,
-    assetType: assetType || 'Stocks',
-    strategy: strategy || 'Day Trade',
-    notes: notes || '',
+    asset:     sanitize(asset),
+    type:      sanitize(type),
+    entry:     sanitize(entry),
+    target:    sanitize(target),
+    stopLoss:  sanitize(stopLoss),
+    risk:      sanitize(risk),
+    assetType: sanitize(assetType || 'Stocks'),
+    strategy:  sanitize(strategy || 'Day Trade'),
+    notes:     sanitize(notes || ''),
     createdAt: new Date().toISOString()
   };
 
@@ -995,13 +1049,18 @@ app.post('/api/chat/send', verifyUserToken, async (req, res) => {
     return res.status(400).json({ error: 'Missing chat fields: senderId, receiverId, traderId, content.' });
   }
 
+  // Enforce message length limit (prevent payload flooding)
+  if (content.length > 2000) {
+    return res.status(400).json({ error: 'Message content exceeds the 2000 character limit.' });
+  }
+
   const db = await readDB();
   const newMsg = {
     id: 'msg_' + Math.random().toString(36).substr(2, 9),
     senderId,
     receiverId,
     traderId,
-    content,
+    content: sanitize(content),
     timestamp: new Date().toISOString()
   };
 
@@ -1112,8 +1171,8 @@ async function verifyAdminToken(req, res, next) {
   next();
 }
 
-// 11. Admin Login: Credentials verification (MFA/OTP system disabled)
-app.post('/api/admin/login', authLimiter, async (req, res) => {
+// 11. Admin Login: Credentials verification
+app.post('/api/admin/login', authLimiter, verifySameOrigin, async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required.' });

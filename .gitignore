@@ -14,7 +14,25 @@ build/
 
 .vercel
 
-# Verification screenshots
+# ── Sensitive / Runtime data ──────────────────────────────────────────────────
+# database.json holds live user PII and hashed credentials. Never commit it.
+database.json
+
+# ── Scraped third-party pages ─────────────────────────────────────────────────
+response.html
+
+# ── Debug / inspection scripts and screenshots ───────────────────────────────
+inspect_console.js
+inspect_preloader.js
+verify_*.js
+verify_redesign_final.js
+verify_all_views.js
+verify_system_security.js
 verify_*.png
 preloader_screenshot.png
+verify_admin_login.png
+verify_client_dashboard.png
+verify_homepage.png
+verify_redesign_screenshot.png
+verify_trader_dashboard.png
 

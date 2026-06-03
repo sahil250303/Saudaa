@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Block admin panel and all API routes from indexing
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://saudaa.vercel.app/sitemap.xml
