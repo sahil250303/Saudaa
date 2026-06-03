@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>404 – Page Not Found | Saudaa</title>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="icon" type="image/png" href="/Assets/logo/logo.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/tailwind.css"/>
+  <link rel="stylesheet" href="/app.css"/>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col items-center justify-center font-sans antialiased px-6">
+
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-primary focus:text-on-primary focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold focus:text-sm">Skip to main content</a>
+
+  <main id="main-content" class="text-center max-w-md w-full">
+
+    <!-- Logo -->
+    <a href="/" aria-label="Go to Saudaa homepage">
+      <img src="/Assets/logo/logo.png" alt="Saudaa" class="w-16 h-16 mx-auto mb-8 opacity-80"/>
+    </a>
+
+    <!-- 404 visual -->
+    <div class="text-[96px] font-extrabold leading-none tracking-tighter text-primary/20 select-none mb-2"
+         aria-hidden="true">404</div>
+
+    <h1 class="text-2xl font-extrabold text-on-surface mb-3">Page not found</h1>
+    <p class="text-on-surface-variant text-sm mb-8 leading-relaxed">
+      The page you're looking for doesn't exist or has been moved.
+      Let's get you back to the trading floor.
+    </p>
+
+    <!-- Actions -->
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="/"
+         class="bg-primary hover:opacity-90 text-on-primary font-bold px-6 py-3 rounded-xl transition-opacity shadow-sm text-sm text-center focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+        ← Back to Homepage
+      </a>
+      <a href="/dashboard.html"
+         class="bg-surface-container-low hover:bg-surface-container text-primary font-bold px-6 py-3 rounded-xl border border-outline-variant/50 transition-colors text-sm text-center focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+        Portal Login
+      </a>
+    </div>
+
+    <!-- Research disclaimer -->
+    <p class="mt-12 text-[10px] text-outline/60 font-mono">
+      Saudaa · Research platform only · Not investment advice
+    </p>
+
+  </main>
+
+</body>
+</html>

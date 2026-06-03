@@ -1,5 +1,57 @@
 /* Custom Global Styles for Saudaa Platform */
 
+/* ── Reduced Motion (WCAG 2.3.3) ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-ticker {
+    animation: none !important;
+  }
+  .animate-pulse {
+    animation: none !important;
+  }
+}
+
+/* ── Focus Visible Ring (WCAG 2.4.7) ─────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #42682b;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Skip Navigation ─────────────────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+.focus\:not-sr-only:focus {
+  position: fixed;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* ── Ticker Accessibility ─────────────────────────────────────────────────── */
+.ticker-wrap:hover .animate-ticker,
+.ticker-wrap:focus-within .animate-ticker {
+  animation-play-state: paused;
+}
+
 body {
   font-family: 'Manrope', sans-serif;
   overflow-x: hidden;

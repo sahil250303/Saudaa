@@ -8,7 +8,7 @@
   <!-- ── Primary SEO ─────────────────────────────────────────────────────── -->
   <title>Saudaa – Verified Traders &amp; Live Trade Signals | India</title>
   <meta name="description" content="Subscribe to India's top verified traders on Saudaa. Get live Nifty, BankNifty &amp; equity trade signals, real-time market data, and 1-on-1 trader chat. Plans from ₹59/month."/>
-  <meta name="keywords" content="trade signals India, verified traders, Nifty signals, BankNifty signals, stock signals, algo trading, Saudaa"/>
+  <meta name="keywords" content="trade signals India, verified traders, Nifty50 signals, BankNifty signals, NSE signals, BSE signals, stock signals, algo trading, option trading India, Saudaa"/>
   <meta name="robots" content="index, follow"/>
   <link rel="canonical" href="https://saudaa.vercel.app/"/>
 
@@ -29,18 +29,58 @@
   <meta name="twitter:description" content="India's verified traders marketplace. Live signals, real-time market data, trader chat. Plans from ₹59/month."/>
   <meta name="twitter:image"       content="https://saudaa.vercel.app/Assets/logo/logo.png"/>
 
-  <!-- ── Schema.org Structured Data ───────────────────────────────────────── -->
+  <!-- ── Schema.org Structured Data (LocalBusiness + BreadcrumbList) ────────── -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Saudaa",
-    "url": "https://saudaa.vercel.app",
-    "logo": "https://saudaa.vercel.app/Assets/logo/logo.png",
-    "description": "India's verified traders marketplace — live trade signals, market data, and 1-on-1 trader chat.",
-    "areaServed": "IN",
-    "currencyAccepted": "INR",
-    "inLanguage": "en-IN"
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://saudaa.vercel.app/#organization",
+        "name": "Saudaa",
+        "url": "https://saudaa.vercel.app",
+        "logo": "https://saudaa.vercel.app/Assets/logo/logo.png",
+        "description": "India verified traders marketplace. Live NSE and BSE trade signals for Nifty50, BankNifty, and equities from verified professional traders.",
+        "telephone": "+912261234567",
+        "email": "contact@saudaa.com",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "14th Floor, Maker Chambers IV, Nariman Point",
+          "addressLocality": "Mumbai",
+          "addressRegion": "Maharashtra",
+          "postalCode": "400021",
+          "addressCountry": "IN"
+        },
+        "areaServed": { "@type": "Country", "name": "India" },
+        "currencyAccepted": "INR",
+        "priceRange": "Rs.Rs.",
+        "inLanguage": "en-IN",
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Subscription Plans",
+          "itemListElement": [
+            { "@type": "Offer", "name": "Standard Plan", "price": "59", "priceCurrency": "INR" },
+            { "@type": "Offer", "name": "Pro Elite Plan", "price": "99", "priceCurrency": "INR" },
+            { "@type": "Offer", "name": "VIP Plan", "price": "249", "priceCurrency": "INR" }
+          ]
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://saudaa.vercel.app/#website",
+        "url": "https://saudaa.vercel.app",
+        "name": "Saudaa",
+        "description": "Verified traders marketplace for NSE, BSE, Nifty50, BankNifty trade signals in India.",
+        "publisher": { "@id": "https://saudaa.vercel.app/#organization" },
+        "inLanguage": "en-IN"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://saudaa.vercel.app/" }
+        ]
+      }
+    ]
   }
   </script>
 
@@ -48,108 +88,26 @@
   <link rel="icon"             type="image/png" href="/Assets/logo/logo.png"/>
   <link rel="apple-touch-icon"                  href="/Assets/logo/logo.png"/>
   
-  <!-- Tailwind CSS & Fonts -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- ── Resource Hints ────────────────────────────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="dns-prefetch" href="https://s3.tradingview.com"/>
+
+  <!-- ── Fonts ─────────────────────────────────────────────────────────────── -->
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
-  <!-- Custom Stylesheet -->
+  <!-- ── Stylesheets (self-hosted Tailwind build — no CDN, no unsafe-inline) ─ -->
+  <link rel="stylesheet" href="/tailwind.css"/>
   <link rel="stylesheet" href="/app.css"/>
-  
-  <!-- Tailwind Configuration matching Stitch -->
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            primary: "#42682b",
-            "primary-container": "#8bb56f",
-            "primary-fixed": "#c2f0a3",
-            "primary-fixed-dim": "#a7d38a",
-            "on-primary-container": "#22460d",
-            "on-primary-fixed": "#092100",
-            "on-primary-fixed-variant": "#2b5015",
-            "inverse-primary": "#a7d38a",
-            "inverse-surface": "#30312e",
-            "inverse-on-surface": "#f2f1ec",
-            "surface-tint": "#42682b",
-            secondary: "#635f4b",
-            "on-secondary": "#ffffff",
-            "secondary-container": "#e7e0c7",
-            "on-secondary-container": "#67634f",
-            "secondary-fixed": "#eae2c9",
-            "secondary-fixed-dim": "#cdc7ae",
-            "on-secondary-fixed": "#1e1c0c",
-            "on-secondary-fixed-variant": "#4b4734",
-            tertiary: "#57615c",
-            "on-tertiary": "#ffffff",
-            "tertiary-container": "#a2aca6",
-            "on-tertiary-container": "#37403c",
-            "tertiary-fixed": "#dbe5df",
-            "tertiary-fixed-dim": "#bfc9c3",
-            "on-tertiary-fixed": "#151d1a",
-            "on-tertiary-fixed-variant": "#3f4945",
-            background: "#faf9f4",
-            surface: "#faf9f4",
-            "surface-dim": "#dbdad5",
-            "surface-bright": "#faf9f4",
-            "surface-container-lowest": "#ffffff",
-            "surface-container-low": "#f5f4ef",
-            "surface-container": "#efeee9",
-            "surface-container-high": "#e9e8e3",
-            "surface-container-highest": "#e3e3de",
-            "surface-variant": "#e3e3de",
-            "on-primary": "#ffffff",
-            "on-background": "#1b1c19",
-            "on-surface": "#1b1c19",
-            "on-surface-variant": "#444840",
-            outline: "#747870",
-            "outline-variant": "#c4c8be",
-            error: "#ba1a1a",
-            "error-container": "#ffdad6",
-            "on-error": "#ffffff",
-            "on-error-container": "#93000a"
-          },
-          fontFamily: {
-            sans: ['Manrope', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace']
-          },
-          fontSize: {
-            'display-lg': ['48px', { lineHeight: '56px', letterSpacing: '-0.02em', fontWeight: '700' }],
-            'display-lg-mobile': ['36px', { lineHeight: '44px', letterSpacing: '-0.02em', fontWeight: '700' }],
-            'headline-md': ['32px', { lineHeight: '40px', letterSpacing: '-0.01em', fontWeight: '600' }],
-            'headline-sm': ['24px', { lineHeight: '32px', letterSpacing: '0em', fontWeight: '600' }],
-            'body-lg': ['18px', { lineHeight: '28px', letterSpacing: '0.01em', fontWeight: '400' }],
-            'body-md': ['16px', { lineHeight: '24px', letterSpacing: '0.01em', fontWeight: '400' }],
-            'label-md': ['14px', { lineHeight: '20px', letterSpacing: '0.05em', fontWeight: '500' }],
-            'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0.05em', fontWeight: '600' }],
-          },
-          spacing: {
-            gutter: "24px",
-            xs: "4px",
-            sm: "12px",
-            md: "24px",
-            lg: "48px",
-            xl: "80px",
-            base: "8px",
-            "margin-desktop": "40px",
-            "margin-mobile": "16px"
-          },
-          borderRadius: {
-            sm: "0.25rem",
-            DEFAULT: "0.5rem",
-            md: "0.75rem",
-            lg: "1rem",
-            xl: "1.5rem",
-            full: "9999px"
-          }
-        }
-      }
-    };
-  </script>
 </head>
 <body id="homepage-root" class="bg-background text-on-background min-h-screen flex flex-col antialiased">
+
+  <!-- ── Skip Navigation (WCAG 2.4.1) ──────────────────────────────────────── -->
+  <a href="#main-content"
+     class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[10000] focus:bg-primary focus:text-on-primary focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold focus:text-sm focus:shadow-lg">
+    Skip to main content
+  </a>
 
   <!-- Preloader Screen -->
   <div id="preloader" class="fixed inset-0 bg-background z-[9999] flex flex-col items-center justify-center transition-opacity duration-500 ease-out">
@@ -201,7 +159,7 @@
       </div>
 
       <!-- Hamburger Menu Button (Mobile Only) -->
-      <button id="mobile-menu-btn" class="sm:hidden text-on-surface hover:bg-surface-container-low p-2.5 rounded-lg transition-colors focus:outline-none flex items-center justify-center">
+      <button id="mobile-menu-btn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu" class="sm:hidden text-on-surface hover:bg-surface-container-low p-2.5 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary flex items-center justify-center">
         <span class="material-symbols-outlined text-[24px]">menu</span>
       </button>
     </div>
@@ -227,6 +185,7 @@
   </div>
 
   <!-- Hero Section -->
+  <main id="main-content">
   <section id="features" class="relative w-full overflow-hidden py-16 md:py-24 bg-gradient-to-b from-surface to-background">
     <!-- Accent Blur Backgrounds -->
     <div class="absolute -left-20 top-20 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -522,12 +481,14 @@
         <!-- Search -->
         <div class="relative w-full md:w-80">
           <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
-          <input type="text" id="leaderboard-search" placeholder="Search traders..." class="w-full pl-11 pr-4 py-2.5 bg-surface-container-lowest border border-outline-variant/50 rounded-xl text-on-surface placeholder:text-outline focus:outline-none focus:border-primary transition-colors text-sm"/>
+          <label for="leaderboard-search" class="sr-only">Search traders</label>
+          <input type="text" id="leaderboard-search" placeholder="Search traders..." aria-label="Search traders" class="w-full pl-11 pr-4 py-2.5 bg-surface-container-lowest border border-outline-variant/50 rounded-xl text-on-surface placeholder:text-outline focus:outline-none focus:border-primary transition-colors text-sm"/>
         </div>
 
         <!-- Filters & Sorting -->
         <div class="flex flex-wrap gap-3 w-full md:w-auto items-center justify-end">
-          <select id="leaderboard-strategy" class="bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2.5 text-xs text-on-surface focus:outline-none focus:border-primary transition-colors">
+          <label for="leaderboard-strategy" class="sr-only">Filter by strategy</label>
+          <select id="leaderboard-strategy" aria-label="Filter by strategy" class="bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2.5 text-xs text-on-surface focus:outline-none focus:border-primary transition-colors">
             <option value="all">All Strategies</option>
             <option value="algorithmic">Algorithmic & Swing</option>
             <option value="quant">Quant Strategy</option>
@@ -535,7 +496,8 @@
             <option value="arbitrage">Arbitrage & Crypto</option>
           </select>
 
-          <select id="leaderboard-sort" class="bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2.5 text-xs text-on-surface focus:outline-none focus:border-primary transition-colors">
+          <label for="leaderboard-sort" class="sr-only">Sort traders by</label>
+          <select id="leaderboard-sort" aria-label="Sort traders by" class="bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2.5 text-xs text-on-surface focus:outline-none focus:border-primary transition-colors">
             <option value="rank">Rank: High to Low</option>
             <option value="roi">ROI: High to Low</option>
             <option value="winrate">Win Rate: High to Low</option>
@@ -1225,7 +1187,7 @@
           <h3 class="text-lg font-bold text-on-surface">Secure Checkout Gateway</h3>
           <p class="text-xs text-on-surface-variant">Complete subscription to get terminal credentials</p>
         </div>
-        <button onclick="closeCheckout()" class="text-on-surface-variant hover:bg-surface-container p-1 rounded-full transition-colors">
+        <button onclick="closeCheckout()" aria-label="Close subscription modal" class="text-on-surface-variant hover:bg-surface-container p-1 rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-primary">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
@@ -1239,14 +1201,16 @@
           <h4 class="text-xs font-bold text-primary tracking-wider uppercase mb-2">1. Setup Login Credentials</h4>
           <div>
             <label class="block text-xs font-semibold text-on-surface-variant mb-1">Trader to Subscribe</label>
-            <select id="checkout-trader-select" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface">
+            <label for="checkout-trader-select" class="sr-only">Select trader to subscribe</label>
+            <select id="checkout-trader-select" aria-label="Select trader" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface">
               <!-- Filled via app.js -->
             </select>
           </div>
           <div class="grid grid-cols-2 gap-2 mt-2">
             <div>
               <label class="block text-xs font-semibold text-on-surface-variant mb-1">Tier Layer</label>
-              <select id="checkout-plan-select" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface">
+              <label for="checkout-plan-select" class="sr-only">Select subscription plan</label>
+              <select id="checkout-plan-select" aria-label="Select plan" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface">
                 <option value="standard">Standard (₹59/mo)</option>
                 <option value="pro" selected>Pro Elite (₹99/mo)</option>
                 <option value="vip">VIP (₹249/mo)</option>
@@ -1254,12 +1218,14 @@
             </div>
             <div>
               <label class="block text-xs font-semibold text-on-surface-variant mb-1">Email Address</label>
-              <input type="email" id="checkout-email" required placeholder="name@domain.com" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+              <label for="checkout-email" class="sr-only">Email address</label>
+              <input type="email" id="checkout-email" required placeholder="name@domain.com" autocomplete="email" aria-required="true" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
             </div>
           </div>
           <div>
             <label class="block text-xs font-semibold text-on-surface-variant mb-1">Password (for dashboard login)</label>
-            <input type="password" id="checkout-password" required placeholder="Choose login password" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+            <label for="checkout-password" class="sr-only">Create dashboard password</label>
+            <input type="password" id="checkout-password" required placeholder="Choose login password" autocomplete="new-password" aria-required="true" class="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-primary"/>
           </div>
         </div>
 
@@ -1331,7 +1297,7 @@
   <div id="compare-modal" class="fixed inset-0 bg-on-background/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
     <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar p-6 md:p-8 shadow-2xl transition-transform duration-300 scale-95 flex flex-col relative">
       <!-- Close button -->
-      <button onclick="closeCompareModal()" class="absolute right-4 top-4 text-on-surface-variant hover:bg-surface-container p-1.5 rounded-full transition-colors z-20">
+      <button onclick="closeCompareModal()" aria-label="Close compare modal" class="absolute right-4 top-4 text-on-surface-variant hover:bg-surface-container p-1.5 rounded-full transition-colors z-20 focus-visible:ring-2 focus-visible:ring-primary">
         <span class="material-symbols-outlined">close</span>
       </button>
 
@@ -1614,6 +1580,8 @@
   </section>
 
   <!-- Footer -->
+  </main><!-- /#main-content -->
+
   <footer class="w-full bg-surface-container-low border-t border-outline-variant/30 pt-16 pb-12 mt-auto">
     <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
       <!-- Grid Container -->
@@ -1630,21 +1598,7 @@
           <p class="text-xs text-on-surface-variant leading-relaxed max-w-sm">
             Saudaa is a verified market intelligence platform. We connect novice traders with top-performing experts through live setups, dashboard metrics, and interactive community discussions.
           </p>
-          <!-- Social Icons -->
-          <div class="flex gap-4 pt-2">
-            <a href="#" class="social-icon-btn w-8 h-8 rounded-full border border-outline-variant/40 hover:border-primary hover:bg-primary/5 flex items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200" title="Twitter / X">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            </a>
-            <a href="#" class="social-icon-btn w-8 h-8 rounded-full border border-outline-variant/40 hover:border-primary hover:bg-primary/5 flex items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200" title="LinkedIn">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-            </a>
-            <a href="#" class="social-icon-btn w-8 h-8 rounded-full border border-outline-variant/40 hover:border-primary hover:bg-primary/5 flex items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200" title="Telegram">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.017c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.46c.538-.196 1.006.128.832.941z"/></svg>
-            </a>
-            <a href="#" class="social-icon-btn w-8 h-8 rounded-full border border-outline-variant/40 hover:border-primary hover:bg-primary/5 flex items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-200" title="Discord">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.094 13.094 0 0 1-1.873-.894.077.077 0 0 1-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 0 1 .077-.011c3.92 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.009c.12.099.246.195.373.289a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.156 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.156 2.418z"/></svg>
-            </a>
-          </div>
+
         </div>
 
         <!-- Column 2: Platform Links -->
@@ -1693,7 +1647,7 @@
       <!-- Bottom Bar -->
       <div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-secondary">
         <p class="text-center md:text-left">
-          © 2026 Saudaa Suggestions Platform. Real-time market research only. Past performance is not indicative of future returns.
+          © 2026 Saudaa Suggestions Platform. &nbsp;<span class="text-outline/70">Research &amp; education platform only — not SEBI registered. Not investment advice. Past performance does not guarantee future returns. Trade at your own risk.</span>
         </p>
         <div class="flex gap-4 font-mono text-[9px] uppercase tracking-wider text-outline">
           <span class="flex items-center gap-1.5">
@@ -1709,4 +1663,59 @@
   <div id="mobile-sticky-cta" class="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md border-t border-outline-variant/30 px-margin-mobile py-3.5 flex items-center justify-between shadow-[0_-8px_30px_rgba(53,61,50,0.1)] transition-transform duration-300 translate-y-full">
     <div class="flex flex-col text-left">
       <span class="text-[10px] font-bold tracking-wider text-primary uppercase">Saudaa Terminal</span>
-      <span class="text-xs font-bold text-on-surfac
+      <span class="text-xs font-bold text-on-surface">Verified Insights from ₹59/mo</span>
+    </div>
+    <a href="#leaderboard" class="bg-primary hover:opacity-95 text-on-primary font-bold text-xs px-5 py-2.5 rounded-lg shadow-md transition-all flex items-center gap-1">
+      <span>Get Started</span>
+      <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+    </a>
+  </div>
+
+  <!-- Razorpay Payment Gateway SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+  <!-- Site JS Controller -->
+  <script src="/app.js" defer></script>
+
+  <!-- ── Cookie Consent Banner (GDPR / DPDP Act 2023) ─────────────────────── -->
+  <div id="cookie-banner"
+       role="dialog" aria-modal="true" aria-labelledby="cookie-title"
+       class="fixed bottom-0 left-0 right-0 z-[9998] bg-surface-container border-t border-outline-variant/40
+              shadow-[0_-8px_40px_rgba(27,28,25,0.12)] px-4 py-4 md:py-5 md:px-8
+              flex flex-col md:flex-row md:items-center gap-4 md:gap-6
+              transform translate-y-full transition-transform duration-500 ease-out"
+       style="display:none">
+    <div class="flex-1 min-w-0">
+      <p id="cookie-title" class="text-[11px] md:text-xs font-semibold text-on-surface mb-0.5">
+        🍪 We use cookies to improve your experience
+      </p>
+      <p class="text-[10px] md:text-[11px] text-on-surface-variant leading-relaxed">
+        We use essential cookies for authentication and analytics cookies to understand usage.
+        By clicking <strong>Accept</strong> you consent to our use of cookies as described in our
+        <a href="/legal/privacy.html" class="text-primary underline hover:no-underline focus-visible:ring-1 focus-visible:ring-primary rounded">Privacy Policy</a>.
+      </p>
+    </div>
+    <div class="flex items-center gap-3 shrink-0">
+      <button id="cookie-reject"
+              class="text-[11px] font-semibold text-on-surface-variant hover:text-on-surface px-4 py-2 rounded-lg border border-outline-variant/50 hover:bg-surface-container-high transition-colors focus-visible:ring-2 focus-visible:ring-primary">
+        Reject Non-Essential
+      </button>
+      <button id="cookie-accept"
+              class="text-[11px] font-bold bg-primary hover:opacity-90 text-on-primary px-5 py-2 rounded-lg transition-opacity shadow-sm focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-primary">
+        Accept All
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Sticky Research Disclaimer Bar ───────────────────────────────────── -->
+  <div role="note" aria-label="Investment disclaimer"
+       class="hidden md:flex fixed bottom-0 left-0 right-0 z-[9990] pointer-events-none justify-center">
+    <div id="disclaimer-bar"
+         class="pointer-events-auto bg-surface-container-highest/90 backdrop-blur-sm border-t border-outline-variant/30
+                text-[9px] text-outline/80 px-6 py-1 text-center font-mono tracking-wide max-w-4xl rounded-t-lg">
+      Research platform only · Not SEBI registered · Not investment advice · Trade at your own risk
+    </div>
+  </div>
+
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            

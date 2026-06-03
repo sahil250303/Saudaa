@@ -15,12 +15,12 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      // 'unsafe-inline' is required while the frontend uses Tailwind CDN + inline scripts.
-      // 'unsafe-eval' has been intentionally removed — it was not needed.
-      // Once the frontend migrates off the CDN, remove 'unsafe-inline' and use CSP nonces.
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://fonts.googleapis.com"],
-      scriptSrcAttr: ["'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.tailwindcss.com"],
+      // Tailwind is now self-hosted — CDN script and inline tailwind.config removed.
+      // 'unsafe-inline' is no longer needed for scripts. Removed.
+      scriptSrc: ["'self'", "https://s3.tradingview.com"],
+      scriptSrcAttr: [],
+      // 'unsafe-inline' kept for styleSrc only (Material Symbols uses inline font-face declarations)
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "data:", "https:", "*.googleusercontent.com"],
       connectSrc: ["'self'", "https:"],
@@ -252,7 +252,10 @@ async function initAdminDB() {
   // JWT_SECRET is always sourced from the SESSION_SECRET env var (set above).
   // We do NOT fall back to db.admin.jwtSecret — that value may be committed to version control.
 
-  if (!db.traders || db.traders.length === 0) {
+  // Seed traders if the DB has fewer than the expected full roster (11).
+  // This handles a partial-seed state (e.g. Supabase was populated with only 1 trader).
+  const EXPECTED_TRADER_COUNT = 11;
+  if (!db.traders || db.traders.length < EXPECTED_TRADER_COUNT) {
     const salt = crypto.randomBytes(16).toString('hex');
     const defaultPassHash = crypto.scryptSync('password123', salt, 64).toString('hex');
 
@@ -1351,22 +1354,20 @@ app.post('/api/admin/plans/update', verifyAdminToken, async (req, res) => {
   res.json({ success: true, plans: db.plans });
 });
 
-// Fallback HTML router
+// SPA router: serve index.html for known page routes, 404.html for everything else
 app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  const knownRoutes = ['/', '/dashboard.html', '/admin.html',
+    '/legal/privacy.html', '/legal/terms.html', '/legal/risk.html', '/legal/refund.html'];
+  const reqPath = req.path.replace(/\/$/, '') || '/';
+  if (knownRoutes.includes(reqPath)) {
+    return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  }
+  // Static assets (css, js, png, etc.) are handled by express.static above — this is a 404
+  res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
 // Start Server
 if (!process.env.VERCEL) {
   ensureDbInitialized().then(() => {
     app.listen(PORT, () => {
-      console.log(`Saudaa Server is running on http://localhost:${PORT}`);
-    });
-  }).catch(error => {
-    console.error('Failed to initialize database and start server:', error);
-    process.exit(1);
-  });
-}
-
-module.exports = app;
-
+      console.log(`Saudaa

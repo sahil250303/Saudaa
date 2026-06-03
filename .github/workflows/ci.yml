@@ -1,0 +1,54 @@
+name: CI — Lint, Test & Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --include=dev
+
+      - name: Run tests
+        env:
+          SESSION_SECRET: ci-test-secret-not-for-production
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          NODE_ENV: test
+        run: npm run test:ci
+
+      - name: Build Tailwind CSS
+        run: npm run build:css
+
+      - name: Verify built CSS exists
+        run: |
+          test -f public/tailwind.css && echo "✅ tailwind.css built successfully"
+          ls -lh public/tailwind.css
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Check for known vulnerabilities
+        run: npm audit --audit-level=high

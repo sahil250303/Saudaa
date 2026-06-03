@@ -327,11 +327,44 @@ function populateTraderSelect() {
 }
 
 // 4. Checkout Gateway Modal & Authentication Pipeline
+// ── Focus Trap Helper (WCAG 2.1.2) ──────────────────────────────────────────
+function trapFocus(modalEl) {
+  const focusable = modalEl.querySelectorAll(
+    'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+  );
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  modalEl._trapHandler = function(e) {
+    if (e.key !== 'Tab') return;
+    if (e.shiftKey) {
+      if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+    } else {
+      if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  };
+  modalEl.addEventListener('keydown', modalEl._trapHandler);
+  // Store element that opened the modal so we can restore focus on close
+  modalEl._opener = document.activeElement;
+  first.focus();
+}
+
+function releaseFocus(modalEl) {
+  if (modalEl._trapHandler) {
+    modalEl.removeEventListener('keydown', modalEl._trapHandler);
+    modalEl._trapHandler = null;
+  }
+  if (modalEl._opener) {
+    modalEl._opener.focus();
+    modalEl._opener = null;
+  }
+}
+
 window.openCheckout = function(traderId = '', planTier = 'pro') {
   const modal = document.getElementById('checkout-modal');
   const select = document.getElementById('checkout-trader-select');
   const planSelect = document.getElementById('checkout-plan-select');
-  
+
   if (!modal) return;
 
   if (traderId) {
@@ -348,10 +381,13 @@ window.openCheckout = function(traderId = '', planTier = 'pro') {
   document.getElementById('checkout-error').classList.add('hidden');
 
   modal.classList.remove('hidden');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
   setTimeout(() => {
     modal.classList.remove('opacity-0');
     const dialog = modal.querySelector('.scale-95') || modal.firstElementChild;
     if (dialog) dialog.classList.remove('scale-95');
+    trapFocus(modal);
   }, 50);
 };
 
@@ -359,6 +395,9 @@ window.closeCheckout = function() {
   const modal = document.getElementById('checkout-modal');
   if (!modal) return;
 
+  releaseFocus(modal);
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
   modal.classList.add('opacity-0');
   const dialog = modal.querySelector('.scale-95') || modal.firstElementChild;
   if (dialog) dialog.classList.add('scale-95');
@@ -837,10 +876,13 @@ window.openCompareModal = function() {
 
   // Open modal animation
   modal.classList.remove('hidden');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
   setTimeout(() => {
     modal.classList.remove('opacity-0');
     const dialog = modal.querySelector('.scale-95') || modal.firstElementChild;
     if (dialog) dialog.classList.remove('scale-95');
+    trapFocus(modal);
   }, 50);
 };
 
@@ -848,6 +890,9 @@ window.closeCompareModal = function() {
   const modal = document.getElementById('compare-modal');
   if (!modal) return;
 
+  releaseFocus(modal);
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
   modal.classList.add('opacity-0');
   const dialog = modal.querySelector('.scale-95') || modal.firstElementChild;
   if (dialog) dialog.classList.add('scale-95');
@@ -1655,4 +1700,73 @@ window.toggleFaq = function(index) {
   for (let i = 1; i <= 4; i++) {
     const otherAns = document.getElementById(`faq-ans-${i}`);
     const otherIcon = document.getElementById(`faq-icon-${i}`);
-    if (otherAns && otherIcon && i !=
+    if (otherAns && otherIcon && i !== index) {
+      otherAns.classList.add('hidden');
+      otherIcon.classList.remove('rotate-180');
+    }
+  }
+
+  if (isHidden) {
+    ans.classList.remove('hidden');
+    icon.classList.add('rotate-180');
+  } else {
+    ans.classList.add('hidden');
+    icon.classList.remove('rotate-180');
+  }
+};
+
+
+
+
+
+// ── Global Escape Key: close any open modal (WCAG 2.1.2) ───────────────────
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Escape') return;
+  const checkoutModal = document.getElementById('checkout-modal');
+  const compareModal  = document.getElementById('compare-modal');
+  if (checkoutModal && !checkoutModal.classList.contains('hidden')) {
+    closeCheckout();
+  } else if (compareModal && !compareModal.classList.contains('hidden')) {
+    closeCompareModal();
+  }
+});
+
+// ── Market ticker: pause animation on keyboard focus inside ────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  const ticker = document.getElementById('price-ticker');
+  if (ticker) {
+    ticker.setAttribute('role', 'marquee');
+    ticker.setAttribute('aria-label', 'Live market prices. Pauses on hover.');
+  }
+});
+
+// ── Cookie Consent (GDPR / DPDP Act 2023) ───────────────────────────────────
+(function initCookieConsent() {
+  const KEY = 'saudaa_cookie_consent';
+  const banner = document.getElementById('cookie-banner');
+  const disclaimerBar = document.getElementById('disclaimer-bar');
+  if (!banner) return;
+
+  // If consent already given, hide disclaimer bar too
+  const existing = localStorage.getItem(KEY);
+  if (existing) {
+    if (disclaimerBar && existing === 'accepted') disclaimerBar.style.display = 'none';
+    return;
+  }
+
+  // Show banner with slide-up after 800ms
+  banner.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    banner.classList.remove('translate-y-full');
+  }));
+
+  function dismiss(choice) {
+    localStorage.setItem(KEY, choice);
+    banner.classList.add('translate-y-full');
+    setTimeout(() => { banner.style.display = 'none'; }, 500);
+    if (choice === 'accepted' && disclaimerBar) disclaimerBar.style.display = 'none';
+  }
+
+  document.getElementById('cookie-accept').addEventListener('click', () => dismiss('accepted'));
+  document.getElementById('cookie-reject').addEventListener('click', () => dismiss('rejected'));
+})();

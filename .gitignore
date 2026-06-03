@@ -36,3 +36,11 @@ verify_homepage.png
 verify_redesign_screenshot.png
 verify_trader_dashboard.png
 
+# ── Test coverage output ──────────────────────────────────────────────────────
+coverage/
+
+# ── Jest cache ────────────────────────────────────────────────────────────────
+.jest-cache/
+
+# ── Note: public/tailwind.css IS committed (Vercel build generates it) ────────
+# Do NOT add public/tailwind.css here — it must be in the repo for deployment.
