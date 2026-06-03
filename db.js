@@ -257,6 +257,26 @@ async function writeDB(data) {
         created_at: fs.createdAt
       }));
 
+      // Delete traders that are no longer present in local state
+      const { data: existingTraders } = await supabase.from('traders').select('id');
+      const existingIds = (existingTraders || []).map(t => t.id);
+      const newIds = tradersData.map(t => t.id);
+      const toDelete = existingIds.filter(id => !newIds.includes(id));
+      if (toDelete.length > 0) {
+        const { error: delError } = await supabase.from('traders').delete().in('id', toDelete);
+        if (delError) console.error('Error deleting orphaned traders from Supabase:', delError);
+      }
+
+      // Delete suggestions that are no longer present in local state
+      const { data: existingSuggestions } = await supabase.from('suggestions').select('id');
+      const existingSgIds = (existingSuggestions || []).map(s => s.id);
+      const newSgIds = suggestionsData.map(s => s.id);
+      const sgToDelete = existingSgIds.filter(id => !newSgIds.includes(id));
+      if (sgToDelete.length > 0) {
+        const { error: delSgError } = await supabase.from('suggestions').delete().in('id', sgToDelete);
+        if (delSgError) console.error('Error deleting orphaned suggestions from Supabase:', delSgError);
+      }
+
       // Write parent tables (traders, plans) sequentially first to prevent foreign-key race conditions in parallel execution
       if (tradersData.length) {
         const { error } = await supabase.from('traders').upsert(tradersData);
@@ -268,14 +288,18 @@ async function writeDB(data) {
       }
 
       // Parallelize writes for other non-dependent or child tables
-      await Promise.all([
-        suggestionsData.length ? supabase.from('suggestions').upsert(suggestionsData) : Promise.resolve(),
-        clientsData.length ? supabase.from('clients').upsert(clientsData) : Promise.resolve(),
-        messagesData.length ? supabase.from('messages').upsert(messagesData) : Promise.resolve(),
-        paymentsData.length ? supabase.from('payments').upsert(paymentsData) : Promise.resolve(),
-        adminData.length ? supabase.from('admin').upsert(adminData) : Promise.resolve(),
-        freeSignalsData.length ? supabase.from('free_signals').upsert(freeSignalsData) : Promise.resolve()
+      const results = await Promise.all([
+        suggestionsData.length ? supabase.from('suggestions').upsert(suggestionsData) : Promise.resolve({ error: null }),
+        clientsData.length ? supabase.from('clients').upsert(clientsData) : Promise.resolve({ error: null }),
+        messagesData.length ? supabase.from('messages').upsert(messagesData) : Promise.resolve({ error: null }),
+        paymentsData.length ? supabase.from('payments').upsert(paymentsData) : Promise.resolve({ error: null }),
+        adminData.length ? supabase.from('admin').upsert(adminData) : Promise.resolve({ error: null }),
+        freeSignalsData.length ? supabase.from('free_signals').upsert(freeSignalsData) : Promise.resolve({ error: null })
       ]);
+
+      for (const res of results) {
+        if (res.error) throw res.error;
+      }
 
       return;
     } catch (err) {
