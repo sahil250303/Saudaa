@@ -1261,6 +1261,13 @@ app.post('/api/admin/traders/toggle-status', verifyAdminToken, async (req, res) 
     // Sort and re-rank
     db.traders.sort((a, b) => b.roi - a.roi);
     db.traders.forEach((t, i) => t.rank = i + 1);
+
+    // Clean up suggestions and free signals of the deleted trader in memory to avoid foreign key violations on writeDB upsert
+    db.suggestions = (db.suggestions || []).filter(s => s.traderId !== traderId);
+    if (db.freeSignals) {
+      db.freeSignals = db.freeSignals.filter(fs => fs.traderId !== traderId);
+    }
+
     await writeDB(db);
     return res.json({ success: true, deleted: true });
   } else {
