@@ -2,7 +2,7 @@
 
 ## Current Status
 - Project fully completed, secured, tested, verified, and deployed to Vercel with serverless cold-start optimizations.
-- **Self-hosted Tailwind CSS on `dashboard.html`, `admin.html`, and legal subpages, and updated CSP scriptSrcAttr/scriptSrc/frameSrc to restore CTA click actions and Razorpay integrations.**
+- **Self-hosted Tailwind CSS on `dashboard.html`, `admin.html`, and legal subpages, and updated Helmet CSP (scriptSrc, scriptSrcAttr, frameSrc, imgSrc) to allow Razorpay checkout dependencies and TradingView widgets, completely resolving unresponsive CTA buttons.**
 - **Updated the platform logo.png to the new design across root Assets and public folders, and removed the unused preloader_logo.png.**
 - **Optimized landing page preloader loading performance (reducing forced delay from 2.7s to 0.75s) and added script deferment, bringing website load time to under 1 second.**
 - **Enabled Row-Level Security (RLS) on public tables (suggestions, clients, admin, admin_sessions, plans, payments, free_signals) for the public role with selective view access for plans and free_signals.**

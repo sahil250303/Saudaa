@@ -16,14 +16,14 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       // Tailwind is now self-hosted — CDN script and inline tailwind.config removed.
-      scriptSrc: ["'self'", "https://s3.tradingview.com", "https://checkout.razorpay.com"],
+      scriptSrc: ["'self'", "https://s3.tradingview.com", "https://checkout.razorpay.com", "https://cdn.razorpay.com"],
       scriptSrcAttr: ["'unsafe-inline'"],
       // 'unsafe-inline' kept for styleSrc only (Material Symbols uses inline font-face declarations)
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
-      imgSrc: ["'self'", "data:", "https:", "*.googleusercontent.com"],
+      imgSrc: ["'self'", "data:", "https:", "*.googleusercontent.com", "https://cdn.razorpay.com"],
       connectSrc: ["'self'", "https:"],
-      frameSrc: ["'self'", "https://checkout.razorpay.com", "https://api.razorpay.com"],
+      frameSrc: ["'self'", "https://checkout.razorpay.com", "https://api.razorpay.com", "https://www.tradingview-widget.com", "https://s.tradingview.com"],
     },
   },
   // Disable X-Powered-By (already done by Helmet) and enable HSTS
