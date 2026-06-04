@@ -12,7 +12,13 @@
     "test": "jest --forceExit",
     "test:ci": "jest --ci --forceExit --coverage"
   },
-  "keywords": ["trading", "signals", "india", "nifty", "verified-traders"],
+  "keywords": [
+    "trading",
+    "signals",
+    "india",
+    "nifty",
+    "verified-traders"
+  ],
   "author": "Sahil",
   "license": "ISC",
   "type": "commonjs",
@@ -21,6 +27,7 @@
     "express": "^5.2.1",
     "express-rate-limit": "^7.2.0",
     "helmet": "^7.1.0",
+    "playwright": "^1.60.0",
     "razorpay": "^2.9.2"
   },
   "devDependencies": {
@@ -32,6 +39,8 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "testMatch": ["**/tests/**/*.test.js"]
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
   }
 }

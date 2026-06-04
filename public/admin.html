@@ -6,44 +6,10 @@
   <title>Saudaa - Cyber-Secure Admin Control Panel</title>
   <meta name="description" content="Saudaa Administrator Control Panel. Securely manage client profiles, ledger payment history, verify trader strategies, and modify plan configurations."/>
   
-  <!-- Tailwind CSS & Fonts -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Tailwind CSS (Self-Hosted), Fonts & Custom Stylesheet -->
+  <link rel="stylesheet" href="/tailwind.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-
-  <!-- Tailwind Configuration matching index.html and extending for admin -->
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            primary: "var(--color-primary)",
-            "primary-container": "var(--color-primary-container)",
-            secondary: "#e7e0c7",
-            "secondary-container": "#635f4b",
-            background: "var(--color-background)",
-            surface: "var(--color-surface)",
-            "surface-container-lowest": "var(--color-surface-container-lowest)",
-            "surface-container-low": "var(--color-surface-container-low)",
-            "surface-container": "var(--color-surface-container)",
-            "surface-container-high": "var(--color-surface-container-high)",
-            "surface-container-highest": "var(--color-surface-container-highest)",
-            "on-primary": "var(--color-on-primary)",
-            "on-secondary": "#1b1c19",
-            "on-background": "var(--color-on-background)",
-            "on-surface": "var(--color-on-surface)",
-            "on-surface-variant": "var(--color-on-surface-variant)",
-            outline: "var(--color-outline)",
-            "outline-variant": "var(--color-outline-variant)",
-            error: "#ffb4ab",
-            "error-container": "#93000a",
-            "on-error": "#690005"
-          }
-        }
-      }
-    }
-  </script>
 
   <style>
     body {

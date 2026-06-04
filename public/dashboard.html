@@ -6,106 +6,11 @@
   <title>Saudaa - Trader Terminal Dashboard</title>
   <meta name="description" content="Access your personalized Saudaa Trader Terminal. Broadcast trading suggestions, manage subscriber communications, and track verified performance metrics."/>
   
-  <!-- Tailwind CSS & Fonts -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Tailwind CSS (Self-Hosted), Fonts & Custom Stylesheet -->
+  <link rel="stylesheet" href="/tailwind.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-
-  <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="/app.css"/>
-  
-  <!-- Tailwind Configuration matching Stitch -->
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            primary: "#42682b",
-            "primary-container": "#8bb56f",
-            "primary-fixed": "#c2f0a3",
-            "primary-fixed-dim": "#a7d38a",
-            "on-primary-container": "#22460d",
-            "on-primary-fixed": "#092100",
-            "on-primary-fixed-variant": "#2b5015",
-            "inverse-primary": "#a7d38a",
-            "inverse-surface": "#30312e",
-            "inverse-on-surface": "#f2f1ec",
-            "surface-tint": "#42682b",
-            secondary: "#635f4b",
-            "on-secondary": "#ffffff",
-            "secondary-container": "#e7e0c7",
-            "on-secondary-container": "#67634f",
-            "secondary-fixed": "#eae2c9",
-            "secondary-fixed-dim": "#cdc7ae",
-            "on-secondary-fixed": "#1e1c0c",
-            "on-secondary-fixed-variant": "#4b4734",
-            tertiary: "#57615c",
-            "on-tertiary": "#ffffff",
-            "tertiary-container": "#a2aca6",
-            "on-tertiary-container": "#37403c",
-            "tertiary-fixed": "#dbe5df",
-            "tertiary-fixed-dim": "#bfc9c3",
-            "on-tertiary-fixed": "#151d1a",
-            "on-tertiary-fixed-variant": "#3f4945",
-            background: "#faf9f4",
-            surface: "#faf9f4",
-            "surface-dim": "#dbdad5",
-            "surface-bright": "#faf9f4",
-            "surface-container-lowest": "#ffffff",
-            "surface-container-low": "#f5f4ef",
-            "surface-container": "#efeee9",
-            "surface-container-high": "#e9e8e3",
-            "surface-container-highest": "#e3e3de",
-            "surface-variant": "#e3e3de",
-            "on-primary": "#ffffff",
-            "on-background": "#1b1c19",
-            "on-surface": "#1b1c19",
-            "on-surface-variant": "#444840",
-            outline: "#747870",
-            "outline-variant": "#c4c8be",
-            error: "#ba1a1a",
-            "error-container": "#ffdad6",
-            "on-error": "#ffffff",
-            "on-error-container": "#93000a"
-          },
-          fontFamily: {
-            sans: ['Manrope', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace']
-          },
-          fontSize: {
-            'display-lg': ['48px', { lineHeight: '56px', letterSpacing: '-0.02em', fontWeight: '700' }],
-            'display-lg-mobile': ['36px', { lineHeight: '44px', letterSpacing: '-0.02em', fontWeight: '700' }],
-            'headline-md': ['32px', { lineHeight: '40px', letterSpacing: '-0.01em', fontWeight: '600' }],
-            'headline-sm': ['24px', { lineHeight: '32px', letterSpacing: '0em', fontWeight: '600' }],
-            'body-lg': ['18px', { lineHeight: '28px', letterSpacing: '0.01em', fontWeight: '400' }],
-            'body-md': ['16px', { lineHeight: '24px', letterSpacing: '0.01em', fontWeight: '400' }],
-            'label-md': ['14px', { lineHeight: '20px', letterSpacing: '0.05em', fontWeight: '500' }],
-            'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0.05em', fontWeight: '600' }],
-          },
-          spacing: {
-            gutter: "24px",
-            xs: "4px",
-            sm: "12px",
-            md: "24px",
-            lg: "48px",
-            xl: "80px",
-            base: "8px",
-            "margin-desktop": "40px",
-            "margin-mobile": "16px"
-          },
-          borderRadius: {
-            sm: "0.25rem",
-            DEFAULT: "0.5rem",
-            md: "0.75rem",
-            lg: "1rem",
-            xl: "1.5rem",
-            full: "9999px"
-          }
-        }
-      }
-    };
-  </script>
 </head>
 <body class="bg-background text-on-background min-h-screen flex antialiased">
 
