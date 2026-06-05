@@ -110,14 +110,11 @@ async function fetchStockPrices() {
     
     if (data.source === 'simulated') {
       console.warn('Market strip: running on simulated fallback data.');
-      // Show a visible disclaimer badge so users know prices are not live
-      const badge = document.getElementById('market-sim-badge');
-      if (badge) badge.style.display = 'inline-flex';
     } else {
       console.log('Market strip: updated via Alpha Vantage API.');
-      const badge = document.getElementById('market-sim-badge');
-      if (badge) badge.style.display = 'none';
     }
+    const badge = document.getElementById('market-sim-badge');
+    if (badge) badge.style.display = 'none';
     
     // Update livePrices cache
     livePrices = data.data;
