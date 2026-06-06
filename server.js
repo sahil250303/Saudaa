@@ -5,6 +5,7 @@ const https = require('https');
 const crypto = require('crypto');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const { sendSubscriptionConfirmation } = require('./email.js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -868,6 +869,29 @@ app.post('/api/subscribe', subscribeLimiter, async (req, res) => {
   db.payments.unshift(newPayment);
 
   await writeDB(db);
+
+  // ── Fire-and-forget welcome email ─────────────────────────────────────────
+  // Runs async after the HTTP response is sent so payment confirmation is
+  // never delayed or blocked by email delivery latency / failures.
+  setImmediate(() => {
+    sendSubscriptionConfirmation({
+      email:           client.email,
+      subId:           client.subId,
+      traderId:        traderId,
+      traderName:      trader.name,
+      traderStrategy:  trader.strategy,
+      traderRoi:       trader.roi,
+      plan:            plan,
+      planName:        planDetails ? planDetails.name : plan,
+      planFeatures:    planDetails ? planDetails.features : [],
+      amount:          price,
+      paymentId:       newPayment.id,
+      timestamp:       newPayment.timestamp,
+      expiresAt:       client.subscription.expiresAt,
+      isNewAccount:    !db.clients.find(c => c.email.toLowerCase() === email.toLowerCase() && c.id !== client.id),
+    }).catch(err => console.error('[EMAIL] Uncaught error in sendSubscriptionConfirmation:', err));
+  });
+  // ─────────────────────────────────────────────────────────────────────────
 
   res.json({
     success: true,
