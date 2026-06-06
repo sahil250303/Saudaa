@@ -233,4 +233,4 @@ function buildFlaggedLogEntry({ channel, senderId, senderRole, violations, previ
   };
 }
 
-module.exports = { filterContent, bui
+module.exports = { filterContent, buildFlaggedLogEntry };

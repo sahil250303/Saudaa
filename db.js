@@ -36,7 +36,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 
 let supabase = null;
-if (supabaseUrl && supabaseKey) {
+if (supabaseUrl && supabaseKey && process.env.NODE_ENV !== 'test') {
   try {
     supabase = createClient(supabaseUrl, supabaseKey, {
       auth: {
@@ -51,6 +51,8 @@ if (supabaseUrl && supabaseKey) {
 } else {
   if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
     console.error('[FATAL] SUPABASE_URL and SUPABASE_KEY must be set in production. Falling back to read-only JSON (writes will fail).');
+  } else if (process.env.NODE_ENV === 'test') {
+    console.log('[DB] Test environment detected. Using local database.json (Supabase disabled).');
   } else {
     console.warn('[DB] Supabase credentials not found. Falling back to local file database.json.');
   }
@@ -269,25 +271,7 @@ async function writeDB(data) {
         created_at: fs.createdAt
       }));
 
-      // Delete traders that are no longer present in local state
-      const { data: existingTraders } = await supabase.from('traders').select('id');
-      const existingIds = (existingTraders || []).map(t => t.id);
-      const newIds = tradersData.map(t => t.id);
-      const toDelete = existingIds.filter(id => !newIds.includes(id));
-      if (toDelete.length > 0) {
-        const { error: delError } = await supabase.from('traders').delete().in('id', toDelete);
-        if (delError) console.error('Error deleting orphaned traders from Supabase:', delError);
-      }
-
-      // Delete suggestions that are no longer present in local state
-      const { data: existingSuggestions } = await supabase.from('suggestions').select('id');
-      const existingSgIds = (existingSuggestions || []).map(s => s.id);
-      const newSgIds = suggestionsData.map(s => s.id);
-      const sgToDelete = existingSgIds.filter(id => !newSgIds.includes(id));
-      if (sgToDelete.length > 0) {
-        const { error: delSgError } = await supabase.from('suggestions').delete().in('id', sgToDelete);
-        if (delSgError) console.error('Error deleting orphaned suggestions from Supabase:', delSgError);
-      }
+      // Delete functions are handled explicitly via toggle-status/delete routes to prevent database corruption/race conditions
 
       // Write parent tables (traders, plans) sequentially first to prevent foreign-key race conditions in parallel execution
       if (tradersData.length) {
@@ -382,11 +366,37 @@ async function deleteAdminSession(token) {
   }
 }
 
+async function deleteTrader(traderId) {
+  if (supabase) {
+    try {
+      const { error } = await supabase.from('traders').delete().eq('id', traderId);
+      if (error) throw error;
+      console.log(`[DB] Deleted trader account ${traderId} from Supabase.`);
+    } catch (err) {
+      console.error(`[DB] Error deleting trader ${traderId} from Supabase:`, err);
+    }
+  }
+}
+
+async function deleteSuggestion(suggestionId) {
+  if (supabase) {
+    try {
+      const { error } = await supabase.from('suggestions').delete().eq('id', suggestionId);
+      if (error) throw error;
+      console.log(`[DB] Deleted suggestion ${suggestionId} from Supabase.`);
+    } catch (err) {
+      console.error(`[DB] Error deleting suggestion ${suggestionId} from Supabase:`, err);
+    }
+  }
+}
+
 module.exports = {
   readDB,
   writeDB,
   isSupabase: () => !!supabase,
   getAdminSession,
   saveAdminSession,
-  deleteAdminSession
+  deleteAdminSession,
+  deleteTrader,
+  deleteSuggestion
 };

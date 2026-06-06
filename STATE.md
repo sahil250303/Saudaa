@@ -1,6 +1,10 @@
 # GSD State Persistence - Saudaa
 
 ## Current Status
+- **Enhanced website visual appeal and interactivity by implementing subtle, modern, and high-performance transitions and scroll reveal micro-animations across index.html, app.css, and app.js.**
+- **Designed and integrated a smooth grid height-interpolating transition for the FAQ accordion, a springy scale-up entrance animation for the community lounge floating support widget, and an idle pulse glow animation on the floating trigger action button.**
+- **Implemented staggered fade-in animations using intersection observers for card grids in How It Works, Why Choose Saudaa, and Pricing sections, alongside staggered row entry fade-ins for the Leaderboard and Compare Traders selection screens.**
+- **Implemented a custom mouse cursor design featuring a 6px sage green dot with a 1.5px high-contrast border and a lagging 22px trailing shadow with 20% opacity forest green background and a 2px offset (X/Y). The design is fully compatible with light/dark themes, includes dynamic hover detection using mutation observers, and automatically disables on mobile/touch interfaces.**
 - Project fully completed, secured, tested, verified, and deployed to Vercel with serverless cold-start optimizations. Removed the visible "⚠ Simulated" badge from the market data loop strip on the homepage (only logging to developer console during API fallback).
 - **Self-hosted Tailwind CSS on `dashboard.html`, `admin.html`, and legal subpages, and updated Helmet CSP (adding `'unsafe-inline'` directly to `scriptSrc` and whitelisting `https://*.tradingview.com` and `https://*.tradingview-widget.com` subdomains for `scriptSrc` and `frameSrc`) to allow Razorpay checkout dependencies, inline HTML `onclick` attributes (CTAs), and the TradingView stock heatmap widget to load and execute without errors.**
 - **Updated the platform logo.png to the new design across root Assets and public folders, and removed the unused preloader_logo.png.**
@@ -20,8 +24,11 @@
 - Live Vercel URL: https://saudaa.vercel.app
 - GitHub Repository: https://github.com/sahil250303/Saudaa
 - Node.js server configured for serverless Vercel function using @vercel/node builder.
+- Visual animation, interactive effects, and custom mouse cursor fully implemented, tested, and verified compatible with accessibility.
 
 ## Completed Tasks
+- [x] Integrate custom mouse cursor (sage green dot + 2px offset trailing shadow at 20% opacity) with hover magnification and touch-screen bypass
+- [x] Enhance visual appeal and interactivity with subtle scroll reveal animations, card hovers, FAQ accordion grid height interpolation, and springy chatbot windows
 - [x] Optimize website loading performance (speed up preloader to under 0.75s, defer script loads) and verify all 5 CTA buttons
 - [x] Fix CSP scriptSrcAttr to allow inline event attributes (onclick) and allow wildcard Razorpay domains
 - [x] Revoke EXECUTE privilege on public.rls_auto_enable function from public/anon/authenticated roles
@@ -105,11 +112,18 @@
 - [x] Optimize logo presentation by increasing the logo size by exactly 25% across all website views (Preloader, Header Nav, Footer, Dashboard Login, and Sidebar) while maintaining aspect ratio and visual crispness
 - [x] Create a new informative "Why Choose Saudaa" section after the complimentary signals chat section containing three key numbered items: Trade with Verified Traders, Multiple Experts, One Platform, and Save Time & Make Smarter Decisions
 - [x] Verify layout responsiveness and visual correctness using visual test run screenshots
+- [x] Disable remote Supabase connections for the test environment (`NODE_ENV === 'test'`)
+- [x] Remove automatic orphaned records deletion from `writeDB`
+- [x] Purge all 11 fake traders and dummy users/signals/payments from local/remote databases
+- [x] Implement explicit resource deletion controllers in db.js and backend endpoints
 
 ## Final Notes
 - The application is running at `http://localhost:3000`.
 - Admin credentials seeded: `admin` username. The password is set via `ADMIN_PASSWORD` in `.env`.
-- Database includes 11 seeded traders with 0 subscribers each.
+- Database is completely purged of all fake/dummy data (traders, clients, payments, suggestions, messages, free signals).
+- Test environment is fully isolated from Supabase remote database to prevent accidental data overrides.
+- Automated orphaned records deletion inside writeDB has been disabled to support safe live database writes.
 - Active stock ticker strip pauses updates dynamically when tab is backgrounded.
 - Home page includes verified statistics strip animation pulling values directly from `/api/traders`.
 - The footer has active, styled regulatory pages compliant with SEBI and RBI guidelines.
+

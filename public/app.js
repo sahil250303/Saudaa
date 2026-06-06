@@ -53,6 +53,123 @@ async function fetchPlans() {
   }
 }
 
+// Scroll Reveal Observer Setup
+function initScrollReveal() {
+  const revealElements = document.querySelectorAll('.scroll-reveal');
+  if (revealElements.length === 0) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('reveal-active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  revealElements.forEach(el => observer.observe(el));
+}
+
+// Custom Mouse Cursor with Shadow Offset
+function initCustomCursor() {
+  // Disable on touch devices
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  if (isTouchDevice) return;
+
+  // Respect prefers-reduced-motion
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const dot = document.createElement('div');
+  const shadow = document.createElement('div');
+  
+  dot.className = 'custom-cursor-dot';
+  shadow.className = 'custom-cursor-shadow';
+  
+  document.body.appendChild(dot);
+  document.body.appendChild(shadow);
+
+  document.documentElement.classList.add('custom-cursor-enabled');
+  
+  let posX = 0, posY = 0;
+  let mouseX = 0, mouseY = 0;
+  let isVisible = false;
+
+  // Initially hide cursor until mouse enters
+  dot.style.opacity = '0';
+  shadow.style.opacity = '0';
+  
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    if (!isVisible) {
+      dot.style.opacity = '1';
+      shadow.style.opacity = '1';
+      isVisible = true;
+    }
+    
+    // Position dot immediately
+    dot.style.left = `${mouseX}px`;
+    dot.style.top = `${mouseY}px`;
+  });
+  
+  // Animate the shadow with a slight lag (lerp) for smooth organic movement
+  function animateShadow() {
+    posX += (mouseX - posX) * 0.15;
+    posY += (mouseY - posY) * 0.15;
+    
+    // Apply a subtle 2px right and 2px down offset to the shadow position
+    shadow.style.left = `${posX + 2}px`;
+    shadow.style.top = `${posY + 2}px`;
+    
+    requestAnimationFrame(animateShadow);
+  }
+  
+  animateShadow();
+  
+  // Set up hover states on interactive/clickable elements
+  function bindHoverEffects() {
+    const clickables = document.querySelectorAll('a, button, [onclick], input, select, textarea, .cursor-pointer');
+    clickables.forEach(el => {
+      // Prevent double binding
+      if (el.dataset.cursorBound) return;
+      el.dataset.cursorBound = 'true';
+
+      el.addEventListener('mouseenter', () => {
+        dot.classList.add('cursor-hover');
+        shadow.classList.add('cursor-hover');
+      });
+      el.addEventListener('mouseleave', () => {
+        dot.classList.remove('cursor-hover');
+        shadow.classList.remove('cursor-hover');
+      });
+    });
+  }
+
+  // Initial binding
+  bindHoverEffects();
+
+  // Re-bind when content is dynamically updated (e.g. Leaderboard search/filters)
+  const observer = new MutationObserver(bindHoverEffects);
+  observer.observe(document.body, { childList: true, subtree: true });
+  
+  // Hide custom cursor when mouse leaves window
+  document.addEventListener('mouseleave', () => {
+    dot.style.opacity = '0';
+    shadow.style.opacity = '0';
+    isVisible = false;
+  });
+  
+  document.addEventListener('mouseenter', () => {
+    dot.style.opacity = '1';
+    shadow.style.opacity = '1';
+    isVisible = true;
+  });
+}
+
 // Initialize Page
 document.addEventListener('DOMContentLoaded', () => {
   initPreloader();
@@ -65,9 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeroCandlesAnimation();
   setupMobileMenu();
   initStickyMobileCta();
+  initScrollReveal();
+  initCustomCursor();
 });
-
-// 1. Multilingual Preloader Animation
 function initPreloader() {
   const saEl = document.getElementById('preloader-sa');
   const barEl = document.getElementById('preloader-bar');
@@ -242,10 +359,9 @@ function renderLeaderboard() {
     }
     return;
   }
-
-  body.innerHTML = filtered.map(t => {
+  body.innerHTML = filtered.map((t, idx) => {
     return `
-      <tr class="hover:bg-surface-container-low/50 transition-colors">
+      <tr style="animation-delay: ${idx * 40}ms" class="hover:bg-surface-container-low/50 transition-colors leaderboard-row-animate">
         <td class="py-4 px-6 text-center font-mono font-bold text-on-surface">
           ${t.rank <= 3 ? `<span class="bg-primary-container/30 text-primary px-2.5 py-1 rounded-md">${t.rank}</span>` : t.rank}
         </td>
@@ -270,11 +386,10 @@ function renderLeaderboard() {
       </tr>
     `;
   }).join('');
-
   if (mobileBody) {
-    mobileBody.innerHTML = filtered.map(t => {
+    mobileBody.innerHTML = filtered.map((t, idx) => {
       return `
-        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-5 flex flex-col gap-4 shadow-sm hover:border-primary-container transition-all">
+        <div style="animation-delay: ${idx * 40}ms" class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-5 flex flex-col gap-4 shadow-sm hover:border-primary-container transition-all leaderboard-row-animate">
           <div class="flex justify-between items-center">
             <div class="flex items-center gap-3">
               <div class="font-mono font-bold text-sm">
@@ -544,15 +659,17 @@ window.toggleDiscordBot = function() {
   
   if (win.classList.contains('hidden')) {
     win.classList.remove('hidden');
-    setTimeout(() => {
-      win.classList.remove('opacity-0');
-    }, 50);
+    // Force reflow for animation
+    void win.offsetWidth;
+    win.classList.add('chatbot-open');
+    win.classList.remove('opacity-0');
     
     // Start active general chat channel streamer if General is open
     if (discordActiveChannel === 'general') {
       startGeneralChatStream();
     }
   } else {
+    win.classList.remove('chatbot-open');
     win.classList.add('opacity-0');
     setTimeout(() => {
       win.classList.add('hidden');
@@ -963,13 +1080,12 @@ function updateCompareStepperUI() {
 function renderCompareTradersGrid() {
   const grid = document.getElementById('compare-traders-grid');
   if (!grid) return;
-
-  grid.innerHTML = tradersList.map(t => {
+  grid.innerHTML = tradersList.map((t, idx) => {
     const isSelected = compareSelectedTraders.includes(t.id);
     const selectClass = isSelected ? 'compare-card-selected' : 'border-outline-variant/40 bg-surface-container-lowest';
     
     return `
-      <div onclick="toggleCompareTraderSelection('${t.id}')" class="group border rounded-xl p-4 cursor-pointer hover:border-primary-container hover:shadow-sm transition-all ${selectClass}">
+      <div style="animation-delay: ${idx * 30}ms" onclick="toggleCompareTraderSelection('${t.id}')" class="group border rounded-xl p-4 cursor-pointer hover:border-primary-container hover:shadow-sm transition-all ${selectClass} leaderboard-row-animate">
         <div class="flex justify-between items-start">
           <div class="flex items-center gap-2.5">
             <img src="${t.avatar}" alt="${t.name}" class="w-8 h-8 rounded-full object-cover border border-outline-variant/30"/>
@@ -989,8 +1105,7 @@ function renderCompareTradersGrid() {
         </div>
       </div>
     `;
-  }).join('');
-}
+  }).join('');}
 
 window.toggleCompareTraderSelection = function(traderId) {
   const idx = compareSelectedTraders.indexOf(traderId);
@@ -1684,37 +1799,32 @@ function initStickyMobileCta() {
     }
   });
 }
-
 // FAQ Toggle Handler
 window.toggleFaq = function(index) {
   const ans = document.getElementById(`faq-ans-${index}`);
   const icon = document.getElementById(`faq-icon-${index}`);
   if (!ans || !icon) return;
 
-  const isHidden = ans.classList.contains('hidden');
+  const isOpen = ans.classList.contains('open');
 
   // Close all other FAQs first for a clean accordion effect
   for (let i = 1; i <= 4; i++) {
     const otherAns = document.getElementById(`faq-ans-${i}`);
     const otherIcon = document.getElementById(`faq-icon-${i}`);
     if (otherAns && otherIcon && i !== index) {
-      otherAns.classList.add('hidden');
+      otherAns.classList.remove('open');
       otherIcon.classList.remove('rotate-180');
     }
   }
 
-  if (isHidden) {
-    ans.classList.remove('hidden');
+  if (!isOpen) {
+    ans.classList.add('open');
     icon.classList.add('rotate-180');
   } else {
-    ans.classList.add('hidden');
+    ans.classList.remove('open');
     icon.classList.remove('rotate-180');
   }
 };
-
-
-
-
 
 // ── Global Escape Key: close any open modal (WCAG 2.1.2) ───────────────────
 document.addEventListener('keydown', function(e) {
