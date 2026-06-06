@@ -5,8 +5,6 @@ const https = require('https');
 const crypto = require('crypto');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const { sendSubscriptionConfirmation } = require('./email.js');
-const { filterContent, buildFlaggedLogEntry } = require('./contentFilter.js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -257,11 +255,171 @@ async function initAdminDB() {
   // JWT_SECRET is always sourced from the SESSION_SECRET env var (set above).
   // We do NOT fall back to db.admin.jwtSecret — that value may be committed to version control.
 
-  // NOTE: Fake trader auto-seeding has been intentionally removed.
-  // Real traders must be added via the admin panel (/admin → Traders → Add Trader).
-  if (!db.traders) {
-    db.traders = [];
+  // Seed traders if the DB has fewer than the expected full roster (11).
+  // This handles a partial-seed state (e.g. Supabase was populated with only 1 trader).
+  const EXPECTED_TRADER_COUNT = 11;
+  if (!db.traders || db.traders.length < EXPECTED_TRADER_COUNT) {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const defaultPassHash = crypto.scryptSync('password123', salt, 64).toString('hex');
+
+    db.traders = [
+      {
+        id: "alex_pro",
+        name: "Alex Pro",
+        strategy: "Algorithmic & Swing",
+        winRate: 82.9,
+        roi: 68.5,
+        subscribers: 0,
+        rank: 1,
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
+        description: "Professional quant trader specializing in index swing trading and high-frequency algorithms.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "neon_ghost",
+        name: "Neon Ghost",
+        strategy: "Scalping & Options",
+        winRate: 78.4,
+        roi: 59.2,
+        subscribers: 0,
+        rank: 2,
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+        description: "Derivative analyst focusing on Nifty/BankNifty weekly option writing and theta decay strategies.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "macro_bull",
+        name: "Macro Bull",
+        strategy: "Global Macro",
+        winRate: 74.1,
+        roi: 52.4,
+        subscribers: 0,
+        rank: 3,
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
+        description: "Macro economist tracking interest rates, inflation, and global liquidity trends for gold and bond yields.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "alpha_scalp",
+        name: "Alpha Scalp",
+        strategy: "Intraday Momentum",
+        winRate: 76.5,
+        roi: 48.9,
+        subscribers: 0,
+        rank: 4,
+        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200",
+        description: "Intraday momentum trader focusing on breakout stocks and order book flow analysis.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "delta_wanderer",
+        name: "Delta Wanderer",
+        strategy: "Arbitrage & Hedging",
+        winRate: 85.0,
+        roi: 42.1,
+        subscribers: 0,
+        rank: 5,
+        avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+        description: "Delta-neutral option strategist and cross-exchange crypto arbitrage specialist.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "satoshi_trader",
+        name: "Satoshi Trader",
+        strategy: "Crypto & DeFi",
+        winRate: 69.2,
+        roi: 45.8,
+        subscribers: 0,
+        rank: 6,
+        avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200",
+        description: "Blockchain analyst trading top-cap assets and liquid staking tokens.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "trend_rider",
+        name: "Trend Rider",
+        strategy: "Momentum Trend Follower",
+        winRate: 68.4,
+        roi: 39.5,
+        subscribers: 0,
+        rank: 7,
+        avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=200",
+        description: "Medium-term trend follower utilizing moving averages and MACD breakout indicators.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "commodities_pro",
+        name: "Commodities Pro",
+        strategy: "Commodity Cycles",
+        winRate: 72.3,
+        roi: 36.8,
+        subscribers: 0,
+        rank: 8,
+        avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200",
+        description: "Physical commodity trader predicting cycles in crude oil, natural gas, and copper.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "value_investor",
+        name: "Value Investor",
+        strategy: "Fundamental Value",
+        winRate: 70.5,
+        roi: 31.2,
+        subscribers: 0,
+        rank: 9,
+        avatar: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
+        description: "Discount cash flow modeling expert investing in undervalued mid-cap growth stocks.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "quantum_trade",
+        name: "Quantum Trade",
+        strategy: "Statistical Arbitrage",
+        winRate: 88.5,
+        roi: 29.8,
+        subscribers: 0,
+        rank: 10,
+        avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=200",
+        description: "Quantitative researcher utilizing mean reversion and statistical arbitrage on pairs trading.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      },
+      {
+        id: "theta_gang",
+        name: "Theta Gang",
+        strategy: "Premium Selling",
+        winRate: 81.2,
+        roi: 28.5,
+        subscribers: 0,
+        rank: 11,
+        avatar: "https://images.unsplash.com/photo-1489980508314-941910ded1f4?auto=format&fit=crop&q=80&w=200",
+        description: "Structured options income strategies including iron condors, credit spreads, and covered calls.",
+        status: "active",
+        passwordHash: defaultPassHash,
+        salt: salt
+      }
+    ];
     updated = true;
+    console.log('[INIT] Seeding 11 professional traders...');
   }
 
   if (!db.plans || db.plans.length === 0) {
@@ -711,30 +869,6 @@ app.post('/api/subscribe', subscribeLimiter, async (req, res) => {
 
   await writeDB(db);
 
-  // ── Post-subscription welcome email ───────────────────────────────────────
-  // Start the email send BEFORE calling res.json() so the Promise is already
-  // in flight. We then respond to the user immediately (res.json does not
-  // await), and the route's async function continues awaiting the email
-  // promise — this keeps the Vercel Lambda alive long enough for the SMTP
-  // call to complete without blocking the HTTP response.
-  const emailPromise = sendSubscriptionConfirmation({
-    email:           client.email,
-    subId:           client.subId,
-    traderId:        traderId,
-    traderName:      trader.name,
-    traderStrategy:  trader.strategy,
-    traderRoi:       trader.roi,
-    plan:            plan,
-    planName:        planDetails ? planDetails.name : plan,
-    planFeatures:    planDetails ? planDetails.features : [],
-    amount:          price,
-    paymentId:       newPayment.id,
-    timestamp:       newPayment.timestamp,
-    expiresAt:       client.subscription.expiresAt,
-    isNewAccount:    !db.clients.find(c => c.email.toLowerCase() === email.toLowerCase() && c.id !== client.id),
-  });
-  // ─────────────────────────────────────────────────────────────────────────
-
   res.json({
     success: true,
     subId: client.subId,
@@ -742,12 +876,6 @@ app.post('/api/subscribe', subscribeLimiter, async (req, res) => {
     traderName: trader.name,
     plan: plan
   });
-
-  // Await after res.json — user already has their response. This keeps the
-  // Vercel Lambda alive until the SMTP call resolves (or errors out).
-  try { await emailPromise; } catch (err) {
-    console.error('[EMAIL] Uncaught error in sendSubscriptionConfirmation:', err);
-  }
 });
 
 // 5. Get Trading Suggestions
@@ -798,27 +926,6 @@ app.post('/api/suggestions', verifyUserToken, async (req, res) => {
     return res.status(400).json({ error: 'All signal details are required.' });
   }
 
-  // ── Content moderation (free-text notes field only) ───────────────────────
-  if (notes) {
-    const sigFilter = filterContent(notes);
-    if (sigFilter.blocked) {
-      readDB().then(db => {
-        if (!db.flaggedMessages) db.flaggedMessages = [];
-        db.flaggedMessages.unshift(buildFlaggedLogEntry({
-          channel: 'signal', senderId: traderId, senderRole: 'trader',
-          violations: sigFilter.violations, preview: notes,
-        }));
-        return writeDB(db);
-      }).catch(e => console.error('[FILTER] Failed to log flagged signal notes:', e));
-
-      return res.status(422).json({
-        error: sigFilter.message,
-        violations: sigFilter.violations,
-      });
-    }
-  }
-  // ─────────────────────────────────────────────────────────────────────────
-
   const db = await readDB();
   const trader = db.traders.find(t => t.id === traderId);
   if (!trader) {
@@ -858,27 +965,6 @@ app.put('/api/suggestions/:id', verifyUserToken, async (req, res) => {
   if (!traderId || !asset || !type || !entry || !target || !stopLoss || !risk) {
     return res.status(400).json({ error: 'All signal details are required.' });
   }
-
-  // ── Content moderation (notes field) ─────────────────────────────────────
-  if (notes) {
-    const editFilter = filterContent(notes);
-    if (editFilter.blocked) {
-      readDB().then(db => {
-        if (!db.flaggedMessages) db.flaggedMessages = [];
-        db.flaggedMessages.unshift(buildFlaggedLogEntry({
-          channel: 'signal-edit', senderId: traderId, senderRole: 'trader',
-          violations: editFilter.violations, preview: notes,
-        }));
-        return writeDB(db);
-      }).catch(e => console.error('[FILTER] Failed to log flagged signal edit:', e));
-
-      return res.status(422).json({
-        error: editFilter.message,
-        violations: editFilter.violations,
-      });
-    }
-  }
-  // ─────────────────────────────────────────────────────────────────────────
 
   const db = await readDB();
   const suggestion = db.suggestions.find(s => s.id === id && s.traderId === traderId);
@@ -974,26 +1060,6 @@ app.post('/api/chat/send', verifyUserToken, async (req, res) => {
     return res.status(400).json({ error: 'Message content exceeds the 2000 character limit.' });
   }
 
-  // ── Content moderation ────────────────────────────────────────────────────
-  const chatFilter = filterContent(content);
-  if (chatFilter.blocked) {
-    // Log the attempt for admin review (fire-and-forget, non-blocking)
-    readDB().then(db => {
-      if (!db.flaggedMessages) db.flaggedMessages = [];
-      db.flaggedMessages.unshift(buildFlaggedLogEntry({
-        channel: 'chat', senderId, senderRole: req.user.role,
-        violations: chatFilter.violations, preview: content,
-      }));
-      return writeDB(db);
-    }).catch(e => console.error('[FILTER] Failed to log flagged chat message:', e));
-
-    return res.status(422).json({
-      error: chatFilter.message,
-      violations: chatFilter.violations,
-    });
-  }
-  // ─────────────────────────────────────────────────────────────────────────
-
   const db = await readDB();
   const newMsg = {
     id: 'msg_' + Math.random().toString(36).substr(2, 9),
@@ -1055,25 +1121,6 @@ app.post('/api/free-signals', verifyUserToken, async (req, res) => {
   if (!description || !timing) {
     return res.status(400).json({ error: 'Description and timing fields are required.' });
   }
-
-  // ── Content moderation (description + timing) ─────────────────────────────
-  const fsFilter = filterContent(description, timing);
-  if (fsFilter.blocked) {
-    readDB().then(db => {
-      if (!db.flaggedMessages) db.flaggedMessages = [];
-      db.flaggedMessages.unshift(buildFlaggedLogEntry({
-        channel: 'free-signal', senderId: req.user.id, senderRole: 'trader',
-        violations: fsFilter.violations, preview: `${description} | ${timing}`,
-      }));
-      return writeDB(db);
-    }).catch(e => console.error('[FILTER] Failed to log flagged free-signal:', e));
-
-    return res.status(422).json({
-      error: fsFilter.message,
-      violations: fsFilter.violations,
-    });
-  }
-  // ─────────────────────────────────────────────────────────────────────────
 
   const db = await readDB();
   const trader = db.traders.find(t => t.id === req.user.id);
@@ -1201,14 +1248,7 @@ app.get('/api/admin/payments', verifyAdminToken, async (req, res) => {
   res.json(db.payments || []);
 });
 
-// 16. Admin Endpoint: Content filter violation log
-app.get('/api/admin/flagged-messages', verifyAdminToken, async (req, res) => {
-  const db = await readDB();
-  const items = (db.flaggedMessages || []).slice(0, 500); // cap at 500 most recent
-  res.json(items);
-});
-
-// 17. Admin Endpoint: List all traders (omitting passwords)
+// 16. Admin Endpoint: List all traders (omitting passwords)
 app.get('/api/admin/traders', verifyAdminToken, async (req, res) => {
   const db = await readDB();
   const safeTraders = db.traders.map(({ password, passwordHash, salt, ...rest }) => rest);

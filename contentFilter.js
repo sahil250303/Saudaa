@@ -17,7 +17,7 @@
  *   • Dash separators:        "98765-43210"
  *   • Mixed separators:       "+91 98765-432 10"
  *   • Email obfuscation:      "user[at]domain[dot]com", "user (at) domain dot com"
- *   • URL obfuscation:        "hxxps://...", "h t t p s ://", "telegram dot gg"
+ *   • URL obfuscation:        "hxxps://...", "h t t p s ://", "trading group dot gg"
  *   • Unicode lookalikes:     replaced during normalization
  *
  * Design note — false-positive safety for trading context:
@@ -111,7 +111,7 @@ const URL_PATTERNS = [
   /https?:\/\/[^\s"'<>]{4,}/gi,
   // www. prefix
   /\bwww\.[a-zA-Z0-9\-]{2,}\.[a-zA-Z]{2,}[^\s"'<>]*/gi,
-  // Bare domain.tld — catches t.me/xxx, telegram.gg, wa.me/91xxx, discord.gg
+  // Bare domain.tld — catches t.me/xxx, wa.me/91xxx, discord.gg and similar group chat links
   /\b(?:[a-zA-Z0-9\-]{2,}\.)+(?:com|net|org|in|io|co|app|xyz|info|biz|me|gg|to|cc|us|uk|ca|au|de|fr|jp|ly|link|site|online|store|shop|live|tv|club|chat|group|id|ai|dev)\b(?:\/[^\s"'<>]*)?/gi,
 ];
 
@@ -233,4 +233,4 @@ function buildFlaggedLogEntry({ channel, senderId, senderRole, violations, previ
   };
 }
 
-module.exports = { filterContent, buildFlaggedLogEntry };
+module.exports = { filterContent, bui
