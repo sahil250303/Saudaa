@@ -870,26 +870,27 @@ app.post('/api/subscribe', subscribeLimiter, async (req, res) => {
 
   await writeDB(db);
 
-  // ── Fire-and-forget welcome email ─────────────────────────────────────────
-  // Runs async after the HTTP response is sent so payment confirmation is
-  // never delayed or blocked by email delivery latency / failures.
-  setImmediate(() => {
-    sendSubscriptionConfirmation({
-      email:           client.email,
-      subId:           client.subId,
-      traderId:        traderId,
-      traderName:      trader.name,
-      traderStrategy:  trader.strategy,
-      traderRoi:       trader.roi,
-      plan:            plan,
-      planName:        planDetails ? planDetails.name : plan,
-      planFeatures:    planDetails ? planDetails.features : [],
-      amount:          price,
-      paymentId:       newPayment.id,
-      timestamp:       newPayment.timestamp,
-      expiresAt:       client.subscription.expiresAt,
-      isNewAccount:    !db.clients.find(c => c.email.toLowerCase() === email.toLowerCase() && c.id !== client.id),
-    }).catch(err => console.error('[EMAIL] Uncaught error in sendSubscriptionConfirmation:', err));
+  // ── Post-subscription welcome email ───────────────────────────────────────
+  // Start the email send BEFORE calling res.json() so the Promise is already
+  // in flight. We then respond to the user immediately (res.json does not
+  // await), and the route's async function continues awaiting the email
+  // promise — this keeps the Vercel Lambda alive long enough for the SMTP
+  // call to complete without blocking the HTTP response.
+  const emailPromise = sendSubscriptionConfirmation({
+    email:           client.email,
+    subId:           client.subId,
+    traderId:        traderId,
+    traderName:      trader.name,
+    traderStrategy:  trader.strategy,
+    traderRoi:       trader.roi,
+    plan:            plan,
+    planName:        planDetails ? planDetails.name : plan,
+    planFeatures:    planDetails ? planDetails.features : [],
+    amount:          price,
+    paymentId:       newPayment.id,
+    timestamp:       newPayment.timestamp,
+    expiresAt:       client.subscription.expiresAt,
+    isNewAccount:    !db.clients.find(c => c.email.toLowerCase() === email.toLowerCase() && c.id !== client.id),
   });
   // ─────────────────────────────────────────────────────────────────────────
 
@@ -900,6 +901,12 @@ app.post('/api/subscribe', subscribeLimiter, async (req, res) => {
     traderName: trader.name,
     plan: plan
   });
+
+  // Await after res.json — user already has their response. This keeps the
+  // Vercel Lambda alive until the SMTP call resolves (or errors out).
+  try { await emailPromise; } catch (err) {
+    console.error('[EMAIL] Uncaught error in sendSubscriptionConfirmation:', err);
+  }
 });
 
 // 5. Get Trading Suggestions
@@ -1390,20 +1397,4 @@ app.get(/.*/, (req, res) => {
     return res.sendFile(path.join(__dirname, 'public', 'index.html'));
   }
   // Static assets (css, js, png, etc.) are handled by express.static above — this is a 404
-  res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
-});
-
-// Start Server
-if (!process.env.VERCEL) {
-  ensureDbInitialized().then(() => {
-    app.listen(PORT, () => {
-      console.log(`Saudaa Server is running on http://localhost:${PORT}`);
-    });
-  }).catch(error => {
-    console.error('Failed to initialize database and start server:', error);
-    process.exit(1);
-  });
-}
-
-module.exports = app;
-
+  res.status(404).sendFile(path.join(__dirname, 'public', '404.html'
