@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { sendSubscriptionConfirmation } = require('./email.js');
+const { filterContent, buildFlaggedLogEntry } = require('./contentFilter.js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -957,6 +958,27 @@ app.post('/api/suggestions', verifyUserToken, async (req, res) => {
     return res.status(400).json({ error: 'All signal details are required.' });
   }
 
+  // ── Content moderation (free-text notes field only) ───────────────────────
+  if (notes) {
+    const sigFilter = filterContent(notes);
+    if (sigFilter.blocked) {
+      readDB().then(db => {
+        if (!db.flaggedMessages) db.flaggedMessages = [];
+        db.flaggedMessages.unshift(buildFlaggedLogEntry({
+          channel: 'signal', senderId: traderId, senderRole: 'trader',
+          violations: sigFilter.violations, preview: notes,
+        }));
+        return writeDB(db);
+      }).catch(e => console.error('[FILTER] Failed to log flagged signal notes:', e));
+
+      return res.status(422).json({
+        error: sigFilter.message,
+        violations: sigFilter.violations,
+      });
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
   const db = await readDB();
   const trader = db.traders.find(t => t.id === traderId);
   if (!trader) {
@@ -996,6 +1018,27 @@ app.put('/api/suggestions/:id', verifyUserToken, async (req, res) => {
   if (!traderId || !asset || !type || !entry || !target || !stopLoss || !risk) {
     return res.status(400).json({ error: 'All signal details are required.' });
   }
+
+  // ── Content moderation (notes field) ─────────────────────────────────────
+  if (notes) {
+    const editFilter = filterContent(notes);
+    if (editFilter.blocked) {
+      readDB().then(db => {
+        if (!db.flaggedMessages) db.flaggedMessages = [];
+        db.flaggedMessages.unshift(buildFlaggedLogEntry({
+          channel: 'signal-edit', senderId: traderId, senderRole: 'trader',
+          violations: editFilter.violations, preview: notes,
+        }));
+        return writeDB(db);
+      }).catch(e => console.error('[FILTER] Failed to log flagged signal edit:', e));
+
+      return res.status(422).json({
+        error: editFilter.message,
+        violations: editFilter.violations,
+      });
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   const db = await readDB();
   const suggestion = db.suggestions.find(s => s.id === id && s.traderId === traderId);
@@ -1091,6 +1134,26 @@ app.post('/api/chat/send', verifyUserToken, async (req, res) => {
     return res.status(400).json({ error: 'Message content exceeds the 2000 character limit.' });
   }
 
+  // ── Content moderation ────────────────────────────────────────────────────
+  const chatFilter = filterContent(content);
+  if (chatFilter.blocked) {
+    // Log the attempt for admin review (fire-and-forget, non-blocking)
+    readDB().then(db => {
+      if (!db.flaggedMessages) db.flaggedMessages = [];
+      db.flaggedMessages.unshift(buildFlaggedLogEntry({
+        channel: 'chat', senderId, senderRole: req.user.role,
+        violations: chatFilter.violations, preview: content,
+      }));
+      return writeDB(db);
+    }).catch(e => console.error('[FILTER] Failed to log flagged chat message:', e));
+
+    return res.status(422).json({
+      error: chatFilter.message,
+      violations: chatFilter.violations,
+    });
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
   const db = await readDB();
   const newMsg = {
     id: 'msg_' + Math.random().toString(36).substr(2, 9),
@@ -1152,6 +1215,25 @@ app.post('/api/free-signals', verifyUserToken, async (req, res) => {
   if (!description || !timing) {
     return res.status(400).json({ error: 'Description and timing fields are required.' });
   }
+
+  // ── Content moderation (description + timing) ─────────────────────────────
+  const fsFilter = filterContent(description, timing);
+  if (fsFilter.blocked) {
+    readDB().then(db => {
+      if (!db.flaggedMessages) db.flaggedMessages = [];
+      db.flaggedMessages.unshift(buildFlaggedLogEntry({
+        channel: 'free-signal', senderId: req.user.id, senderRole: 'trader',
+        violations: fsFilter.violations, preview: `${description} | ${timing}`,
+      }));
+      return writeDB(db);
+    }).catch(e => console.error('[FILTER] Failed to log flagged free-signal:', e));
+
+    return res.status(422).json({
+      error: fsFilter.message,
+      violations: fsFilter.violations,
+    });
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   const db = await readDB();
   const trader = db.traders.find(t => t.id === req.user.id);
@@ -1279,122 +1361,16 @@ app.get('/api/admin/payments', verifyAdminToken, async (req, res) => {
   res.json(db.payments || []);
 });
 
-// 16. Admin Endpoint: List all traders (omitting passwords)
+// 16. Admin Endpoint: Content filter violation log
+app.get('/api/admin/flagged-messages', verifyAdminToken, async (req, res) => {
+  const db = await readDB();
+  const items = (db.flaggedMessages || []).slice(0, 500); // cap at 500 most recent
+  res.json(items);
+});
+
+// 17. Admin Endpoint: List all traders (omitting passwords)
 app.get('/api/admin/traders', verifyAdminToken, async (req, res) => {
   const db = await readDB();
   const safeTraders = db.traders.map(({ password, passwordHash, salt, ...rest }) => rest);
   res.json(safeTraders);
-});
-
-// 17. Admin Endpoint: Create or edit trader account details
-app.post('/api/admin/traders/save', verifyAdminToken, async (req, res) => {
-  const { id, name, strategy, roi, winRate, description, avatar, password } = req.body;
-  if (!id || !name || !strategy || roi === undefined || winRate === undefined) {
-    return res.status(400).json({ error: 'Required fields missing: id, name, strategy, roi, winRate.' });
-  }
-
-  const db = await readDB();
-  let trader = db.traders.find(t => t.id === id);
-
-  if (trader) {
-    // Edit existing trader
-    trader.name = name;
-    trader.strategy = strategy;
-    trader.roi = parseFloat(roi);
-    trader.winRate = parseFloat(winRate);
-    trader.description = description || '';
-    if (avatar) trader.avatar = avatar;
-    if (password) {
-      const salt = crypto.randomBytes(16).toString('hex');
-      trader.passwordHash = hashPassword(password, salt);
-      trader.salt = salt;
-      delete trader.password;
-    }
-  } else {
-    // Create new trader with secure scrypt password hash
-    const salt = crypto.randomBytes(16).toString('hex');
-    const passwordHash = hashPassword(password || 'password123', salt);
-    trader = {
-      id,
-      name,
-      strategy,
-      roi: parseFloat(roi),
-      winRate: parseFloat(winRate),
-      subscribers: 0,
-      rank: db.traders.length + 1,
-      passwordHash,
-      salt,
-      avatar: avatar || 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4ldlC0l7f1tSED1_SV3GL0xoo88STemly3M1OWj7KXnBSGx3FOy1ibN3I8CAdbvXcMr0EhcaC30eQD1c8cszwgm5jOfDYFqjyQKdcNYboXZIVx3qHAdskzLrWDKLGrJA1IFL0TBlWZesDmebt2VBE2RP3Nbx6OpXX8LS5KhzLbYrnOzl32yFmpH62dyctK8cduk9P6mecSjqgi3IhboN6Io2SIBa4CQzaPPFR6QL_NHZYyhXKY0fp53-OBgznwXPD-cnk9NqC3sw',
-      description: description || '',
-      status: 'active'
-    };
-    db.traders.push(trader);
-  }
-
-  // Sort and re-rank traders based on ROI descending
-  db.traders.sort((a, b) => b.roi - a.roi);
-  db.traders.forEach((t, i) => t.rank = i + 1);
-
-  await writeDB(db);
-  res.json({ success: true, trader: { id: trader.id, name: trader.name } });
-});
-
-// 18. Admin Endpoint: Delete or toggle active status of a trader
-app.post('/api/admin/traders/toggle-status', verifyAdminToken, async (req, res) => {
-  const { traderId, action } = req.body;
-  if (!traderId) {
-    return res.status(400).json({ error: 'traderId is required.' });
-  }
-
-  const db = await readDB();
-  const index = db.traders.findIndex(t => t.id === traderId);
-  if (index === -1) {
-    return res.status(404).json({ error: 'Trader account not found.' });
-  }
-
-  if (action === 'delete') {
-    db.traders.splice(index, 1);
-    // Sort and re-rank
-    db.traders.sort((a, b) => b.roi - a.roi);
-    db.traders.forEach((t, i) => t.rank = i + 1);
-
-    // Clean up suggestions and free signals of the deleted trader in memory to avoid foreign key violations on writeDB upsert
-    db.suggestions = (db.suggestions || []).filter(s => s.traderId !== traderId);
-    if (db.freeSignals) {
-      db.freeSignals = db.freeSignals.filter(fs => fs.traderId !== traderId);
-    }
-
-    await writeDB(db);
-    return res.json({ success: true, deleted: true });
-  } else {
-    const trader = db.traders[index];
-    trader.status = (trader.status === 'suspended') ? 'active' : 'suspended';
-    await writeDB(db);
-    return res.json({ success: true, status: trader.status });
-  }
-});
-
-// 19. Admin Endpoint: Update subscription plans pricing and features list
-app.post('/api/admin/plans/update', verifyAdminToken, async (req, res) => {
-  const { plans } = req.body;
-  if (!plans || !Array.isArray(plans)) {
-    return res.status(400).json({ error: 'Plans array is required.' });
-  }
-
-  const db = await readDB();
-  db.plans = plans;
-  await writeDB(db);
-
-  res.json({ success: true, plans: db.plans });
-});
-
-// SPA router: serve index.html for known page routes, 404.html for everything else
-app.get(/.*/, (req, res) => {
-  const knownRoutes = ['/', '/dashboard.html', '/admin.html',
-    '/legal/privacy.html', '/legal/terms.html', '/legal/risk.html', '/legal/refund.html'];
-  const reqPath = req.path.replace(/\/$/, '') || '/';
-  if (knownRoutes.includes(reqPath)) {
-    return res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  }
-  // Static assets (css, js, png, etc.) are handled by express.static above — this is a 404
-  res.status(404).sendFile(path.join(__dirname, 'public', '404.html'
+}
