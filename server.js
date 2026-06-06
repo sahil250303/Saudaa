@@ -257,171 +257,11 @@ async function initAdminDB() {
   // JWT_SECRET is always sourced from the SESSION_SECRET env var (set above).
   // We do NOT fall back to db.admin.jwtSecret — that value may be committed to version control.
 
-  // Seed traders if the DB has fewer than the expected full roster (11).
-  // This handles a partial-seed state (e.g. Supabase was populated with only 1 trader).
-  const EXPECTED_TRADER_COUNT = 11;
-  if (!db.traders || db.traders.length < EXPECTED_TRADER_COUNT) {
-    const salt = crypto.randomBytes(16).toString('hex');
-    const defaultPassHash = crypto.scryptSync('password123', salt, 64).toString('hex');
-
-    db.traders = [
-      {
-        id: "alex_pro",
-        name: "Alex Pro",
-        strategy: "Algorithmic & Swing",
-        winRate: 82.9,
-        roi: 68.5,
-        subscribers: 0,
-        rank: 1,
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
-        description: "Professional quant trader specializing in index swing trading and high-frequency algorithms.",
-        status: "active",
-        passwordHash: defaultPassHash,
-        salt: salt
-      },
-      {
-        id: "neon_ghost",
-        name: "Neon Ghost",
-        strategy: "Scalping & Options",
-        winRate: 78.4,
-        roi: 59.2,
-        subscribers: 0,
-        rank: 2,
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
-        description: "Derivative analyst focusing on Nifty/BankNifty weekly option writing and theta decay strategies.",
-        status: "active",
-        passwordHash: defaultPassHash,
-        salt: salt
-      },
-      {
-        id: "macro_bull",
-        name: "Macro Bull",
-        strategy: "Global Macro",
-        winRate: 74.1,
-        roi: 52.4,
-        subscribers: 0,
-        rank: 3,
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
-        description: "Macro economist tracking interest rates, inflation, and global liquidity trends for gold and bond yields.",
-        status: "active",
-        passwordHash: defaultPassHash,
-        salt: salt
-      },
-      {
-        id: "alpha_scalp",
-        name: "Alpha Scalp",
-        strategy: "Intraday Momentum",
-        winRate: 76.5,
-        roi: 48.9,
-        subscribers: 0,
-        rank: 4,
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200",
-        description: "Intraday momentum trader focusing on breakout stocks and order book flow analysis.",
-        status: "active",
-        passwordHash: defaultPassHash,
-        salt: salt
-      },
-      {
-        id: "delta_wanderer",
-        name: "Delta Wanderer",
-        strategy: "Arbitrage & Hedging",
-        winRate: 85.0,
-        roi: 42.1,
-        subscribers: 0,
-        rank: 5,
-        avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
-        description: "Delta-neutral option strategist and cross-exchange crypto arbitrage specialist.",
-        status: "active",
-        passwordHash: defaultPassHash,
-        salt: salt
-      },
-      {
-        id: "satoshi_trader",
-        name: "Satoshi Trader",
-        strategy: "Crypto & DeFi",
-        winRate: 69.2,
-        roi: 45.8,
-        subscribers: 0,
-        rank: 6,
-        avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200",
-        description: "Blockchain analyst trading top-cap assets and liquid staking tokens.",
-        status: "active",
-        passwordHash: defaultPassHash,
-        salt: salt
-      },
-      {
-        id: "trend_rider",
-        name: "Trend Rider",
-        strategy: "Momentum Trend Follower",
-        winRate: 68.4,
-        roi: 39.5,
-        subscribers: 0,
-        rank: 7,
-        avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=200",
-        description: "Medium-term trend follower utilizing moving averages and MACD breakout indicators.",
-        status: "active",
-        passwordHash: defaultPassHash,
-        salt: salt
-      },
-      {
-        id: "commodities_pro",
-        name: "Commodities Pro",
-        strategy: "Commodity Cycles",
-        winRate: 72.3,
-        roi: 36.8,
-        subscribers: 0,
-        rank: 8,
-        avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200",
-        description: "Physical commodity trader predicting cycles in crude oil, natural gas, and copper.",
-        status: "active",
-        passwordHash: defaultPassHash,
-        salt: salt
-      },
-      {
-        id: "value_investor",
-        name: "Value Investor",
-        strategy: "Fundamental Value",
-        winRate: 70.5,
-        roi: 31.2,
-        subscribers: 0,
-        rank: 9,
-        avatar: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
-        description: "Discount cash flow modeling expert investing in undervalued mid-cap growth stocks.",
-        status: "active",
-        passwordHash: defaultPassHash,
-        salt: salt
-      },
-      {
-        id: "quantum_trade",
-        name: "Quantum Trade",
-        strategy: "Statistical Arbitrage",
-        winRate: 88.5,
-        roi: 29.8,
-        subscribers: 0,
-        rank: 10,
-        avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=200",
-        description: "Quantitative researcher utilizing mean reversion and statistical arbitrage on pairs trading.",
-        status: "active",
-        passwordHash: defaultPassHash,
-        salt: salt
-      },
-      {
-        id: "theta_gang",
-        name: "Theta Gang",
-        strategy: "Premium Selling",
-        winRate: 81.2,
-        roi: 28.5,
-        subscribers: 0,
-        rank: 11,
-        avatar: "https://images.unsplash.com/photo-1489980508314-941910ded1f4?auto=format&fit=crop&q=80&w=200",
-        description: "Structured options income strategies including iron condors, credit spreads, and covered calls.",
-        status: "active",
-        passwordHash: defaultPassHash,
-        salt: salt
-      }
-    ];
+  // NOTE: Fake trader auto-seeding has been intentionally removed.
+  // Real traders must be added via the admin panel (/admin → Traders → Add Trader).
+  if (!db.traders) {
+    db.traders = [];
     updated = true;
-    console.log('[INIT] Seeding 11 professional traders...');
   }
 
   if (!db.plans || db.plans.length === 0) {
@@ -1373,4 +1213,134 @@ app.get('/api/admin/traders', verifyAdminToken, async (req, res) => {
   const db = await readDB();
   const safeTraders = db.traders.map(({ password, passwordHash, salt, ...rest }) => rest);
   res.json(safeTraders);
+});
+
+// 17. Admin Endpoint: Create or edit trader account details
+app.post('/api/admin/traders/save', verifyAdminToken, async (req, res) => {
+  const { id, name, strategy, roi, winRate, description, avatar, password } = req.body;
+  if (!id || !name || !strategy || roi === undefined || winRate === undefined) {
+    return res.status(400).json({ error: 'Required fields missing: id, name, strategy, roi, winRate.' });
+  }
+
+  const db = await readDB();
+  let trader = db.traders.find(t => t.id === id);
+
+  if (trader) {
+    // Edit existing trader
+    trader.name = name;
+    trader.strategy = strategy;
+    trader.roi = parseFloat(roi);
+    trader.winRate = parseFloat(winRate);
+    trader.description = description || '';
+    if (avatar) trader.avatar = avatar;
+    if (password) {
+      const salt = crypto.randomBytes(16).toString('hex');
+      trader.passwordHash = hashPassword(password, salt);
+      trader.salt = salt;
+      delete trader.password;
+    }
+  } else {
+    // Create new trader with secure scrypt password hash
+    const salt = crypto.randomBytes(16).toString('hex');
+    const passwordHash = hashPassword(password || 'password123', salt);
+    trader = {
+      id,
+      name,
+      strategy,
+      roi: parseFloat(roi),
+      winRate: parseFloat(winRate),
+      subscribers: 0,
+      rank: db.traders.length + 1,
+      passwordHash,
+      salt,
+      avatar: avatar || 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4ldlC0l7f1tSED1_SV3GL0xoo88STemly3M1OWj7KXnBSGx3FOy1ibN3I8CAdbvXcMr0EhcaC30eQD1c8cszwgm5jOfDYFqjyQKdcNYboXZIVx3qHAdskzLrWDKLGrJA1IFL0TBlWZesDmebt2VBE2RP3Nbx6OpXX8LS5KhzLbYrnOzl32yFmpH62dyctK8cduk9P6mecSjqgi3IhboN6Io2SIBa4CQzaPPFR6QL_NHZYyhXKY0fp53-OBgznwXPD-cnk9NqC3sw',
+      description: description || '',
+      status: 'active'
+    };
+    db.traders.push(trader);
+  }
+
+  // Sort and re-rank traders based on ROI descending
+  db.traders.sort((a, b) => b.roi - a.roi);
+  db.traders.forEach((t, i) => t.rank = i + 1);
+
+  await writeDB(db);
+  res.json({ success: true, trader: { id: trader.id, name: trader.name } });
+});
+
+// 18. Admin Endpoint: Delete or toggle active status of a trader
+app.post('/api/admin/traders/toggle-status', verifyAdminToken, async (req, res) => {
+  const { traderId, action } = req.body;
+  if (!traderId) {
+    return res.status(400).json({ error: 'traderId is required.' });
+  }
+
+  const db = await readDB();
+  const index = db.traders.findIndex(t => t.id === traderId);
+  if (index === -1) {
+    return res.status(404).json({ error: 'Trader account not found.' });
+  }
+
+  if (action === 'delete') {
+    db.traders.splice(index, 1);
+    // Sort and re-rank
+    db.traders.sort((a, b) => b.roi - a.roi);
+    db.traders.forEach((t, i) => t.rank = i + 1);
+
+    // Clean up suggestions and free signals of the deleted trader in memory to avoid foreign key violations on writeDB upsert
+    db.suggestions = (db.suggestions || []).filter(s => s.traderId !== traderId);
+    if (db.freeSignals) {
+      db.freeSignals = db.freeSignals.filter(fs => fs.traderId !== traderId);
+    }
+
+    await writeDB(db);
+    return res.json({ success: true, deleted: true });
+  } else {
+    const trader = db.traders[index];
+    trader.status = (trader.status === 'suspended') ? 'active' : 'suspended';
+    await writeDB(db);
+    return res.json({ success: true, status: trader.status });
+  }
+});
+
+// 19. Admin Endpoint: Update subscription plans pricing and features list
+app.post('/api/admin/plans/update', verifyAdminToken, async (req, res) => {
+  const { plans } = req.body;
+  if (!plans || !Array.isArray(plans)) {
+    return res.status(400).json({ error: 'Plans array is required.' });
+  }
+
+  const db = await readDB();
+  db.plans = plans;
+  await writeDB(db);
+
+  res.json({ success: true, plans: db.plans });
+});
+
+// SPA router: serve index.html for known page routes, 404.html for everything else
+app.get(/.*/, (req, res) => {
+  const knownRoutes = ['/', '/dashboard.html', '/admin.html',
+    '/legal/privacy.html', '/legal/terms.html', '/legal/risk.html', '/legal/refund.html'];
+  const reqPath = req.path.replace(/\/$/, '') || '/';
+  if (knownRoutes.includes(reqPath)) {
+    return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  }
+  // Static assets (css, js, png, etc.) are handled by express.static above — this is a 404
+  res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+});
+
+// Start Server
+if (!process.env.VERCEL) {
+  ensureDbInitialized().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Saudaa Server is running on http://localhost:${PORT}`);
+    });
+  }).catch(error => {
+    console.error('Failed to initialize database and start server:', error);
+    process.exit(1);
+  });
 }
+
+module.exports = app;
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
