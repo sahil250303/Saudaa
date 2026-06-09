@@ -1029,6 +1029,28 @@ button:active:not(:disabled), a.bg-gradient-to-r:active {
   }
 }
 
+/* BSE Ticker Screen Components override for precompiled Tailwind contrast issues */
+.bse-ticker-screen .ticker-title {
+  color: #e2e8f0 !important;
+  background-color: #12161a !important;
+  border: 1px solid #232930 !important;
+}
+
+.bse-ticker-screen #market-sim-badge {
+  color: #ff9f0a !important;
+  background-color: #1a1308 !important;
+  border: 1px solid #402d0f !important;
+}
+
+.bse-ticker-screen .fade-mask-left {
+  background: linear-gradient(to right, #0b0c0e, transparent) !important;
+}
+
+.bse-ticker-screen .fade-mask-right {
+  background: linear-gradient(to left, #0b0c0e, transparent) !important;
+}
+
+
 
 
 

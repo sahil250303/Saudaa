@@ -357,8 +357,8 @@
         </span>
         <div class="flex-1 overflow-hidden py-1 relative h-full flex items-center">
           <!-- Fade masks to blur/fade out ticker items at the edges -->
-          <div class="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-[#0b0c0e] to-transparent z-20 pointer-events-none"></div>
-          <div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#0b0c0e] to-transparent z-20 pointer-events-none"></div>
+          <div class="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-[#0b0c0e] to-transparent fade-mask-left z-20 pointer-events-none"></div>
+          <div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#0b0c0e] to-transparent fade-mask-right z-20 pointer-events-none"></div>
           <div id="price-ticker" class="flex gap-8 whitespace-nowrap animate-ticker py-0.5 z-10">
             <!-- Populated by JavaScript -->
             <!-- Set 1 -->
