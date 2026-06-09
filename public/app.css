@@ -101,7 +101,9 @@ body {
 /* BSE LED Ticker Screen Wrapper */
 .bse-ticker-screen {
   position: relative;
+  background-color: #0b0c0e !important;
   box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.95);
+  border-bottom: 1px solid #1a1d20 !important;
 }
 
 /* LED Dotted Panel Overlay Mask (Dot-matrix Pixel Texture) */
@@ -112,7 +114,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: radial-gradient(rgba(0, 0, 0, 0.6) 22%, transparent 26%);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.65) 20%, transparent 24%);
   background-size: 3.5px 3.5px;
   pointer-events: none;
   z-index: 15;
@@ -120,13 +122,13 @@ body {
 
 /* Vibrant Neon LED Glow Colors */
 .text-led-green {
-  color: #00e676;
-  text-shadow: 0 0 5px rgba(0, 230, 118, 0.45);
+  color: #00e676 !important;
+  text-shadow: 0 0 4px rgba(0, 230, 118, 0.45);
 }
 
 .text-led-red {
-  color: #ff453a;
-  text-shadow: 0 0 5px rgba(255, 69, 58, 0.5);
+  color: #ff453a !important;
+  text-shadow: 0 0 4px rgba(255, 69, 58, 0.5);
 }
 
 /* Ambient Shadows */
