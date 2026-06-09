@@ -118,6 +118,8 @@
 - [x] Implement explicit resource deletion controllers in db.js and backend endpoints
 - [x] Redesign live market pricing strip as a BSE LED facade ticker tape with custom pixel grid texture
 - [x] Fix visibility and contrast of "Live Market" ticker title badge, simulated badge, and left/right fade masks on the ticker strip
+- [x] Enhance subscription card boxes with minimalist brand SVGs, high-performance card lift and checkmark scale transitions, and accessibility reduced-motion rules
+- [x] Fix duplicate '/mo /mo' pricing card suffix bug in app.js
 
 ## Final Notes
 - The application is running at `http://localhost:3000`.

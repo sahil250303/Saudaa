@@ -37,7 +37,7 @@ async function fetchPlans() {
     plans.forEach(plan => {
       const priceEl = document.getElementById(`price-${plan.id}`);
       if (priceEl) {
-        priceEl.innerHTML = `₹${plan.price}<span class="text-xs font-normal text-outline">/mo</span>`;
+        priceEl.innerHTML = `₹${plan.price}`;
       }
     });
 

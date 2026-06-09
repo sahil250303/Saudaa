@@ -1050,6 +1050,70 @@ button:active:not(:disabled), a.bg-gradient-to-r:active {
   background: linear-gradient(to left, #0b0c0e, transparent) !important;
 }
 
+/* ── Subscription Cards Enhancements ──────────────────────────────────────── */
+.pricing-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.pricing-card:hover {
+  transform: translateY(-8px) scale(1.01);
+}
+
+/* Checkmark spring animation on card hover */
+.pricing-card .material-symbols-outlined {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease, filter 0.3s ease;
+}
+
+.pricing-card:hover .material-symbols-outlined.text-primary {
+  transform: scale(1.25);
+  color: #42682b !important;
+  filter: drop-shadow(0 0 3px rgba(66, 104, 43, 0.25));
+}
+
+/* Card popular ambient glow */
+.pricing-card-popular:hover {
+  box-shadow: 0 20px 40px -15px rgba(66, 104, 43, 0.18) !important;
+}
+
+/* Button micro-animations */
+.pricing-card button {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.pricing-card button:hover {
+  transform: scale(1.03);
+}
+
+.pricing-card button:active {
+  transform: scale(0.97);
+}
+
+/* Card SVG graphics subtle interactive rotation/scale */
+.pricing-card svg {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke-width 0.4s ease;
+}
+
+.pricing-card:hover svg {
+  transform: scale(1.08) rotate(2deg);
+}
+
+/* Accessible Reduced Motion Settings */
+@media (prefers-reduced-motion: reduce) {
+  .pricing-card:hover {
+    transform: none !important;
+  }
+  .pricing-card button:hover {
+    transform: none !important;
+  }
+  .pricing-card:hover svg {
+    transform: none !important;
+  }
+  .pricing-card:hover .material-symbols-outlined.text-primary {
+    transform: none !important;
+  }
+}
+
+
 
 
 
