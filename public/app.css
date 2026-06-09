@@ -1089,12 +1089,21 @@ button:active:not(:disabled), a.bg-gradient-to-r:active {
 }
 
 /* Card SVG graphics subtle interactive rotation/scale */
-.pricing-card svg {
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke-width 0.4s ease;
+.pricing-card-icon-wrapper {
+  transition: background-color 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 
-.pricing-card:hover svg {
-  transform: scale(1.08) rotate(2deg);
+.pricing-card:hover .pricing-card-icon-wrapper {
+  background-color: rgba(66, 104, 43, 0.1) !important;
+  transform: scale(1.08) translateY(-2px);
+}
+
+.pricing-card-icon-wrapper svg {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.pricing-card:hover .pricing-card-icon-wrapper svg {
+  transform: rotate(6deg) scale(1.05);
 }
 
 /* Accessible Reduced Motion Settings */
@@ -1105,7 +1114,13 @@ button:active:not(:disabled), a.bg-gradient-to-r:active {
   .pricing-card button:hover {
     transform: none !important;
   }
-  .pricing-card:hover svg {
+  .pricing-card-icon-wrapper {
+    transform: none !important;
+  }
+  .pricing-card:hover .pricing-card-icon-wrapper {
+    transform: none !important;
+  }
+  .pricing-card:hover .pricing-card-icon-wrapper svg {
     transform: none !important;
   }
   .pricing-card:hover .material-symbols-outlined.text-primary {

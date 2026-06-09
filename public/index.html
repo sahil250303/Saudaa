@@ -697,15 +697,15 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         <!-- Standard Plan -->
         <div class="pricing-card group bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-8 flex flex-col justify-between shadow-sm hover:border-primary-container transition-all relative text-left scroll-reveal">
-          <!-- Card Graphic Icon -->
-          <div class="absolute top-6 right-6 w-12 h-12 opacity-15 pointer-events-none text-primary group-hover:opacity-30 transition-opacity duration-300">
-            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 60h56" />
-              <path d="M4 60L24 40l16 12L60 16" />
-              <circle cx="60" cy="16" r="3" fill="currentColor" />
-            </svg>
-          </div>
           <div class="space-y-6">
+            <!-- Card Badge Icon -->
+            <div class="pricing-card-icon-wrapper w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3v18h18" stroke-dasharray="2 2" stroke-width="1.5" opacity="0.5" />
+                <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+                <circle cx="18.7" cy="8" r="1.5" fill="currentColor" />
+              </svg>
+            </div>
             <div>
               <h3 class="font-bold text-lg text-on-surface">Standard Plan</h3>
               <p class="text-xs text-on-surface-variant mt-1.5">For beginners starting their market journey.</p>
@@ -744,19 +744,15 @@
           <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-[9px] font-mono tracking-widest uppercase font-bold px-3 py-1 rounded-full shadow-sm z-30">
             Most Popular
           </div>
-          <!-- Card Graphic Icon -->
-          <div class="absolute top-6 right-6 w-12 h-12 opacity-20 pointer-events-none text-primary group-hover:opacity-35 transition-opacity duration-300">
-            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="8" y1="8" x2="8" y2="56" stroke-dasharray="2 2" />
-              <line x1="8" y1="56" x2="56" y2="56" stroke-dasharray="2 2" />
-              <path d="M20 44V28M20 48V44M20 28V20" />
-              <path d="M36 28V16M36 32V28M36 16V12" />
-              <path d="M52 20V8M52 24V20M52 8V4" />
-              <path d="M12 50L20 36L36 22L52 14" stroke="#8bb56f" stroke-width="2.5" />
-              <circle cx="52" cy="14" r="3" fill="#8bb56f" />
-            </svg>
-          </div>
           <div class="space-y-6">
+            <!-- Card Badge Icon -->
+            <div class="pricing-card-icon-wrapper w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3v18h18" stroke-dasharray="2 2" stroke-width="1.5" opacity="0.5" />
+                <path d="M9 17V9M15 13V5" />
+                <path d="M9 13l6-4" stroke-width="2" />
+              </svg>
+            </div>
             <div>
               <h3 class="font-bold text-lg text-on-surface">Pro Elite Plan</h3>
               <p class="text-xs text-on-surface-variant mt-1.5">Direct chat and advanced signal updates.</p>
@@ -792,23 +788,17 @@
 
         <!-- VIP Plan -->
         <div class="pricing-card group bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-8 flex flex-col justify-between shadow-sm hover:border-primary-container transition-all relative text-left scroll-reveal delay-200">
-          <!-- Card Graphic Icon -->
-          <div class="absolute top-6 right-6 w-12 h-12 opacity-15 pointer-events-none text-primary group-hover:opacity-30 transition-opacity duration-300">
-            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="32,8 56,22 56,50 32,58 8,50 8,22" />
-              <line x1="32" y1="8" x2="32" y2="58" />
-              <line x1="8" y1="22" x2="56" y2="50" />
-              <line x1="8" y1="50" x2="56" y2="22" />
-              <circle cx="32" cy="8" r="3" fill="currentColor" />
-              <circle cx="56" cy="22" r="3" fill="currentColor" />
-              <circle cx="56" cy="50" r="3" fill="currentColor" />
-              <circle cx="32" cy="58" r="3" fill="currentColor" />
-              <circle cx="8" cy="50" r="3" fill="currentColor" />
-              <circle cx="8" cy="22" r="3" fill="currentColor" />
-              <circle cx="32" cy="33" r="4" fill="currentColor" />
-            </svg>
-          </div>
           <div class="space-y-6">
+            <!-- Card Badge Icon -->
+            <div class="pricing-card-icon-wrapper w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <path d="M10 6.5h4M10 17.5h4M6.5 10v4M17.5 10v4" opacity="0.6" stroke-dasharray="1 1" />
+              </svg>
+            </div>
             <div>
               <h3 class="font-bold text-lg text-on-surface">VIP Plan</h3>
               <p class="text-xs text-on-surface-variant mt-1.5">For institutional and options traders.</p>
