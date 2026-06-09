@@ -116,6 +116,7 @@
 - [x] Remove automatic orphaned records deletion from `writeDB`
 - [x] Purge all 11 fake traders and dummy users/signals/payments from local/remote databases
 - [x] Implement explicit resource deletion controllers in db.js and backend endpoints
+- [x] Redesign live market pricing strip as a BSE LED facade ticker tape with custom pixel grid texture
 
 ## Final Notes
 - The application is running at `http://localhost:3000`.
@@ -123,6 +124,7 @@
 - Database is completely purged of all fake/dummy data (traders, clients, payments, suggestions, messages, free signals).
 - Test environment is fully isolated from Supabase remote database to prevent accidental data overrides.
 - Automated orphaned records deletion inside writeDB has been disabled to support safe live database writes.
+- Active stock ticker strip redesigned as a mobile-first, responsive dark LED facade (BSE style) with a custom dot-matrix pixel texture.
 - Active stock ticker strip pauses updates dynamically when tab is backgrounded.
 - Home page includes verified statistics strip animation pulling values directly from `/api/traders`.
 - The footer has active, styled regulatory pages compliant with SEBI and RBI guidelines.
