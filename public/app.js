@@ -267,14 +267,19 @@ function updateTickerUI() {
     const val = livePrices[ticker];
     const changePct = val.changePercent !== undefined ? val.changePercent : val.change;
     const isUp = changePct >= 0;
+    const changeVal = val.change !== undefined ? val.change : 0;
+    const ledColorClass = isUp ? 'text-led-green' : 'text-led-red';
     
     return `
-      <div class="ticker-item inline-flex items-center gap-2">
-        <span class="font-bold text-xs text-on-surface">${ticker}</span>
-        <span class="font-mono text-xs text-outline">₹${val.price.toFixed(2)}</span>
-        <span class="font-mono text-xs font-semibold ${isUp ? 'text-primary' : 'text-error'}">
-          ${isUp ? '+' : ''}${changePct.toFixed(2)}%
-        </span>
+      <div class="ticker-item flex flex-col justify-center min-w-[125px] sm:min-w-[150px] font-mono leading-none select-none px-4 py-1 border-r border-[#1c2024]/40 last:border-r-0 ${ledColorClass}">
+        <div class="flex justify-between items-center text-[11px] sm:text-[13px] font-bold tracking-wider">
+          <span class="uppercase">${ticker}</span>
+          <span>${isUp ? '+' : ''}${changePct.toFixed(2)}%</span>
+        </div>
+        <div class="flex justify-between items-center text-[10px] sm:text-[12px] font-bold tracking-wider opacity-85 mt-1">
+          <span>₹${val.price.toFixed(2)}</span>
+          <span>${isUp ? '+' : ''}${changeVal.toFixed(2)}</span>
+        </div>
       </div>
     `;
   }).join('');
