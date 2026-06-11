@@ -9,8 +9,8 @@
     "build:css": "tailwindcss -i ./src/input.css -o ./public/tailwind.css --minify",
     "build": "npm run build:css",
     "watch:css": "tailwindcss -i ./src/input.css -o ./public/tailwind.css --watch",
-    "test": "jest --forceExit",
-    "test:ci": "jest --ci --forceExit --coverage"
+    "test": "jest --runInBand --forceExit",
+    "test:ci": "jest --ci --runInBand --forceExit --coverage"
   },
   "keywords": [
     "trading",

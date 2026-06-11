@@ -1492,8 +1492,18 @@ function renderChatFeed(channelId) {
                   <span class="material-symbols-outlined text-[10px] animate-pulse">campaign</span>
                   Complimentary Alert • Valid: ${s.timing}
                 </div>
-                <p class="text-xs text-on-surface font-semibold leading-normal whitespace-pre-wrap">${s.description}</p>
-              </div>
+                 <p class="text-xs text-on-surface font-semibold leading-normal whitespace-pre-wrap">${s.description}</p>
+                 ${s.image ? `
+                   <div class="mt-2.5">
+                     <button type="button" onclick="openLightbox('${s.image}', 'Chart Analysis by ${s.traderName}')" class="group relative flex items-center gap-1.5 bg-surface-container-highest/60 hover:bg-primary/10 border border-outline-variant/30 hover:border-primary/30 p-1.5 rounded-lg transition-all text-[10px] font-bold text-on-surface-variant hover:text-primary animate-fade">
+                       <img src="${s.image}" class="w-10 h-10 object-cover rounded border border-outline-variant/40" />
+                       <span class="flex items-center gap-1">
+                         <span class="material-symbols-outlined text-[14px]">zoom_in</span> View Technical Chart
+                       </span>
+                     </button>
+                   </div>
+                 ` : ''}
+               </div>
               
               <div onclick="openCheckout('${s.traderId}', 'pro')" class="locked cursor-pointer mt-4 p-4 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high transition-colors flex items-start gap-3">
                 <span class="material-symbols-outlined locked-i text-primary">lock</span>
@@ -1882,3 +1892,43 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('cookie-accept').addEventListener('click', () => dismiss('accepted'));
   document.getElementById('cookie-reject').addEventListener('click', () => dismiss('rejected'));
 })();
+
+// ── Lightbox Zoom overlay utilities ──────────────────────────────────────────
+window.openLightbox = function(src, caption = 'Chart Analysis') {
+  const lightbox = document.getElementById('image-lightbox');
+  const img = document.getElementById('lightbox-img');
+  const cap = document.getElementById('lightbox-caption');
+  
+  if (!lightbox || !img) return;
+  
+  img.src = src;
+  if (cap) cap.textContent = caption;
+  
+  lightbox.classList.remove('hidden');
+  setTimeout(() => {
+    lightbox.classList.remove('opacity-0');
+    img.classList.remove('scale-95');
+  }, 10);
+};
+
+window.closeLightbox = function() {
+  const lightbox = document.getElementById('image-lightbox');
+  const img = document.getElementById('lightbox-img');
+  
+  if (!lightbox || !img) return;
+  
+  lightbox.classList.add('opacity-0');
+  img.classList.add('scale-95');
+  
+  setTimeout(() => {
+    lightbox.classList.add('hidden');
+  }, 300);
+};
+
+// Global escape listener for lightbox
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeLightbox();
+  }
+});
+

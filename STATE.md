@@ -1,6 +1,9 @@
 # GSD State Persistence - Saudaa
 
 ## Current Status
+- **Repositioned the homepage stats strip to a dedicated high-contrast section directly after the hero features section, styled with a soft cream background, deep green stats text, and elegant hover micro-animations.**
+- **Enhanced hero section visibility and legibility by wrapping the title, subtitle, and action buttons in a high-contrast cream-colored glassmorphic container with backdrop-blur-md, matching the site's Organic Minimalist Light design.**
+- **Completely cleaned up the hero section of the landing page by removing all leftover/broken mock terminal widget elements, restoring proper HTML layout and visual alignment.**
 - **Enhanced website visual appeal and interactivity by implementing subtle, modern, and high-performance transitions and scroll reveal micro-animations across index.html, app.css, and app.js.**
 - **Designed and integrated a smooth grid height-interpolating transition for the FAQ accordion, a springy scale-up entrance animation for the community lounge floating support widget, and an idle pulse glow animation on the floating trigger action button.**
 - **Implemented staggered fade-in animations using intersection observers for card grids in How It Works, Why Choose Saudaa, and Pricing sections, alongside staggered row entry fade-ins for the Leaderboard and Compare Traders selection screens.**
@@ -120,6 +123,9 @@
 - [x] Fix visibility and contrast of "Live Market" ticker title badge, simulated badge, and left/right fade masks on the ticker strip
 - [x] Enhance subscription card boxes with top-aligned minimalist brand SVGs inside rounded icon badge containers, high-performance card lift and checkmark scale transitions, and accessibility reduced-motion rules
 - [x] Fix duplicate '/mo /mo' pricing card suffix bug in app.js
+- [x] Clean up leftover mockup widget HTML elements from the homepage hero section
+- [x] Enhance hero section text visibility with a premium glassmorphic backdrop and backdrop-blur container
+- [x] Reposition and optimize the homepage stats strip to a dedicated high-contrast section after the hero section
 
 ## Final Notes
 - The application is running at `http://localhost:3000`.

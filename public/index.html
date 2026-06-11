@@ -191,13 +191,14 @@
     <div class="absolute -left-20 top-20 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute -right-20 bottom-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl pointer-events-none"></div>
 
-    <!-- Dynamic Market Candles Background Canvas -->
-    <canvas id="hero-candles-canvas" role="presentation" aria-hidden="true"
-      class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-[0.35]"></canvas>
+    <!-- Hero Background Video -->
+    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 opacity-25">
+      <source src="/Assets/hero_bg.mp4" type="video/mp4">
+    </video>
 
-    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
-      <!-- Text Area -->
-      <div class="lg:col-span-7 flex flex-col items-start text-left z-10">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop flex flex-col items-center justify-center">
+      <!-- Centered Text Area -->
+      <div class="max-w-3xl flex flex-col items-center text-center z-10 py-10 md:py-12 px-6 md:px-12 bg-[#faf9f4]/80 backdrop-blur-md border border-[#c4c8be]/40 rounded-3xl shadow-xl mt-4 mb-4">
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6">
           <span class="material-symbols-outlined text-primary text-[16px] font-bold">verified</span>
           <span class="text-xs font-bold text-primary tracking-wider uppercase">Verified Institutional Insides</span>
@@ -206,11 +207,10 @@
           The Market Has a New Standard. <br/>
           <span class="text-primary bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">Verified Traders.</span>
         </h1>
-        <p class="text-lg text-on-surface-variant max-w-xl mb-8 leading-relaxed">
+        <p class="text-lg text-on-surface-variant max-w-2xl mb-8 leading-relaxed mx-auto">
           Discover proven traders, live market insights, and real-time discussions from experienced professionals.
         </p>
-        <div class="flex flex-col gap-6 w-full max-w-md">
-        <div class="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+        <div class="flex flex-col sm:flex-row gap-4 w-full max-w-md mx-auto">
           <a href="#leaderboard" class="flex-1 bg-primary text-on-primary font-bold py-4 rounded-xl hover:opacity-95 text-center transition-all shadow-[0_4px_20px_0_rgba(66,104,43,0.15)] flex items-center justify-center gap-2">
             View Leaderboard
             <span class="material-symbols-outlined text-[18px]">arrow_downward</span>
@@ -220,118 +220,43 @@
             <span class="material-symbols-outlined text-[18px]">compare_arrows</span>
           </button>
         </div>
-
-        <!-- Hero Trust Badges -->
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-3 mt-6 text-outline select-none">
-          <div class="flex items-center gap-1.5 text-xs font-semibold">
-            <span class="material-symbols-outlined text-primary text-[16px]">verified</span>
-            <span>100% Verified ROI</span>
-          </div>
-          <div class="flex items-center gap-1.5 text-xs font-semibold">
-            <span class="material-symbols-outlined text-primary text-[16px]">lock</span>
-            <span>Secure Checkout</span>
-          </div>
-          <div class="flex items-center gap-1.5 text-xs font-semibold">
-            <span class="material-symbols-outlined text-primary text-[16px]">autorenew</span>
-            <span>No Lock-ins</span>
-          </div>
-        </div>
-        </div>
-      </div>
-
-      <!-- Hero Visual (Interactive Bento Card Panel) -->
-      <div class="lg:col-span-5 relative z-10 mt-12 lg:mt-0">
-        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-[0_12px_40px_rgba(53,61,50,0.08)] relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-tr from-surface-container-low/50 to-transparent pointer-events-none"></div>
-          
-          <!-- Bento Header -->
-          <div class="flex justify-between items-center mb-6">
-            <div class="flex items-center gap-2">
-              <span class="h-3 w-3 rounded-full bg-red-400"></span>
-              <span class="h-3 w-3 rounded-full bg-yellow-400"></span>
-              <span class="h-3 w-3 rounded-full bg-green-400"></span>
-            </div>
-            <span class="font-mono text-[10px] text-outline tracking-wider uppercase font-bold bg-surface-container px-2 py-0.5 rounded">Saudaa terminal v1.4</span>
-          </div>
-
-          <!-- Feature Item -->
-          <div class="space-y-4">
-            <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/20 flex justify-between items-center">
-              <div>
-                <span class="text-xs text-outline block">SUBSCRIBED TRADER</span>
-                <span class="font-bold text-on-surface block mt-0.5">Alex Pro</span>
-              </div>
-              <span class="bg-primary-container/20 text-primary px-2.5 py-1 rounded-md text-xs font-extrabold">Active</span>
-            </div>
-
-            <!-- Signal Preview -->
-            <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/20">
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-xs font-mono font-bold text-primary">NIFTY50 Buy Alert</span>
-                <span class="text-[10px] text-outline">Active</span>
-              </div>
-              <div class="grid grid-cols-3 gap-2 text-center mt-2">
-                <div class="bg-surface-container-lowest p-2 rounded-lg border border-outline-variant/10">
-                  <span class="text-[9px] text-outline block">ENTRY</span>
-                  <span class="font-mono text-xs font-bold text-on-surface">₹22,850</span>
-                </div>
-                <div class="bg-surface-container-lowest p-2 rounded-lg border border-outline-variant/10">
-                  <span class="text-[9px] text-outline block">TARGET</span>
-                  <span class="font-mono text-xs font-bold text-primary">₹23,400</span>
-                </div>
-                <div class="bg-surface-container-lowest p-2 rounded-lg border border-outline-variant/10">
-                  <span class="text-[9px] text-outline block">STOP LOSS</span>
-                  <span class="font-mono text-xs font-bold text-error">₹22,600</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Chat Preview -->
-            <div class="p-4 rounded-xl bg-surface-container border border-outline-variant/20 flex gap-3 items-start">
-              <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold text-xs shrink-0">AP</div>
-              <div class="flex-1 min-w-0">
-                <div class="flex justify-between items-center">
-                  <span class="font-bold text-xs text-on-surface">Alex Pro</span>
-                  <span class="text-[9px] text-outline">Just now</span>
-                </div>
-                <p class="text-xs text-on-surface-variant truncate mt-0.5">Let's lock in 50% profits at target 1...</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
-    <!-- Stats Strip & Scroll Indicator -->
-    <div id="hero-stats-strip" class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop mt-16 md:mt-24 pt-12 border-t border-outline-variant/30 relative">
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-y-8 lg:gap-y-0">
-        <!-- Stat 1 -->
-        <div class="border-l border-outline-variant/40 pl-6 md:pl-8">
-          <div id="stat-val-traders" class="text-4xl md:text-5xl font-serif font-light text-on-surface tracking-tight leading-none">0</div>
-          <div class="text-[10px] font-mono tracking-[0.15em] text-outline uppercase mt-3">Active Traders</div>
-        </div>
-        <!-- Stat 2 -->
-        <div class="border-l border-outline-variant/40 pl-6 md:pl-8">
-          <div id="stat-val-leaders" class="text-4xl md:text-5xl font-serif font-light text-on-surface tracking-tight leading-none">0</div>
-          <div class="text-[10px] font-mono tracking-[0.15em] text-outline uppercase mt-3">Verified Leaders</div>
-        </div>
-        <!-- Stat 3 -->
-        <div class="border-l border-outline-variant/40 pl-6 md:pl-8">
-          <div id="stat-val-winrate" class="text-4xl md:text-5xl font-serif font-light text-on-surface tracking-tight leading-none">0%</div>
-          <div class="text-[10px] font-mono tracking-[0.15em] text-outline uppercase mt-3">Avg Win Rate</div>
-        </div>
-        <!-- Stat 4 -->
-        <div class="border-l border-outline-variant/40 pl-6 md:pl-8">
-          <div id="stat-val-calls" class="text-4xl md:text-5xl font-serif font-light text-on-surface tracking-tight leading-none">0</div>
-          <div class="text-[10px] font-mono tracking-[0.15em] text-outline uppercase mt-3">Calls This Month</div>
+    <!-- Scroll Indicator -->
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop mt-12 flex flex-col items-center justify-center">
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-[10px] font-mono tracking-[0.15em] text-white/50 uppercase select-none">Scroll</span>
+        <div class="w-[1px] h-12 bg-white/20 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-1/2 bg-primary-container animate-scroll-line"></div>
         </div>
       </div>
-      
-      <!-- Scroll Indicator -->
-      <div class="mt-12 pl-6 md:pl-8 flex flex-col items-start gap-3">
-        <span class="text-[10px] font-mono tracking-[0.15em] text-outline uppercase select-none">Scroll</span>
-        <div class="w-[1px] h-14 bg-outline-variant/30 relative overflow-hidden">
-          <div class="absolute top-0 left-0 w-full h-1/2 bg-error animate-scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="w-full bg-[#f5f4ef] border-b border-[#c4c8be]/40 py-12">
+    <div id="hero-stats-strip" class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-y-8 lg:gap-y-0">
+        <!-- Stat 1 -->
+        <div class="border-l border-[#c4c8be]/60 pl-6 md:pl-8 transition-transform duration-300 hover:-translate-y-0.5">
+          <div id="stat-val-traders" class="text-4xl md:text-5xl font-serif font-light text-primary tracking-tight leading-none">0</div>
+          <div class="text-[10px] font-mono tracking-[0.15em] text-on-surface-variant uppercase mt-3">Active Traders</div>
+        </div>
+        <!-- Stat 2 -->
+        <div class="border-l border-[#c4c8be]/60 pl-6 md:pl-8 transition-transform duration-300 hover:-translate-y-0.5">
+          <div id="stat-val-leaders" class="text-4xl md:text-5xl font-serif font-light text-primary tracking-tight leading-none">0</div>
+          <div class="text-[10px] font-mono tracking-[0.15em] text-on-surface-variant uppercase mt-3">Verified Leaders</div>
+        </div>
+        <!-- Stat 3 -->
+        <div class="border-l border-[#c4c8be]/60 pl-6 md:pl-8 transition-transform duration-300 hover:-translate-y-0.5">
+          <div id="stat-val-winrate" class="text-4xl md:text-5xl font-serif font-light text-primary tracking-tight leading-none">0%</div>
+          <div class="text-[10px] font-mono tracking-[0.15em] text-on-surface-variant uppercase mt-3">Avg Win Rate</div>
+        </div>
+        <!-- Stat 4 -->
+        <div class="border-l border-[#c4c8be]/60 pl-6 md:pl-8 transition-transform duration-300 hover:-translate-y-0.5">
+          <div id="stat-val-calls" class="text-4xl md:text-5xl font-serif font-light text-primary tracking-tight leading-none">0</div>
+          <div class="text-[10px] font-mono tracking-[0.15em] text-on-surface-variant uppercase mt-3">Calls This Month</div>
         </div>
       </div>
     </div>
@@ -1805,6 +1730,17 @@
          class="pointer-events-auto bg-surface-container-highest/90 backdrop-blur-sm border-t border-outline-variant/30
                 text-[9px] text-outline/80 px-6 py-1 text-center font-mono tracking-wide max-w-4xl rounded-t-lg">
       Research platform only · Not SEBI registered · Not investment advice · Trade at your own risk
+    </div>
+  </div>
+
+  <!-- Fullscreen Lightbox Overlay (Zoom functionality) -->
+  <div id="image-lightbox" onclick="closeLightbox()" class="fixed inset-0 bg-on-background/80 backdrop-blur-md z-[9999] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300 select-none cursor-zoom-out">
+    <div class="relative max-w-4xl max-h-[85vh] flex flex-col justify-center items-center" onclick="event.stopPropagation()">
+      <img id="lightbox-img" src="" class="max-w-full max-h-[80vh] rounded-xl object-contain shadow-2xl border border-outline-variant/20 scale-95 transition-transform duration-300" />
+      <p id="lightbox-caption" class="text-white text-xs font-semibold mt-3 text-center bg-black/40 px-4 py-2 rounded-full border border-white/10 max-w-lg truncate">Chart Analysis</p>
+      <button onclick="closeLightbox()" class="absolute -top-12 right-0 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full border border-white/10 transition-colors flex items-center justify-center">
+        <span class="material-symbols-outlined">close</span>
+      </button>
     </div>
   </div>
 

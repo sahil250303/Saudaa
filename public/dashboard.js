@@ -28,9 +28,18 @@ let signalsPollInterval = null;
 let editingSignalId = null;
 let countdownInterval = null;
 
+// Image upload states
+let suggestionImageBase64 = null;
+let suggestionImageConfirmed = false;
+let suggestionImageName = '';
+let freeSignalImageBase64 = null;
+let freeSignalImageConfirmed = false;
+let freeSignalImageName = '';
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   checkAuth();
+  initImageUploads();
 });
 
 function checkAuth() {
@@ -198,6 +207,16 @@ async function fetchTraderSignals() {
               </div>
             </div>
             ${s.notes ? `<p class="text-xs text-on-surface-variant italic mt-1">"${s.notes}"</p>` : ''}
+            ${s.image ? `
+              <div class="mt-2.5">
+                <button type="button" onclick="openLightbox('${s.image}', 'Chart Analysis for ${s.asset}')" class="group relative flex items-center gap-1.5 bg-surface-container-highest/60 hover:bg-primary/10 border border-outline-variant/30 hover:border-primary/30 p-1.5 rounded-lg transition-all text-[10px] font-bold text-on-surface-variant hover:text-primary">
+                  <img src="${s.image}" class="w-10 h-10 object-cover rounded border border-outline-variant/40" />
+                  <span class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">zoom_in</span> View Technical Chart
+                  </span>
+                </button>
+              </div>
+            ` : ''}
           </div>
           <div class="flex flex-row md:flex-col items-center md:items-end justify-end shrink-0 gap-2">
             <div class="flex flex-col items-end">
@@ -292,6 +311,16 @@ window.handleEditSignal = async function(signalId) {
     document.getElementById('trade-asset-type').value = signal.assetType || 'Stocks';
     document.getElementById('trade-strategy').value = signal.strategy || 'Day Trade';
     document.getElementById('trade-notes').value = signal.notes;
+
+    // Load existing image if attached
+    if (signal.image) {
+      suggestionImageBase64 = signal.image;
+      suggestionImageConfirmed = true;
+      suggestionImageName = 'Current Attached Image.png';
+      updateUploadUIState('suggestion', 'confirmed', suggestionImageName);
+    } else {
+      clearAttachment('suggestion');
+    }
 
     const modalTitle = modal.querySelector('h3');
     const modalSubtitle = modal.querySelector('p');
@@ -459,6 +488,7 @@ window.openNewTradeModal = function() {
   const modal = document.getElementById('new-trade-modal');
   document.getElementById('trade-error').classList.add('hidden');
   document.getElementById('new-trade-form').reset();
+  clearAttachment('suggestion');
 
   const modalTitle = modal.querySelector('h3');
   const modalSubtitle = modal.querySelector('p');
@@ -520,7 +550,8 @@ window.handleNewTradeSubmit = async function(event) {
       risk,
       assetType,
       strategy,
-      notes
+      notes,
+      image: suggestionImageConfirmed ? suggestionImageBase64 : null
     };
 
     if (editingSignalId) {
@@ -538,6 +569,7 @@ window.handleNewTradeSubmit = async function(event) {
     if (!res.ok) throw new Error(data.error || 'Failed to submit signal.');
 
     closeNewTradeModal();
+    clearAttachment('suggestion'); // Reset upload UI state
     fetchTraderSignals(); // Reload signal feed
   } catch (error) {
     errorEl.textContent = error.message;
@@ -644,6 +676,16 @@ async function fetchClientSignals() {
               </div>
             </div>
             ${s.notes ? `<p class="text-xs text-on-surface-variant italic mt-2">"${s.notes}"</p>` : ''}
+            ${s.image ? `
+              <div class="mt-2.5">
+                <button type="button" onclick="openLightbox('${s.image}', 'Chart Analysis for ${s.asset}')" class="group relative flex items-center gap-1.5 bg-surface-container-highest/60 hover:bg-primary/10 border border-outline-variant/30 hover:border-primary/30 p-1.5 rounded-lg transition-all text-[10px] font-bold text-on-surface-variant hover:text-primary">
+                  <img src="${s.image}" class="w-10 h-10 object-cover rounded border border-outline-variant/40" />
+                  <span class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">zoom_in</span> View Technical Chart
+                  </span>
+                </button>
+              </div>
+            ` : ''}
           </div>
           <span class="text-[9px] text-outline shrink-0 font-mono self-start md:self-center">${new Date(s.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
         </div>
@@ -799,6 +841,16 @@ window.loadFreeSignals = async function() {
             <span class="font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20">Active: ${s.timing}</span>
           </div>
           <p class="text-xs text-on-surface leading-normal font-medium whitespace-pre-wrap">${s.description}</p>
+          ${s.image ? `
+            <div class="mt-1.5">
+              <button type="button" onclick="openLightbox('${s.image}', 'Free Signal Chart')" class="group relative flex items-center gap-1.5 bg-surface-container-highest/60 hover:bg-primary/10 border border-outline-variant/30 hover:border-primary/30 p-1.5 rounded-lg transition-all text-[9px] font-bold text-on-surface-variant hover:text-primary">
+                <img src="${s.image}" class="w-8 h-8 object-cover rounded border border-outline-variant/40" />
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">zoom_in</span> View Chart
+                </span>
+              </button>
+            </div>
+          ` : ''}
         </div>
       `;
     }).join('');
@@ -831,7 +883,11 @@ window.handlePostFreeSignal = async function(event) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ description, timing })
+      body: JSON.stringify({
+        description,
+        timing,
+        image: freeSignalImageConfirmed ? freeSignalImageBase64 : null
+      })
     });
     
     const data = await res.json();
@@ -841,6 +897,7 @@ window.handlePostFreeSignal = async function(event) {
     
     // Clear form inputs
     formEl.reset();
+    clearAttachment('free-signal'); // Reset upload UI state
     
     // Refresh history
     await loadFreeSignals();
@@ -849,3 +906,185 @@ window.handlePostFreeSignal = async function(event) {
     alert(error.message);
   }
 };
+
+// ── Image Upload Processing Helpers ──────────────────────────────────────────
+window.initImageUploads = function() {
+  setupUploadArea('suggestion');
+  setupUploadArea('free-signal');
+};
+
+function setupUploadArea(type) {
+  const dropzone = document.getElementById(`${type}-upload-dropzone`);
+  const fileInput = document.getElementById(`${type}-image-input`);
+
+  if (!dropzone || !fileInput) return;
+
+  // Prevent default drag behaviors
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, e => {
+      e.preventDefault();
+      e.stopPropagation();
+    }, false);
+  });
+
+  // Highlight drop zone on drag hover
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropzone.addEventListener(eventName, () => {
+      dropzone.classList.add('bg-surface-container-high', 'border-primary');
+    }, false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, () => {
+      dropzone.classList.remove('bg-surface-container-high', 'border-primary');
+    }, false);
+  });
+
+  // Handle drop
+  dropzone.addEventListener('drop', e => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files.length > 0) {
+      processSelectedImage(files[0], type);
+    }
+  });
+
+  // Handle file dialog selection
+  fileInput.addEventListener('change', e => {
+    if (fileInput.files.length > 0) {
+      processSelectedImage(fileInput.files[0], type);
+    }
+  });
+}
+
+function processSelectedImage(file, type) {
+  const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif'];
+  if (!allowedTypes.includes(file.type)) {
+    alert(`Unsupported file format: ${file.type}. Allowed formats: PNG, JPEG, WEBP, GIF.`);
+    return;
+  }
+
+  const maxSize = 1.5 * 1024 * 1024;
+  if (file.size > maxSize) {
+    alert(`File is too large: ${(file.size / (1024 * 1024)).toFixed(2)}MB. Max allowed size is 1.5MB.`);
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64Str = e.target.result;
+    
+    if (type === 'suggestion') {
+      suggestionImageBase64 = base64Str;
+      suggestionImageConfirmed = false;
+      suggestionImageName = file.name;
+    } else {
+      freeSignalImageBase64 = base64Str;
+      freeSignalImageConfirmed = false;
+      freeSignalImageName = file.name;
+    }
+
+    updateUploadUIState(type, 'preview', file.name, base64Str);
+  };
+  reader.readAsDataURL(file);
+}
+
+window.confirmAttachment = function(type) {
+  if (type === 'suggestion') {
+    if (!suggestionImageBase64) return;
+    suggestionImageConfirmed = true;
+    updateUploadUIState(type, 'confirmed', suggestionImageName);
+  } else {
+    if (!freeSignalImageBase64) return;
+    freeSignalImageConfirmed = true;
+    updateUploadUIState(type, 'confirmed', freeSignalImageName);
+  }
+};
+
+window.clearAttachment = function(type) {
+  const fileInput = document.getElementById(`${type}-image-input`);
+  if (fileInput) fileInput.value = '';
+
+  if (type === 'suggestion') {
+    suggestionImageBase64 = null;
+    suggestionImageConfirmed = false;
+    suggestionImageName = '';
+  } else {
+    freeSignalImageBase64 = null;
+    freeSignalImageConfirmed = false;
+    freeSignalImageName = '';
+  }
+
+  updateUploadUIState(type, 'select');
+};
+
+function updateUploadUIState(type, state, fileName = '', base64Str = '') {
+  const dropzone = document.getElementById(`${type}-upload-dropzone`);
+  const previewContainer = document.getElementById(`${type}-preview-container`);
+  const previewImg = document.getElementById(`${type}-image-preview`);
+  const infoText = document.getElementById(`${type}-image-info`);
+  
+  const confirmedContainer = document.getElementById(`${type}-confirmed-container`);
+  const confirmedInfo = document.getElementById(`${type}-confirmed-info`);
+
+  if (!dropzone || !previewContainer || !confirmedContainer) return;
+
+  if (state === 'select') {
+    dropzone.classList.remove('hidden');
+    previewContainer.classList.add('hidden');
+    confirmedContainer.classList.add('hidden');
+  } else if (state === 'preview') {
+    dropzone.classList.add('hidden');
+    previewContainer.classList.remove('hidden');
+    confirmedContainer.classList.add('hidden');
+    
+    if (previewImg) previewImg.src = base64Str;
+    if (infoText) infoText.textContent = fileName;
+  } else if (state === 'confirmed') {
+    dropzone.classList.add('hidden');
+    previewContainer.classList.add('hidden');
+    confirmedContainer.classList.remove('hidden');
+    
+    if (confirmedInfo) confirmedInfo.textContent = fileName;
+  }
+}
+
+// ── Lightbox Zoom overlay utilities ──────────────────────────────────────────
+window.openLightbox = function(src, caption = 'Chart Analysis') {
+  const lightbox = document.getElementById('image-lightbox');
+  const img = document.getElementById('lightbox-img');
+  const cap = document.getElementById('lightbox-caption');
+  
+  if (!lightbox || !img) return;
+  
+  img.src = src;
+  if (cap) cap.textContent = caption;
+  
+  lightbox.classList.remove('hidden');
+  setTimeout(() => {
+    lightbox.classList.remove('opacity-0');
+    img.classList.remove('scale-95');
+  }, 10);
+};
+
+window.closeLightbox = function() {
+  const lightbox = document.getElementById('image-lightbox');
+  const img = document.getElementById('lightbox-img');
+  
+  if (!lightbox || !img) return;
+  
+  lightbox.classList.add('opacity-0');
+  img.classList.add('scale-95');
+  
+  setTimeout(() => {
+    lightbox.classList.add('hidden');
+  }, 300);
+};
+
+// Global escape listener for lightbox
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeLightbox();
+  }
+});
+

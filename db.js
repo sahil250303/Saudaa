@@ -111,7 +111,8 @@ async function readDB() {
           strategy: s.strategy,
           notes: s.notes,
           createdAt: s.created_at || s.createdAt,
-          edited: s.edited
+          edited: s.edited,
+          image: s.image
         })),
         clients: (clients.data || []).map(c => ({
           id: c.id,
@@ -160,7 +161,8 @@ async function readDB() {
           traderName: fs.trader_name || fs.traderName,
           description: fs.description,
           timing: fs.timing,
-          createdAt: fs.created_at || fs.createdAt
+          createdAt: fs.created_at || fs.createdAt,
+          image: fs.image
         }))
       };
     } catch (err) {
@@ -213,7 +215,8 @@ async function writeDB(data) {
         strategy: s.strategy,
         notes: s.notes,
         created_at: s.createdAt,
-        edited: s.edited
+        edited: s.edited,
+        image: s.image
       }));
 
       const clientsData = (data.clients || []).map(c => ({
@@ -268,7 +271,8 @@ async function writeDB(data) {
         trader_name: fs.traderName,
         description: fs.description,
         timing: fs.timing,
-        created_at: fs.createdAt
+        created_at: fs.createdAt,
+        image: fs.image
       }));
 
       // Delete functions are handled explicitly via toggle-status/delete routes to prevent database corruption/race conditions

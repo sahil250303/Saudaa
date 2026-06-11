@@ -61,8 +61,8 @@ const subscribeLimiter = rateLimit({
 });
 
 // Middleware
-app.use(express.json({ limit: '100kb' }));
-app.use(express.urlencoded({ limit: '100kb', extended: true }));
+app.use(express.json({ limit: '3mb' }));
+app.use(express.urlencoded({ limit: '3mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const {
@@ -425,6 +425,19 @@ app.use(async (req, res, next) => {
 });
 
 // API Routes
+
+// Image Validation Helper (enforces format check and 1.5MB size constraint)
+function validateBase64Image(imageStr) {
+  if (!imageStr) return true;
+  if (imageStr.length > 2200000) {
+    throw new Error('Image size exceeds the 1.5MB limit.');
+  }
+  const regex = /^data:image\/(png|jpeg|jpg|webp|gif);base64,/;
+  if (!regex.test(imageStr)) {
+    throw new Error('Invalid image format. Allowed formats: PNG, JPEG, WEBP, GIF.');
+  }
+  return true;
+}
 
 // Live Market Ticker Endpoint (no browser caching)
 app.get('/api/market-strip', (req, res) => {
@@ -790,7 +803,7 @@ app.get('/api/suggestions', verifyUserToken, async (req, res) => {
 
 // 6. Post suggestion (Trader only)
 app.post('/api/suggestions', verifyUserToken, async (req, res) => {
-  const { traderId, asset, type, entry, target, stopLoss, risk, notes, assetType, strategy } = req.body;
+  const { traderId, asset, type, entry, target, stopLoss, risk, notes, assetType, strategy, image } = req.body;
 
   if (req.user.role !== 'trader' || req.user.id !== traderId) {
     return res.status(403).json({ error: 'Unauthorized user credentials to broadcast signals.' });
@@ -798,6 +811,15 @@ app.post('/api/suggestions', verifyUserToken, async (req, res) => {
 
   if (!traderId || !asset || !type || !entry || !target || !stopLoss || !risk) {
     return res.status(400).json({ error: 'All signal details are required.' });
+  }
+
+  // Validate image if provided
+  if (image) {
+    try {
+      validateBase64Image(image);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
   }
 
   // ── Content moderation (free-text notes field only) ───────────────────────
@@ -839,6 +861,7 @@ app.post('/api/suggestions', verifyUserToken, async (req, res) => {
     assetType: sanitize(assetType || 'Stocks'),
     strategy:  sanitize(strategy || 'Day Trade'),
     notes:     sanitize(notes || ''),
+    image:     image || null,
     createdAt: new Date().toISOString()
   };
 
@@ -851,7 +874,7 @@ app.post('/api/suggestions', verifyUserToken, async (req, res) => {
 // 7. Edit suggestion (Trader only)
 app.put('/api/suggestions/:id', verifyUserToken, async (req, res) => {
   const { id } = req.params;
-  const { traderId, asset, type, entry, target, stopLoss, risk, notes, assetType, strategy } = req.body;
+  const { traderId, asset, type, entry, target, stopLoss, risk, notes, assetType, strategy, image } = req.body;
 
   if (req.user.role !== 'trader' || req.user.id !== traderId) {
     return res.status(403).json({ error: 'Unauthorized credentials to modify signals.' });
@@ -859,6 +882,15 @@ app.put('/api/suggestions/:id', verifyUserToken, async (req, res) => {
 
   if (!traderId || !asset || !type || !entry || !target || !stopLoss || !risk) {
     return res.status(400).json({ error: 'All signal details are required.' });
+  }
+
+  // Validate image if provided
+  if (image) {
+    try {
+      validateBase64Image(image);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
   }
 
   // ── Content moderation (notes field) ─────────────────────────────────────
@@ -903,6 +935,7 @@ app.put('/api/suggestions/:id', verifyUserToken, async (req, res) => {
   suggestion.assetType = assetType || 'Stocks';
   suggestion.strategy = strategy || 'Day Trade';
   suggestion.notes = notes || '';
+  suggestion.image = image || null;
   suggestion.edited = true;
 
   await writeDB(db);
@@ -1054,9 +1087,18 @@ app.post('/api/free-signals', verifyUserToken, async (req, res) => {
     return res.status(403).json({ error: 'Only authorized traders can broadcast free signals.' });
   }
 
-  const { description, timing } = req.body;
+  const { description, timing, image } = req.body;
   if (!description || !timing) {
     return res.status(400).json({ error: 'Description and timing fields are required.' });
+  }
+
+  // Validate image if provided
+  if (image) {
+    try {
+      validateBase64Image(image);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
   }
 
   // ── Content moderation (description + timing) ─────────────────────────────
@@ -1102,6 +1144,7 @@ app.post('/api/free-signals', verifyUserToken, async (req, res) => {
     traderName: trader.name,
     description: description.trim(),
     timing: timing.trim(),
+    image: image || null,
     createdAt: new Date().toISOString()
   };
 
