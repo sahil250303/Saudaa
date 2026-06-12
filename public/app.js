@@ -1925,10 +1925,219 @@ window.closeLightbox = function() {
   }, 300);
 };
 
-// Global escape listener for lightbox
+// Global escape listener for lightbox, news, and compare modals
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeLightbox();
+    if (typeof closeNewsPopup === 'function') closeNewsPopup();
+    if (typeof closeCompareModal === 'function') closeCompareModal();
   }
 });
+
+// ── Live Market News Drawer Logic ──────────────────────────────────────────
+let marketNewsData = [];
+let currentNewsFilter = 'ALL';
+let newsPollerInterval = null;
+
+window.openNewsPopup = function() {
+  const drawer = document.getElementById('news-drawer');
+  const panel = document.getElementById('news-drawer-panel');
+  if (!drawer || !panel) return;
+
+  drawer.classList.remove('hidden');
+  drawer.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+
+  // Fetch news immediately when opening
+  fetchMarketNews();
+
+  setTimeout(() => {
+    drawer.classList.remove('opacity-0');
+    panel.classList.remove('-translate-x-full');
+    trapFocus(drawer);
+  }, 50);
+
+  // Set up backdrop click listener
+  drawer.onclick = function(e) {
+    if (e.target === drawer) {
+      closeNewsPopup();
+    }
+  };
+
+  // Start periodic polling every 30 seconds
+  if (!newsPollerInterval) {
+    newsPollerInterval = setInterval(fetchMarketNews, 30000);
+  }
+};
+
+window.closeNewsPopup = function() {
+  const drawer = document.getElementById('news-drawer');
+  const panel = document.getElementById('news-drawer-panel');
+  if (!drawer || !panel) return;
+
+  releaseFocus(drawer);
+  drawer.setAttribute('aria-hidden', 'true');
+  drawer.classList.add('opacity-0');
+  panel.classList.add('-translate-x-full');
+  document.body.style.overflow = '';
+
+  setTimeout(() => {
+    drawer.classList.add('hidden');
+  }, 300);
+
+  // Clear poller when drawer is closed to save resources
+  if (newsPollerInterval) {
+    clearInterval(newsPollerInterval);
+    newsPollerInterval = null;
+  }
+};
+
+async function fetchMarketNews() {
+  try {
+    const response = await fetch('/api/market-news');
+    if (!response.ok) throw new Error('Failed to fetch market news');
+    const data = await response.json();
+    
+    // Sort news items by timestamp (descending)
+    marketNewsData = data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    renderNewsFeed();
+  } catch (error) {
+    console.error('Error loading market news:', error);
+    const container = document.getElementById('news-feed-container');
+    if (container) {
+      container.innerHTML = `
+        <div class="flex flex-col items-center justify-center h-48 text-error text-center space-y-2">
+          <span class="material-symbols-outlined text-[32px]">error</span>
+          <span class="text-xs font-mono">Failed to load live cues. Please try again.</span>
+          <button onclick="fetchMarketNews()" class="mt-2 text-xs font-bold text-primary underline hover:no-underline">Retry</button>
+        </div>
+      `;
+    }
+  }
+}
+
+window.filterNews = function(filter) {
+  currentNewsFilter = filter;
+  
+  // Update filter buttons styling
+  const buttons = document.querySelectorAll('.news-filter-btn');
+  buttons.forEach(btn => {
+    const filterType = btn.id.replace('news-filter-', '');
+    if (filterType === filter) {
+      btn.className = 'news-filter-btn px-3 py-1 rounded-full text-[11px] font-bold bg-primary text-on-primary transition-all';
+    } else {
+      btn.className = 'news-filter-btn px-3 py-1 rounded-full text-[11px] font-bold bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-all';
+    }
+  });
+
+  renderNewsFeed();
+};
+
+function formatRelativeTime(isoString) {
+  const now = new Date();
+  const past = new Date(isoString);
+  const diffMs = now - past;
+  const diffMins = Math.floor(diffMs / 60000);
+  
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  
+  const diffHours = Math.floor(diffMins / 60);
+  if (diffHours < 24) return `${diffHours}h ago`;
+  
+  return past.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+}
+
+function renderNewsFeed() {
+  const container = document.getElementById('news-feed-container');
+  if (!container) return;
+
+  const filteredNews = currentNewsFilter === 'ALL'
+    ? marketNewsData
+    : marketNewsData.filter(item => item.category === currentNewsFilter);
+
+  if (filteredNews.length === 0) {
+    container.innerHTML = `
+      <div class="flex flex-col items-center justify-center h-48 text-on-surface-variant text-center space-y-2">
+        <span class="material-symbols-outlined text-[32px] text-outline-variant">inbox</span>
+        <span class="text-xs font-mono">No news available in this category.</span>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filteredNews.map(item => {
+    // Determine sentiment colors and badges
+    let sentimentBorderClass = 'border-outline-variant/30';
+    let sentimentIndicatorClass = 'bg-outline';
+    let sentimentBg = 'bg-surface-container-low';
+    
+    if (item.sentiment === 'positive') {
+      sentimentBorderClass = 'border-primary-container/40';
+      sentimentIndicatorClass = 'bg-primary';
+      sentimentBg = 'bg-primary-fixed/5';
+    } else if (item.sentiment === 'negative') {
+      sentimentBorderClass = 'border-error-container/40';
+      sentimentIndicatorClass = 'bg-error';
+      sentimentBg = 'bg-error-container/5';
+    }
+
+    // Determine category badge colors
+    let catClass = 'bg-secondary-container/60 text-on-secondary-container';
+    if (item.category === 'IPO') {
+      catClass = 'bg-primary-fixed-dim/40 text-on-primary-fixed-variant';
+    } else if (item.category === 'GLOBAL') {
+      catClass = 'bg-surface-container-high text-on-surface-variant';
+    }
+
+    return `
+      <div class="p-4 rounded-xl border ${sentimentBorderClass} ${sentimentBg} space-y-3 hover:shadow-sm transition-shadow">
+        <div class="flex items-center justify-between text-[10px] font-mono text-outline">
+          <div class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full ${sentimentIndicatorClass}"></span>
+            <span class="font-bold uppercase tracking-wider">${item.source}</span>
+          </div>
+          <span>${formatRelativeTime(item.timestamp)}</span>
+        </div>
+        
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="px-2 py-0.5 rounded text-[8px] font-extrabold tracking-wider uppercase ${catClass}">${item.category}</span>
+          </div>
+          <h4 class="text-xs font-bold leading-snug text-on-surface hover:text-primary transition-colors cursor-pointer" onclick="toggleNewsExpand(${item.id})">
+            ${item.title}
+          </h4>
+        </div>
+        
+        <p id="news-summary-${item.id}" class="text-[11px] text-on-surface-variant leading-relaxed hidden">
+          ${item.summary}
+        </p>
+
+        <button onclick="toggleNewsExpand(${item.id})" id="news-toggle-btn-${item.id}" class="text-[10px] text-primary font-bold hover:underline flex items-center gap-0.5">
+          <span>Read Highlights</span>
+          <span class="material-symbols-outlined text-[12px] transition-transform" id="news-toggle-icon-${item.id}">expand_more</span>
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+window.toggleNewsExpand = function(id) {
+  const summaryEl = document.getElementById(`news-summary-${id}`);
+  const btnEl = document.getElementById(`news-toggle-btn-${id}`);
+  const iconEl = document.getElementById(`news-toggle-icon-${id}`);
+  
+  if (!summaryEl) return;
+
+  if (summaryEl.classList.contains('hidden')) {
+    summaryEl.classList.remove('hidden');
+    btnEl.querySelector('span').textContent = 'Collapse Highlights';
+    iconEl.style.transform = 'rotate(180deg)';
+  } else {
+    summaryEl.classList.add('hidden');
+    btnEl.querySelector('span').textContent = 'Read Highlights';
+    iconEl.style.transform = 'rotate(0deg)';
+  }
+};
 

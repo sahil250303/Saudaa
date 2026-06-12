@@ -55,6 +55,24 @@ describe('GET /api/market-strip', () => {
   });
 });
 
+describe('GET /api/market-news', () => {
+  it('returns news array', async () => {
+    const res = await request(app).get('/api/market-news');
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBeGreaterThan(0);
+    expect(res.body[0]).toHaveProperty('title');
+    expect(res.body[0]).toHaveProperty('category');
+    expect(res.body[0]).toHaveProperty('sentiment');
+    expect(res.body[0]).toHaveProperty('timestamp');
+  });
+
+  it('sets no-cache headers', async () => {
+    const res = await request(app).get('/api/market-news');
+    expect(res.headers['cache-control']).toMatch(/no-store/i);
+  });
+});
+
 describe('GET /api/free-signals', () => {
   it('returns an array', async () => {
     const res = await request(app).get('/api/free-signals');
@@ -147,6 +165,20 @@ describe('Static pages', () => {
   it('GET /sitemap.xml returns XML', async () => {
     const res = await request(app).get('/sitemap.xml');
     expect(res.status).toBe(200);
+  });
+
+  it('GET /ipo returns ipo page HTML', async () => {
+    const res = await request(app).get('/ipo');
+    expect(res.status).toBe(200);
+    expect(res.type).toMatch(/html/);
+    expect(res.text).toContain('IPO Intelligence Center');
+  });
+
+  it('GET /ipo.html returns ipo page HTML', async () => {
+    const res = await request(app).get('/ipo.html');
+    expect(res.status).toBe(200);
+    expect(res.type).toMatch(/html/);
+    expect(res.text).toContain('IPO Intelligence Center');
   });
 
   it('GET /nonexistent returns 404', async () => {

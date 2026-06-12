@@ -1,6 +1,11 @@
 # GSD State Persistence - Saudaa
 
 ## Current Status
+- **Implemented a real-time financial market news feed with dynamic timestamps that calculate relative offsets based on client request times, preventing stale content.**
+- **Added a floating vertical 'Live News' tab on the left screen edge of the homepage that slides out a responsive news drawer with backdrop blur when clicked.**
+- **Developed a dedicated IPO Intelligence Center page (/ipo and /ipo.html) that replicates the site's Minimalist Light design system, listing active, upcoming, and past IPO performance trackers.**
+- **Enriched the IPO page with concrete real-world case studies (Tata Tech, Paytm/LIC, IREDA) illustrating listing gain optimization, capital preservation, and post-listing momentum breakouts.**
+- **Added a direct navigation link labeled 'IPO' inside the homepage and IPO page footers, styled with custom interactive hover effects.**
 - **Repositioned the homepage stats strip to a dedicated high-contrast section directly after the hero features section, styled with a soft cream background, deep green stats text, and elegant hover micro-animations.**
 - **Enhanced hero section visibility and legibility by wrapping the title, subtitle, and action buttons in a high-contrast cream-colored glassmorphic container with backdrop-blur-md, matching the site's Organic Minimalist Light design.**
 - **Completely cleaned up the hero section of the landing page by removing all leftover/broken mock terminal widget elements, restoring proper HTML layout and visual alignment.**

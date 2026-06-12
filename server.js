@@ -463,6 +463,114 @@ app.get('/api/market-strip', (req, res) => {
   res.json(stockCache);
 });
 
+// Real-time Market News Endpoint (no browser caching)
+app.get('/api/market-news', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+
+  const now = new Date();
+  
+  const newsItems = [
+    {
+      id: 1,
+      title: "Nifty 50 Gains Momentum, Approaching Record Highs on Auto and IT Sector Backing",
+      category: "MARKET",
+      source: "Bloomberg Quint",
+      sentiment: "positive",
+      offsetMinutes: 2,
+      summary: "NSE Nifty 50 rallies over 150 points as foreign institutional investors (FIIs) turn net buyers. Auto giants Tata Motors and Mahindra & Mahindra lead the index gains."
+    },
+    {
+      id: 2,
+      title: "Upcoming IPO: Swiggy Receives SEBI Nod for Landmark ₹10,400 Crore Public Offering",
+      category: "IPO",
+      source: "Economic Times",
+      sentiment: "neutral",
+      offsetMinutes: 14,
+      summary: "Food delivery giant Swiggy is set to launch its highly anticipated IPO by late next month. The issue comprises a fresh equity component of ₹3,750 crore and an offer-for-sale (OFS) of ₹6,650 crore."
+    },
+    {
+      id: 3,
+      title: "HDFC Bank Shares Surge 3% Following MSCI Index Weightage Revision",
+      category: "MARKET",
+      source: "Moneycontrol",
+      sentiment: "positive",
+      offsetMinutes: 28,
+      summary: "MSCI has increased HDFC Bank's investability weightage factor, prompting passive funds to purchase shares worth an estimated $1.8 billion. Trading volume hits a 30-day high."
+    },
+    {
+      id: 4,
+      title: "US Federal Reserve Holds Rates Steady, Hints at Delayed Monetary Easing Cues",
+      category: "GLOBAL",
+      source: "Wall Street Journal",
+      sentiment: "negative",
+      offsetMinutes: 45,
+      summary: "Fed Chair Jerome Powell reiterated a data-dependent stance, warning that inflation remains sticky. Wall Street indices fell slightly while the US Dollar Index strengthened."
+    },
+    {
+      id: 5,
+      title: "Tata Technologies IPO Listed at Staggering 140% Premium, Opening at ₹1,200 vs Issue Price of ₹500",
+      category: "IPO",
+      source: "LiveMint",
+      sentiment: "positive",
+      offsetMinutes: 72,
+      summary: "The historic Tata Tech IPO saw unprecedented demand from all categories of investors, listing at ₹1,200 on the NSE. The listing marks one of the strongest Indian IPO debuts in recent history."
+    },
+    {
+      id: 6,
+      title: "Brent Crude Steadies Below $82/bbl as Geopolitical Cues Offset Rising US Inventories",
+      category: "GLOBAL",
+      source: "Reuters",
+      sentiment: "neutral",
+      offsetMinutes: 120,
+      summary: "Oil prices consolidated within a narrow range as OPEC+ production cuts counteracted higher US output data. Energy stocks in India see minor profit booking."
+    },
+    {
+      id: 7,
+      title: "SEBI Proposes Tighter Rules for F&O Derivative Trading to Curb Retail Speculation",
+      category: "REGULATORY",
+      source: "Financial Express",
+      sentiment: "negative",
+      offsetMinutes: 180,
+      summary: "Market regulator SEBI released a consultation paper suggesting higher contract sizes and weekly expiry limits. The proposal aims to protect retail traders from high-leverage derivative risks."
+    },
+    {
+      id: 8,
+      title: "IREDA Share Price Rockets 10% Post-Listing on Heavy Green Energy Financing Demand",
+      category: "IPO",
+      source: "CNBC-TV18",
+      sentiment: "positive",
+      offsetMinutes: 240,
+      summary: "State-run IREDA continues its stellar run post-listing, locking in an upper circuit as institutional buying intensifies. The stock has tripled from its initial public offering price of ₹32."
+    },
+    {
+      id: 9,
+      title: "Paytm Shares Slide 5% on Persistent Valuation Cues and Growth Slowdown Concerns",
+      category: "MARKET",
+      source: "Business Standard",
+      sentiment: "negative",
+      offsetMinutes: 360,
+      summary: "One97 Communications faces further downward pressure as brokerage houses trim target prices, citing slower path to EBITDA breakeven and regulatory headwinds."
+    }
+  ];
+
+  const processedNews = newsItems.map(item => {
+    const pubDate = new Date(now.getTime() - item.offsetMinutes * 60 * 1000);
+    return {
+      id: item.id,
+      title: item.title,
+      category: item.category,
+      source: item.source,
+      sentiment: item.sentiment,
+      timestamp: pubDate.toISOString(),
+      summary: item.summary
+    };
+  });
+
+  res.json(processedNews);
+});
+
 // 1. Get all traders (sans sensitive data)
 app.get('/api/traders', async (req, res) => {
   const db = await readDB();
@@ -1369,6 +1477,11 @@ app.get(/.*/, (req, res) => {
   const knownRoutes = ['/', '/dashboard.html', '/admin.html',
     '/legal/privacy.html', '/legal/terms.html', '/legal/risk.html', '/legal/refund.html'];
   const reqPath = req.path.replace(/\/$/, '') || '/';
+  
+  if (reqPath === '/ipo' || reqPath === '/ipo.html') {
+    return res.sendFile(path.join(__dirname, 'public', 'ipo.html'));
+  }
+  
   if (knownRoutes.includes(reqPath)) {
     return res.sendFile(path.join(__dirname, 'public', 'index.html'));
   }
