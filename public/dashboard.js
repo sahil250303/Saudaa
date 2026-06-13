@@ -220,7 +220,7 @@ async function fetchTraderSignals() {
           </div>
           <div class="flex flex-row md:flex-col items-center md:items-end justify-end shrink-0 gap-2">
             <div class="flex flex-col items-end">
-              <span class="text-[9px] text-outline">${new Date(s.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+              <span class="text-[9px] text-outline">${new Date(s.createdAt).toLocaleDateString([], {day: 'numeric', month: 'short', year: 'numeric'})}, ${new Date(s.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
               ${isWithinWindow ? `
                 <div class="mt-1 flex items-center gap-1 text-[9px] text-primary bg-primary/5 border border-primary/20 px-1.5 py-0.5 rounded font-mono font-bold countdown-timer" data-created-at="${s.createdAt}" data-signal-id="${s.id}">
                   <span class="material-symbols-outlined text-[10px] animate-pulse">schedule</span>
@@ -693,7 +693,7 @@ async function fetchClientSignals() {
               </div>
             ` : ''}
           </div>
-          <span class="text-[9px] text-outline shrink-0 font-mono self-start md:self-center">${new Date(s.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+          <span class="text-[9px] text-outline shrink-0 font-mono self-start md:self-center">${new Date(s.createdAt).toLocaleDateString([], {day: 'numeric', month: 'short', year: 'numeric'})}, ${new Date(s.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
         </div>
       `;
     }).join('');
