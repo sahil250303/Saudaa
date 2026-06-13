@@ -1512,10 +1512,16 @@ app.get(/.*/, (req, res) => {
   const reqPath = req.path.replace(/\/$/, '') || '/';
   
   if (reqPath === '/ipo' || reqPath === '/ipo.html') {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     return res.sendFile(path.join(__dirname, 'public', 'ipo.html'));
   }
   
   if (knownRoutes.includes(reqPath)) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     return res.sendFile(path.join(__dirname, 'public', 'index.html'));
   }
   // Static assets (css, js, png, etc.) are handled by express.static above — this is a 404
