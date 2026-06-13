@@ -1,6 +1,7 @@
 # GSD State Persistence - Saudaa
 
 ## Current Status
+- **Added `Cache-Control: no-store` headers for `/` (index.html) and `/ipo` (ipo.html) page routing paths to prevent stale CDN/browser caches from blocking markup updates on client side.**
 - **Updated trader and client dashboard suggestion logs to display the full broadcast date and time (e.g. 13 Jun 2026, 05:37 PM) instead of only rendering the time.**
 - **Enforced Technical Rationale & Notes as a compulsory field for suggestion creation and editing on both frontend (validating inputs, required attributes, asterisks) and backend (returning 400 Bad Request error if empty).**
 - **Implemented a public 2-3 day history of trading suggestions inside the "Secure Checkout Gateway" modal to promote transparency for subscribers before purchasing.**
@@ -38,6 +39,7 @@
 - Visual animation, interactive effects, and custom mouse cursor fully implemented, tested, and verified compatible with accessibility.
 
 ## Completed Tasks
+- [x] Configure cache-control no-cache headers for static dynamic pages served in server.js
 - [x] Render full date and time for signals in trader and client dashboard feeds
 - [x] Make "Technical Rationale & Notes" compulsory for suggestions broadcast on frontend and backend
 - [x] Integrate 2-3 day suggestion history into checkout gateway with public suggestions API and select change updates
