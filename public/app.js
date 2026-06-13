@@ -477,6 +477,69 @@ function releaseFocus(modalEl) {
   }
 }
 
+async function fetchAndRenderCheckoutHistory(traderId) {
+  const historyEl = document.getElementById('checkout-suggestions-history');
+  if (!historyEl) return;
+
+  historyEl.innerHTML = `
+    <div class="flex items-center justify-center py-6">
+      <span class="animate-spin h-5 w-5 border-2 border-primary border-t-transparent rounded-full"></span>
+    </div>
+  `;
+
+  try {
+    const res = await fetch(`/api/public/suggestions?traderId=${encodeURIComponent(traderId)}`);
+    if (!res.ok) throw new Error();
+    const suggestions = await res.json();
+
+    if (suggestions.length === 0) {
+      historyEl.innerHTML = `
+        <div class="text-center py-6 text-on-surface-variant/70 text-[11px] italic bg-surface-container/30 border border-outline-variant/20 rounded-xl">
+          No suggestions posted by this trader in the last 3 days.
+        </div>
+      `;
+      return;
+    }
+
+    historyEl.innerHTML = suggestions.map(s => {
+      const isBuy = s.type.toLowerCase() === 'buy';
+      return `
+        <div class="p-3 rounded-xl bg-surface-container border border-outline-variant/30 hover:border-primary/20 transition-all text-left shadow-sm">
+          <div class="flex items-center justify-between gap-1 flex-wrap">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="font-bold text-xs text-on-surface">${s.asset}</span>
+              <span class="${isBuy ? 'bg-primary/10 text-primary' : 'bg-error/10 text-error'} text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">${s.type}</span>
+              <span class="bg-surface-container-highest text-secondary text-[8px] font-bold px-1.5 py-0.5 rounded">${s.strategy || 'Day Trade'}</span>
+            </div>
+            <span class="text-[9px] text-outline font-mono">${new Date(s.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })} ${new Date(s.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center bg-surface-container-lowest p-2 rounded-lg border border-outline-variant/20 mt-2">
+            <div>
+              <span class="text-[9px] text-outline block">ENTRY</span>
+              <span class="font-mono text-xs font-bold text-on-surface">₹${s.entry}</span>
+            </div>
+            <div>
+              <span class="text-[9px] text-outline block">TARGET</span>
+              <span class="font-mono text-xs font-bold text-primary">₹${s.target}</span>
+            </div>
+            <div>
+              <span class="text-[9px] text-outline block">STOP LOSS</span>
+              <span class="font-mono text-xs font-bold text-error">₹${s.stopLoss}</span>
+            </div>
+          </div>
+          ${s.notes ? `<p class="text-[10px] text-on-surface-variant italic mt-1.5 leading-normal">"${s.notes}"</p>` : ''}
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    historyEl.innerHTML = `
+      <div class="text-center py-6 text-error text-[11px] font-medium bg-error-container/20 border border-error/20 rounded-xl">
+        Failed to load suggestions history.
+      </div>
+    `;
+  }
+}
+
 window.openCheckout = function(traderId = '', planTier = 'pro') {
   const modal = document.getElementById('checkout-modal');
   const select = document.getElementById('checkout-trader-select');
@@ -491,6 +554,11 @@ window.openCheckout = function(traderId = '', planTier = 'pro') {
   }
 
   planSelect.value = planTier;
+
+  // Fetch history for the selected trader
+  if (select.value) {
+    fetchAndRenderCheckoutHistory(select.value);
+  }
 
   // Reset form status
   document.getElementById('checkout-form').classList.remove('hidden');
@@ -965,6 +1033,14 @@ function setupEventListeners() {
   if (search) search.addEventListener('input', renderLeaderboard);
   if (strat) strat.addEventListener('change', renderLeaderboard);
   if (sort) sort.addEventListener('change', renderLeaderboard);
+
+  // Checkout trader select change listener
+  const checkoutTraderSelect = document.getElementById('checkout-trader-select');
+  if (checkoutTraderSelect) {
+    checkoutTraderSelect.addEventListener('change', (e) => {
+      fetchAndRenderCheckoutHistory(e.target.value);
+    });
+  }
 }
 
 // 7. Trader Comparison Wizard Logic

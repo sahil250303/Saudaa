@@ -1,6 +1,8 @@
 # GSD State Persistence - Saudaa
 
 ## Current Status
+- **Enforced Technical Rationale & Notes as a compulsory field for suggestion creation and editing on both frontend (validating inputs, required attributes, asterisks) and backend (returning 400 Bad Request error if empty).**
+- **Implemented a public 2-3 day history of trading suggestions inside the "Secure Checkout Gateway" modal to promote transparency for subscribers before purchasing.**
 - **Implemented a real-time financial market news feed with dynamic timestamps that calculate relative offsets based on client request times, preventing stale content.**
 - **Added a floating vertical 'Live News' tab on the left screen edge of the homepage that slides out a responsive news drawer with backdrop blur when clicked.**
 - **Developed a dedicated IPO Intelligence Center page (/ipo and /ipo.html) that replicates the site's Minimalist Light design system, listing active, upcoming, and past IPO performance trackers.**
@@ -35,6 +37,8 @@
 - Visual animation, interactive effects, and custom mouse cursor fully implemented, tested, and verified compatible with accessibility.
 
 ## Completed Tasks
+- [x] Make "Technical Rationale & Notes" compulsory for suggestions broadcast on frontend and backend
+- [x] Integrate 2-3 day suggestion history into checkout gateway with public suggestions API and select change updates
 - [x] Integrate custom mouse cursor (sage green dot + 2px offset trailing shadow at 20% opacity) with hover magnification and touch-screen bypass
 - [x] Enhance visual appeal and interactivity with subtle scroll reveal animations, card hovers, FAQ accordion grid height interpolation, and springy chatbot windows
 - [x] Optimize website loading performance (speed up preloader to under 0.75s, defer script loads) and verify all 5 CTA buttons

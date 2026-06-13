@@ -81,6 +81,20 @@ describe('GET /api/free-signals', () => {
   });
 });
 
+describe('GET /api/public/suggestions', () => {
+  it('returns 400 when traderId is missing', async () => {
+    const res = await request(app).get('/api/public/suggestions');
+    expect(res.status).toBe(400);
+    expect(res.body.error).toContain('traderId query parameter is required');
+  });
+
+  it('returns suggestions array for a valid traderId', async () => {
+    const res = await request(app).get('/api/public/suggestions?traderId=test-trader-id');
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+});
+
 // ── Auth Routes ───────────────────────────────────────────────────────────────
 
 describe('POST /api/auth/login — validation', () => {

@@ -537,6 +537,12 @@ window.handleNewTradeSubmit = async function(event) {
 
   errorEl.classList.add('hidden');
 
+  if (!notes) {
+    errorEl.textContent = 'Technical Rationale & Notes is required.';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+
   try {
     let url = '/api/suggestions';
     let method = 'POST';

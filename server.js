@@ -578,6 +578,31 @@ app.get('/api/traders', async (req, res) => {
   res.json(safeTraders);
 });
 
+// 1.5 Get public suggestions history for a trader (last 3 days)
+app.get('/api/public/suggestions', async (req, res) => {
+  const { traderId } = req.query;
+  if (!traderId) {
+    return res.status(400).json({ error: 'traderId query parameter is required.' });
+  }
+
+  try {
+    const db = await readDB();
+    const now = new Date();
+    const cutoffTime = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+
+    const filtered = db.suggestions.filter(s => {
+      if (s.traderId !== traderId) return false;
+      const createdAt = new Date(s.createdAt);
+      return createdAt >= cutoffTime && createdAt <= now;
+    });
+
+    res.json(filtered);
+  } catch (error) {
+    console.error('Error fetching public suggestions history:', error);
+    res.status(500).json({ error: 'Internal server error while fetching suggestions history.' });
+  }
+});
+
 // 2. Authentication Login (Trader or Client)
 app.post('/api/auth/login', authLimiter, async (req, res) => {
   const { usernameOrEmail, password } = req.body;
@@ -921,6 +946,10 @@ app.post('/api/suggestions', verifyUserToken, async (req, res) => {
     return res.status(400).json({ error: 'All signal details are required.' });
   }
 
+  if (!notes || !notes.trim()) {
+    return res.status(400).json({ error: 'Technical Rationale & Notes is required.' });
+  }
+
   // Validate image if provided
   if (image) {
     try {
@@ -990,6 +1019,10 @@ app.put('/api/suggestions/:id', verifyUserToken, async (req, res) => {
 
   if (!traderId || !asset || !type || !entry || !target || !stopLoss || !risk) {
     return res.status(400).json({ error: 'All signal details are required.' });
+  }
+
+  if (!notes || !notes.trim()) {
+    return res.status(400).json({ error: 'Technical Rationale & Notes is required.' });
   }
 
   // Validate image if provided
